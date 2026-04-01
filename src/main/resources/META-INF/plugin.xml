@@ -1,39 +1,22 @@
-<!-- Plugin Configuration File. See https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
   <id>com.ericfortis.tabulareye</id>
-  <name>Tailwind Eye</name>
-  <vendor>ericfortis</vendor>
+  <name>Tabular Eye</name>
+  <version>1.0.0</version>
+  <vendor email="you@example.com" url="https://example.com">Your Name</vendor>
+
+  <description><![CDATA[
+        Proof-of-concept render-only plugin.<br/>
+        When a file contains exactly <b>AAA</b> and nothing else, the middle
+        <b>A</b> is rendered with a left padding equal to half the pixel width
+        of a single character — without touching the document.
+    ]]></description>
+
+  <idea-version since-build="223"/>
 
   <depends>com.intellij.modules.platform</depends>
-  <depends>com.intellij.modules.javascript</depends>
-
-  <actions>
-    <action id="TailwindEye.Toggle"
-            class="com.ericfortis.tabulareye.ActionFoldOrFade"
-            text="Toggle Tailwind Eye"
-            description="Either Folds classNames or Fades non-classNames">
-      <add-to-group group-id="ViewMenu" anchor="last"/>
-      <keyboard-shortcut keymap="$default" first-keystroke="shift alt F"/>
-    </action>
-    <action id="TailwindEye.TurnOff"
-            class="com.ericfortis.tabulareye.ActionTurnOff"
-            text="Turn Off Tailwind Eye"
-            description="Turns off Fold and Fades">
-      <add-to-group group-id="ViewMenu" anchor="after" relative-to-action="TailwindEye.Toggle"/>
-    </action>
-    <action id="TailwindEye.EditString"
-            class="com.ericfortis.tabulareye.ActionTranspose"
-            text="Transpose ClassName"
-            description="Cycles between row (inline) or column (multiline)">
-      <keyboard-shortcut keymap="$default" first-keystroke="control shift I"/>
-    </action>
-  </actions>
 
   <extensions defaultExtensionNs="com.intellij">
-    <lang.foldingBuilder language="TypeScript JSX" implementationClass="com.ericfortis.tabulareye.RegionFold"/>
-
-    <additionalTextAttributes scheme="Default" file="colorSchemes/TailwindEyeDefault.xml"/>
-    <additionalTextAttributes scheme="Darcula" file="colorSchemes/TailwindEyeDarcula.xml"/>
-    <colorSettingsPage implementation="com.ericfortis.tabulareye.SettingsPage"/>
+    <editorFactoryListener
+      implementation="com.ericfortis.tabulareye.MiddleASpacerPlugin"/>
   </extensions>
 </idea-plugin>
