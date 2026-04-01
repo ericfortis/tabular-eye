@@ -137,7 +137,7 @@ public class MiddleASpacerPlugin implements EditorFactoryListener {
 			}
 			int fullWidth = fm.charWidth('A');
 			// Integer ceil-divide by 2 so odd widths round up.
-			return (fullWidth + 1) / 2;
+			return (fullWidth + 1) * 4;
 		}
 
 		/**
