@@ -1,4 +1,4 @@
-package com.ericfortis.tailwindeye;
+package com.ericfortis.tabulareye;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;

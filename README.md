@@ -1,32 +1,7 @@
-# Tailwind Eye
-A WebStorm extension that provides a visual fading or folding effect for code. It can toggle between fading non-styling
-code (to focus on Tailwind classes) and folding the content of `className` strings.
-
-## Demo
-![](docs/demo.gif)
-
-## Fold
-![](docs/fold.png)
-
-## Dim
-![](docs/dim.png)
-
-## Edit multiline
-![](docs/multiline-editor.png)
-
-## Off
-![](docs/off.png)
-
-
-
-## Motivation
-To reduce visual noise and focus on what matters, whether it's the structure of your HTML/JSX or the Tailwind styling
-itself.
+# Tabular Eye
 
 <!-- Plugin description -->
-Use the shortcut `Shift + Alt + F` to toggle between the two modes:
-- **Fade non-styling code**: Fades everything except `className` attributes.
-- **Fold className content**: Folds the actual Tailwind utility strings.
+Tabular Eye
 
 <!-- Plugin description end -->
 
@@ -69,7 +44,7 @@ This project uses Gradle. To compile the plugin and create an installable distri
 ./gradlew buildPlugin
 ```
 The resulting ZIP file will be located in:
-`build/distributions/tailwind-eye-1.0-SNAPSHOT.zip`
+`build/distributions/tabular-eye-1.0-SNAPSHOT.zip`
 
 ### 2. Install in your IDE
 To install the plugin in your personal IDE (not the sandbox):

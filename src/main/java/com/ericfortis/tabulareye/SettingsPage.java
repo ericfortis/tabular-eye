@@ -1,4 +1,4 @@
-package com.ericfortis.tailwindeye;
+package com.ericfortis.tabulareye;
 
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;

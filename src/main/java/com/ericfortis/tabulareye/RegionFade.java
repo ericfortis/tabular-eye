@@ -1,4 +1,4 @@
-package com.ericfortis.tailwindeye;
+package com.ericfortis.tabulareye;
 
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
