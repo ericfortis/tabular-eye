@@ -2,7 +2,7 @@ package com.ericfortis.tabulareye;
 
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.Inlay;
-import com.intellij.openapi.editor.InlayModel;
+import com.intellij.openapi.editor.EditorCustomElementRenderer;
 import com.intellij.openapi.editor.colors.EditorFontType;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.util.Disposer;
@@ -78,7 +78,7 @@ public class ElasticInlayManager {
 		}
 
 		// Step 2: for keys narrower than the max, place a spacer inlay.
-		InlayModel model = editor.getInlayModel();
+		var model = editor.getInlayModel();
 
 		for (int i = 0; i < group.props.size(); i++) {
 			int gap = maxWidth - widths[i];
@@ -128,7 +128,7 @@ public class ElasticInlayManager {
 	 * A fully transparent inlay that occupies exactly `widthPx` pixels.
 	 * Nothing is painted — the space is reserved by calcWidthInPixels alone.
 	 */
-	static class SpacerRenderer implements com.intellij.openapi.editor.EditorCustomElementRenderer {
+	static class SpacerRenderer implements EditorCustomElementRenderer {
 
 		private final int widthPx;
 
