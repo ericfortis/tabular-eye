@@ -140,6 +140,11 @@ public class ElasticInlayManager {
 		public int calcWidthInPixels(@NotNull Inlay inlay) {
 			return Math.max(1, widthPx); // must always be > 0
 		}
+		
+		@Override
+		public int calcHeightInPixels(@NotNull Inlay inlay) {
+			return 1;
+		}
 
 		@Override
 		public void paint(
