@@ -1,22 +1,48 @@
 <idea-plugin>
-  <id>com.ericfortis.tabulareye</id>
-  <name>Tabular Eye</name>
-  <version>1.0.0</version>
-  <vendor email="you@example.com" url="https://example.com">Your Name</vendor>
 
-  <description><![CDATA[
-        Proof-of-concept render-only plugin.<br/>
-        When a file contains exactly <b>AAA</b> and nothing else, the middle
-        <b>A</b> is rendered with a left padding equal to half the pixel width
-        of a single character — without touching the document.
+    <!-- ================================================================ -->
+    <!--  Identity                                                         -->
+    <!-- ================================================================ -->
+    <id>com.ericfortis.tabulareye</id>
+    <name>JS Object Value Aligner</name>
+    <version>1.0.0</version>
+    <vendor email="you@example.com" url="https://example.com">Your Name</vendor>
+
+    <description><![CDATA[
+        Render-only alignment of values inside JavaScript object literals.<br/>
+        For every multiline <code>{ key: value }</code> block, transparent inlay
+        spacers are inserted after each <code>:</code> so all values line up to
+        the same visual column — without modifying the document.
     ]]></description>
 
-  <idea-version since-build="223"/>
+    <!-- ================================================================ -->
+    <!--  Compatibility                                                    -->
+    <!--  223 = 2022.3, first build with stable inline inlay + PSI APIs   -->
+    <!-- ================================================================ -->
+    <idea-version since-build="223"/>
 
-  <depends>com.intellij.modules.platform</depends>
+    <!-- ================================================================ -->
+    <!--  Dependencies                                                     -->
+    <!--                                                                   -->
+    <!--  com.intellij.modules.platform  — Editor, PSI, VFS APIs          -->
+    <!--  JavaScript                     — JSObjectExpression, JSProperty, -->
+    <!--                                   JavaScriptFileType              -->
+    <!-- ================================================================ -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>JavaScript</depends>
 
-  <extensions defaultExtensionNs="com.intellij">
-    <editorFactoryListener
-      implementation="com.ericfortis.tabulareye.MiddleASpacerPlugin"/>
-  </extensions>
+    <!-- ================================================================ -->
+    <!--  Extensions                                                       -->
+    <!-- ================================================================ -->
+    <extensions defaultExtensionNs="com.intellij">
+
+        <!--
+            Application-scoped listener — fires for every editor in every
+            project, which is exactly what we need to cover all open JS files.
+        -->
+        <editorFactoryListener
+            implementation="com.ericfortis.tabulareye.ObjectAlignmentPlugin"/>
+
+    </extensions>
+
 </idea-plugin>
