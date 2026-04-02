@@ -1,5 +1,10 @@
 # Tabular Eye
 
+## TODO
+- CSS
+- Nested objects
+- Nested Tuples
+
 <!-- Plugin description -->
 Tabular Eye
 

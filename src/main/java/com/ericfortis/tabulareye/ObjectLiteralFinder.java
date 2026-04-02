@@ -16,13 +16,13 @@ import java.util.List;
 /**
  * Finds all multiline object literals in a JS file and returns
  * the plain key:value properties we want to align.
- *
+ * <p>
  * Excluded intentionally:
- *   - Shorthand properties  ({ foo })
- *   - Spread elements       ({ ...rest })
- *   - Computed keys         ({ [expr]: val })
- *   - Single-line objects   ({ a: 1, b: 2 })
- *   - Nested object values  (handled as separate objects if multiline)
+ * - Shorthand properties  ({ foo })
+ * - Spread elements       ({ ...rest })
+ * - Computed keys         ({ [expr]: val })
+ * - Single-line objects   ({ a: 1, b: 2 })
+ * - Nested object values  (handled as separate objects if multiline)
  */
 public class ObjectLiteralFinder {
 
@@ -31,9 +31,13 @@ public class ObjectLiteralFinder {
 	 * of the colon character (we'll place the inlay at colonOffset + 1).
 	 */
 	public static class PropInfo {
-		/** The key's display text, e.g. "anotherLongProp" */
+		/**
+		 * The key's display text, e.g. "anotherLongProp"
+		 */
 		public final String keyText;
-		/** Document offset of the ':' token for this property */
+		/**
+		 * Document offset of the ':' token for this property
+		 */
 		public final int colonOffset;
 
 		public PropInfo(String keyText, int colonOffset) {
@@ -110,7 +114,7 @@ public class ObjectLiteralFinder {
 	 */
 	private static boolean isMultiline(JSObjectLiteralExpression obj, Document doc) {
 		int startLine = doc.getLineNumber(obj.getTextRange().getStartOffset());
-		int endLine   = doc.getLineNumber(obj.getTextRange().getEndOffset());
+		int endLine = doc.getLineNumber(obj.getTextRange().getEndOffset());
 		return endLine > startLine;
 	}
 
@@ -150,7 +154,7 @@ public class ObjectLiteralFinder {
 	/**
 	 * Locates the ':' token inside a JSProperty element by scanning its
 	 * children for the COLON token type.
-	 *
+	 * <p>
 	 * IntelliJ's JSProperty PSI doesn't expose the colon directly via API,
 	 * so we walk child tokens.
 	 */
