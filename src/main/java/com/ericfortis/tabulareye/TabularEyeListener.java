@@ -21,6 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// BUGS:
+// switching editor tabs, doesn't refresh
+
 /**
  * Entry point
  * Lifecycle per editor:
