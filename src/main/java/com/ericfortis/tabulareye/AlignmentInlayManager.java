@@ -72,7 +72,7 @@ public class AlignmentInlayManager {
 		int maxWidth = 0;
 
 		for (int i = 0; i < group.props.size(); i++) {
-			int w = fm.stringWidth(group.props.get(i).keyText);
+			int w = fm.stringWidth(group.props.get(i).keyText());
 			widths[i] = w;
 			if (w > maxWidth) maxWidth = w;
 		}
@@ -87,7 +87,7 @@ public class AlignmentInlayManager {
 			// Inlay goes at colonOffset + 1, i.e., right after ':' and before
 			// the existing space character. The existing space + this inlay =
 			//  the same total visual width for every property in the group.
-			int inlayOffset = group.props.get(i).colonOffset + 1;
+			int inlayOffset = group.props.get(i).colonOffset() + 1;
 
 			@SuppressWarnings({"rawtypes"})
 			Inlay inlay = model.addInlineElement(
