@@ -2,7 +2,7 @@
   <id>com.ericfortis.tabulareye</id>
   <name>JS Object Value Aligner</name>
   <version>1.0.0</version>
-  <vendor email="you@example.com" url="https://example.com">Your Name</vendor>
+  <vendor>Eric Fortis</vendor>
 
   <description><![CDATA[
         Render-only alignment of values inside JavaScript object literals.<br/>
