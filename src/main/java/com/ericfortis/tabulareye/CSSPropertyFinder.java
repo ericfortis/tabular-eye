@@ -106,7 +106,9 @@ public class CSSPropertyFinder implements AlignmentFinder {
 
 	private String getPropertyName(PsiElement decl) {
 		// Usually the first child is the property
-		return decl.getFirstChild().getText();
+		PsiElement firstChild = decl.getFirstChild();
+		if (firstChild == null) return "";
+		return firstChild.getText();
 	}
 
 	private int findColonOffset(PsiElement decl) {
