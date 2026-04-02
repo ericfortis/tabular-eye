@@ -1,11 +1,9 @@
 package com.ericfortis.tabulareye;
 
 import com.intellij.lang.javascript.JavaScriptFileType;
-import com.intellij.lang.javascript.psi.JSExpression;
 import com.intellij.lang.javascript.psi.JSObjectLiteralExpression;
 import com.intellij.lang.javascript.psi.JSProperty;
 import com.intellij.openapi.editor.Document;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +20,6 @@ import java.util.List;
  * - Spread elements       ({ ...rest })
  * - Computed keys         ({ [expr]: val })
  * - Single-line objects   ({ a: 1, b: 2 })
- * - Nested object values  (handled as separate objects if multiline)
  */
 public class JSObjectLiteralFinder implements AlignmentFinder {
 
@@ -33,8 +30,7 @@ public class JSObjectLiteralFinder implements AlignmentFinder {
 
 	/**
 	 * Walks the PSI tree of the given file and returns one AlignmentGroup
-	 * per qualifying multiline object literal found at the top level
-	 * (not nested inside another object literal that is itself multiline).
+	 * per qualifying multiline object literal found.
 	 *
 	 * @param file     the PSI file (already confirmed to be JS/ES6)
 	 * @param document the backing document (used for line-number checks)
@@ -51,10 +47,6 @@ public class JSObjectLiteralFinder implements AlignmentFinder {
 		var allObjects = PsiTreeUtil.collectElementsOfType(file, JSObjectLiteralExpression.class);
 
 		for (var obj : allObjects) {
-			// Only top-level objects (not nested inside another object value).
-			if (isNestedInObject(obj))
-				continue;
-
 			// Must span more than one line.
 			if (!isMultiline(obj, document))
 				continue;
@@ -67,20 +59,6 @@ public class JSObjectLiteralFinder implements AlignmentFinder {
 		}
 
 		return groups;
-	}
-
-	/**
-	 * Returns true if this object expression is directly inside a property
-	 * value of another object expression (i.e., it is a nested object).
-	 */
-	private static boolean isNestedInObject(JSObjectLiteralExpression obj) {
-		var parent = obj.getParent();
-		// The parent of a property value is JSProperty; its parent is JSObjectLiteralExpression.
-		if (parent instanceof JSProperty) {
-			PsiElement grandParent = parent.getParent();
-			return grandParent instanceof JSObjectLiteralExpression;
-		}
-		return false;
 	}
 
 	/**
@@ -111,11 +89,6 @@ public class JSObjectLiteralFinder implements AlignmentFinder {
 
 			// Skip computed keys: { [expr]: val }
 			if (prop.getName() == null)
-				continue;
-
-			// Skip if the value is itself a JSObjectLiteralExpression (nested object).
-			JSExpression value = prop.getValue();
-			if (value instanceof JSObjectLiteralExpression)
 				continue;
 
 			// Find the colon offset.
