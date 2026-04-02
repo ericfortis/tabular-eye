@@ -117,8 +117,8 @@ public class TabularEyeListener implements EditorFactoryListener {
 				return;
 
 			var psiFile = psiDocManager.getPsiFile(document);
-			if (psiFile == null) return;
-			manager.refresh(ObjectLiteralFinder.findGroups(psiFile, document));
+			if (psiFile != null)
+				manager.refresh(ObjectLiteralFinder.findGroups(psiFile, document));
 		});
 	}
 }
