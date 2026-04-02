@@ -59,9 +59,8 @@ public class TabularEyeListener implements EditorFactoryListener {
 		PsiDocumentManager.getInstance(project).performForCommittedDocument(document, () -> {
 			if (editor.isDisposed()) return;
 			var psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
-			if (psiFile != null && isSupported(psiFile)) {
+			if (psiFile != null && isSupported(psiFile)) 
 				initializeManager(editor, project);
-			}
 		});
 	}
 

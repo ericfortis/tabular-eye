@@ -1,6 +1,5 @@
 package com.ericfortis.tabulareye;
 
-import com.intellij.lang.Language;
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -23,11 +22,7 @@ public class CSSPropertyFinder implements AlignmentFinder {
 
 	@Override
 	public boolean isApplicable(@NotNull PsiFile file) {
-		return isCssLanguage(file.getLanguage());
-	}
-
-	private boolean isCssLanguage(Language language) {
-		String id = language.getID();
+		String id = file.getLanguage().getID();
 		return "CSS".equals(id) || "SCSS".equals(id) || "LESS".equals(id);
 	}
 
