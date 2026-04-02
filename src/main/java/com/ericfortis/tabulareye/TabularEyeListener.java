@@ -61,18 +61,18 @@ public class TabularEyeListener implements EditorFactoryListener {
 			}
 		}, parentDisposable);
 
-		
+
 		// Initial setup
 		var project = editor.getProject();
-		if (project == null) return;
-		project.getMessageBus()
-			 .connect(parentDisposable)
-			 .subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {
-				 @Override
-				 public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
-					 scheduleRefresh(editor, manager);
-				 }
-			 });
+		if (project != null)
+			project.getMessageBus()
+				 .connect(parentDisposable)
+				 .subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {
+					 @Override
+					 public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
+						 scheduleRefresh(editor, manager);
+					 }
+				 });
 	}
 
 	@Override
@@ -113,13 +113,11 @@ public class TabularEyeListener implements EditorFactoryListener {
 		var psiDocManager = PsiDocumentManager.getInstance(project);
 
 		psiDocManager.performForCommittedDocument(document, () -> {
-			// FIXME when opening a file the editor isDisposed(released)
 			if (editor.isDisposed())
 				return;
 
 			var psiFile = psiDocManager.getPsiFile(document);
-			if (psiFile == null)
-				return;
+			if (psiFile == null) return;
 			manager.refresh(ObjectLiteralFinder.findGroups(psiFile, document));
 		});
 	}
