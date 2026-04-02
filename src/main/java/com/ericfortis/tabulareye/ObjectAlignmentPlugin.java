@@ -46,19 +46,18 @@ public class ObjectAlignmentPlugin implements EditorFactoryListener {
 		managers.put(editor, manager);
 
 		// A dedicated Disposable whose sole job is to own the document listener.
-		// When we dispose it in editorReleased(), the platform automatically
+		// When we dispose of it in editorReleased(), the platform automatically
 		// removes the listener — no manual removeDocumentListener() needed.
-		var listenerDisposable = Disposer.newDisposable("tabulareye-" + editor.hashCode());
-		disposables.put(editor, listenerDisposable);
+		var parentDisposable = Disposer.newDisposable("tabulareye-" + editor.hashCode());
+		disposables.put(editor, parentDisposable);
 
 		editor.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
 			public void documentChanged(@NotNull DocumentEvent e) {
 				scheduleRefresh(editor, manager);
 			}
-		}, listenerDisposable);
+		}, parentDisposable);
 
-		// Initial render.
 		scheduleRefresh(editor, manager);
 	}
 
@@ -100,6 +99,7 @@ public class ObjectAlignmentPlugin implements EditorFactoryListener {
 		var psiDocManager = PsiDocumentManager.getInstance(project);
 
 		psiDocManager.performForCommittedDocument(document, () -> {
+			// FIXME when opening a file the editor isDisposed(released)
 			if (editor.isDisposed())
 				return;
 
