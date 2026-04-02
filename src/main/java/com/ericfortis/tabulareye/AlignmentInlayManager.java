@@ -38,10 +38,6 @@ public class AlignmentInlayManager {
 		this.editor = editor;
 	}
 
-	// ------------------------------------------------------------------ //
-	//  Public API                                                          //
-	// ------------------------------------------------------------------ //
-
 	/**
 	 * Clears all existing inlays and re-creates them from the given groups.
 	 * Call this whenever the document changes or the file is first opened.
@@ -52,9 +48,8 @@ public class AlignmentInlayManager {
 		FontMetrics fm = getFontMetrics();
 		if (fm == null) return;
 
-		for (ObjectGroup group : groups) {
+		for (ObjectGroup group : groups)
 			renderGroup(group, fm);
-		}
 	}
 
 	/**
@@ -62,17 +57,11 @@ public class AlignmentInlayManager {
 	 */
 	@SuppressWarnings("rawtypes")
 	public void clearAll() {
-		for (Inlay inlay : activeInlays) {
-			if (inlay.isValid()) {
+		for (Inlay inlay : activeInlays)
+			if (inlay.isValid())
 				Disposer.dispose(inlay);
-			}
-		}
 		activeInlays.clear();
 	}
-
-	// ------------------------------------------------------------------ //
-	//  Private                                                             //
-	// ------------------------------------------------------------------ //
 
 	/**
 	 * Computes widths, finds max, places inlays for one object group.
@@ -132,10 +121,7 @@ public class AlignmentInlayManager {
 		}
 	}
 
-	// ------------------------------------------------------------------ //
-	//  Renderer                                                            //
-	// ------------------------------------------------------------------ //
-
+	
 	/**
 	 * A fully transparent inlay that occupies exactly `widthPx` pixels.
 	 * Nothing is painted — the space is reserved by calcWidthInPixels alone.

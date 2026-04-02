@@ -37,10 +37,6 @@ public class ObjectAlignmentPlugin implements EditorFactoryListener {
 
 	private final Map<Editor, AlignmentInlayManager> managers = new HashMap<>();
 
-	// ------------------------------------------------------------------ //
-	//  EditorFactoryListener                                               //
-	// ------------------------------------------------------------------ //
-
 	@Override
 	public void editorCreated(@NotNull EditorFactoryEvent event) {
 		Editor editor = event.getEditor();
@@ -71,10 +67,7 @@ public class ObjectAlignmentPlugin implements EditorFactoryListener {
 		}
 	}
 
-	// ------------------------------------------------------------------ //
-	//  Refresh                                                             //
-	// ------------------------------------------------------------------ //
-
+	
 	/**
 	 * Waits for PSI to be committed (so the tree reflects the latest edits),
 	 * then re-parses object literals and rebuilds inlays.
@@ -116,10 +109,6 @@ public class ObjectAlignmentPlugin implements EditorFactoryListener {
 			manager.refresh(groups);
 		});
 	}
-
-	// ------------------------------------------------------------------ //
-	//  Guard                                                               //
-	// ------------------------------------------------------------------ //
 
 	/**
 	 * Returns true only for editors backed by a .js file with the
