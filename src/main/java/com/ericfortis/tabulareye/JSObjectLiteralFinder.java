@@ -60,7 +60,9 @@ public class JSObjectLiteralFinder implements AlignmentFinder {
 		return groups;
 	}
 
-	/** Returns true if the object literal spans more than one line. */
+	/**
+	 * Returns true if the object literal spans more than one line.
+	 */
 	private static boolean isMultiline(JSObjectLiteralExpression obj, Document doc) {
 		int startLine = doc.getLineNumber(obj.getTextRange().getStartOffset());
 		int endLine = doc.getLineNumber(obj.getTextRange().getEndOffset());
@@ -105,8 +107,8 @@ public class JSObjectLiteralFinder implements AlignmentFinder {
 			group.props.add(new PropInfo(keyText, colonOffset));
 		}
 
-		return group.props.isEmpty() 
-			 ? null 
+		return group.props.isEmpty()
+			 ? null
 			 : group;
 	}
 
