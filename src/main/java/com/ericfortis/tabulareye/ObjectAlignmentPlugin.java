@@ -40,7 +40,6 @@ public class ObjectAlignmentPlugin implements EditorFactoryListener {
 	@Override
 	public void editorCreated(@NotNull EditorFactoryEvent event) {
 		var editor = event.getEditor();
-
 		if (!isJsEditor(editor))
 			return;
 
@@ -78,15 +77,20 @@ public class ObjectAlignmentPlugin implements EditorFactoryListener {
 			manager.clearAll();
 	}
 
+
+	private boolean isJsEditor(Editor editor) {
+		var vf = FileDocumentManager.getInstance().getFile(editor.getDocument());
+		return vf != null && vf.getFileType() instanceof JavaScriptFileType;
+	}
+
 	private void scheduleRefresh(Editor editor, AlignmentInlayManager manager) {
 		var project = editor.getProject();
 		if (project == null || project.isDisposed()) {
-			for (Project p : ProjectManager.getInstance().getOpenProjects()) {
+			for (Project p : ProjectManager.getInstance().getOpenProjects())
 				if (!p.isDisposed()) {
 					doRefresh(editor, manager, p);
 					return;
 				}
-			}
 			return;
 		}
 		doRefresh(editor, manager, project);
@@ -100,19 +104,10 @@ public class ObjectAlignmentPlugin implements EditorFactoryListener {
 			if (editor.isDisposed())
 				return;
 
-			PsiFile psiFile = psiDocManager.getPsiFile(document);
+			var psiFile = psiDocManager.getPsiFile(document);
 			if (psiFile == null)
 				return;
-
 			manager.refresh(ObjectLiteralFinder.findGroups(psiFile, document));
 		});
-	}
-
-	private boolean isJsEditor(Editor editor) {
-		var vf = FileDocumentManager.getInstance()
-			 .getFile(editor.getDocument());
-		if (vf == null)
-			return false;
-		return vf.getFileType() instanceof JavaScriptFileType;
 	}
 }
