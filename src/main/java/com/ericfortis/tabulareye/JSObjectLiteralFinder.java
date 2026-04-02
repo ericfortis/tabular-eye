@@ -1,5 +1,6 @@
 package com.ericfortis.tabulareye;
 
+import com.intellij.lang.javascript.JavaScriptFileType;
 import com.intellij.lang.javascript.psi.JSExpression;
 import com.intellij.lang.javascript.psi.JSObjectLiteralExpression;
 import com.intellij.lang.javascript.psi.JSProperty;
@@ -23,39 +24,28 @@ import java.util.List;
  * - Single-line objects   ({ a: 1, b: 2 })
  * - Nested object values  (handled as separate objects if multiline)
  */
-public class JSObjectLiteralFinder {
+public class JSObjectLiteralFinder implements AlignmentFinder {
 
-	/**
-	 * One alignable property: the key name text and the document offset
-	 * of the colon character (we'll place the inlay at colonOffset + 1).
-	 *
-	 * @param keyText     The key's display text, e.g. "anotherLongProp"
-	 * @param colonOffset Document offset of the ':' token for this property
-	 */
-	public record PropInfo(String keyText, int colonOffset) {
+	@Override
+	public boolean isApplicable(@NotNull PsiFile file) {
+		return file.getFileType() instanceof JavaScriptFileType;
 	}
 
 	/**
-	 * One object literal whose properties should be aligned together.
-	 */
-	public static class ObjectGroup {
-		public final List<PropInfo> props = new ArrayList<>();
-	}
-
-	/**
-	 * Walks the PSI tree of the given file and returns one ObjectGroup
+	 * Walks the PSI tree of the given file and returns one AlignmentGroup
 	 * per qualifying multiline object literal found at the top level
 	 * (not nested inside another object literal that is itself multiline).
 	 *
 	 * @param file     the PSI file (already confirmed to be JS/ES6)
 	 * @param document the backing document (used for line-number checks)
 	 */
+	@Override
 	@NotNull
-	public static List<ObjectGroup> findGroups(
+	public List<AlignmentGroup> findGroups(
 		 @NotNull PsiFile file,
 		 @NotNull Document document
 	) {
-		List<ObjectGroup> groups = new ArrayList<>();
+		List<AlignmentGroup> groups = new ArrayList<>();
 
 		// Collect every JSObjectLiteralExpression in the file.
 		var allObjects = PsiTreeUtil.collectElementsOfType(file, JSObjectLiteralExpression.class);
@@ -103,11 +93,11 @@ public class JSObjectLiteralFinder {
 	}
 
 	/**
-	 * Builds an ObjectGroup from a qualifying JSObjectLiteralExpression.
+	 * Builds an AlignmentGroup from a qualifying JSObjectLiteralExpression.
 	 * Returns null if no alignable properties were found.
 	 */
-	private static ObjectGroup buildGroup(JSObjectLiteralExpression obj) {
-		var group = new ObjectGroup();
+	private static AlignmentGroup buildGroup(JSObjectLiteralExpression obj) {
+		var group = new AlignmentGroup();
 
 		for (JSProperty prop : obj.getProperties()) {
 			// Skip spread elements (JSSpreadExpression appears as a child, not JSProperty,

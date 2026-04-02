@@ -1,6 +1,5 @@
 package com.ericfortis.tabulareye;
 
-import com.ericfortis.tabulareye.JSObjectLiteralFinder.ObjectGroup;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.Inlay;
 import com.intellij.openapi.editor.InlayModel;
@@ -42,7 +41,7 @@ public class ElasticInlayManager {
 	 * Clears all existing inlays and re-creates them from the given groups.
 	 * Call this whenever the document changes or the file is first opened.
 	 */
-	public void refresh(List<ObjectGroup> groups) {
+	public void refresh(List<AlignmentGroup> groups) {
 		clearAll();
 
 		var fm = getFontMetrics();
@@ -64,9 +63,9 @@ public class ElasticInlayManager {
 	}
 
 	/**
-	 * Computes widths, finds max, places inlays for one object group.
+	 * Computes widths, finds max, places inlays for one group.
 	 */
-	private void renderGroup(ObjectGroup group, FontMetrics fm) {
+	private void renderGroup(AlignmentGroup group, FontMetrics fm) {
 		// Step 1: measure every key.
 		int[] widths = new int[group.props.size()];
 		int maxWidth = 0;

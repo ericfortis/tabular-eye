@@ -1,13 +1,11 @@
 package com.ericfortis.tabulareye;
 
-import com.intellij.lang.javascript.JavaScriptFileType;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.editor.event.EditorFactoryEvent;
 import com.intellij.openapi.editor.event.EditorFactoryListener;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.project.Project;
@@ -15,9 +13,12 @@ import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,6 +36,10 @@ import java.util.Map;
  */
 public class TabularEyeListener implements EditorFactoryListener {
 
+	private final List<AlignmentFinder> finders = List.of(
+		 new JSObjectLiteralFinder()
+	);
+
 	private final Map<Editor, ElasticInlayManager> managers = new HashMap<>();
 	private final Map<Editor, Disposable> disposables = new HashMap<>();
 
@@ -42,15 +47,29 @@ public class TabularEyeListener implements EditorFactoryListener {
 	@Override
 	public void editorCreated(@NotNull EditorFactoryEvent event) {
 		var editor = event.getEditor();
-		if (!isJsEditor(editor))
-			return;
+		var project = editor.getProject();
+		if (project == null) return;
+
+		var document = editor.getDocument();
+		PsiDocumentManager.getInstance(project).performForCommittedDocument(document, () -> {
+			if (editor.isDisposed()) return;
+			var psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
+			if (psiFile != null && isSupported(psiFile)) {
+				initializeManager(editor, project);
+			}
+		});
+	}
+
+	private boolean isSupported(@NotNull PsiFile file) {
+		return finders.stream().anyMatch(f -> f.isApplicable(file));
+	}
+
+	private void initializeManager(Editor editor, Project project) {
+		if (managers.containsKey(editor)) return;
 
 		var manager = new ElasticInlayManager(editor);
 		managers.put(editor, manager);
 
-		// A dedicated Disposable whose sole job is to own the document listener.
-		// When we dispose of it in editorReleased(), the platform automatically
-		// removes the listener — no manual removeDocumentListener() needed.
 		var parentDisposable = Disposer.newDisposable("tabulareye-" + editor.hashCode());
 		disposables.put(editor, parentDisposable);
 
@@ -62,17 +81,15 @@ public class TabularEyeListener implements EditorFactoryListener {
 		}, parentDisposable);
 
 
-		// Initial setup
-		var project = editor.getProject();
-		if (project != null)
-			project.getMessageBus()
-				 .connect(parentDisposable)
-				 .subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {
-					 @Override
-					 public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
-						 scheduleRefresh(editor, manager);
-					 }
-				 });
+		// initial trigger, we need to wait until the file is fully open
+		project.getMessageBus()
+			 .connect(parentDisposable)
+			 .subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {
+				 @Override
+				 public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
+					 scheduleRefresh(editor, manager);
+				 }
+			 });
 	}
 
 	@Override
@@ -89,11 +106,6 @@ public class TabularEyeListener implements EditorFactoryListener {
 			manager.clearAll();
 	}
 
-
-	private boolean isJsEditor(Editor editor) {
-		var vf = FileDocumentManager.getInstance().getFile(editor.getDocument());
-		return vf != null && vf.getFileType() instanceof JavaScriptFileType;
-	}
 
 	private void scheduleRefresh(Editor editor, ElasticInlayManager manager) {
 		var project = editor.getProject();
@@ -117,8 +129,13 @@ public class TabularEyeListener implements EditorFactoryListener {
 				return;
 
 			var psiFile = psiDocManager.getPsiFile(document);
-			if (psiFile != null)
-				manager.refresh(JSObjectLiteralFinder.findGroups(psiFile, document));
+			if (psiFile != null) {
+				List<AlignmentGroup> allGroups = new ArrayList<>();
+				for (AlignmentFinder finder : finders)
+					if (finder.isApplicable(psiFile))
+						allGroups.addAll(finder.findGroups(psiFile, document));
+				manager.refresh(allGroups);
+			}
 		});
 	}
 }
