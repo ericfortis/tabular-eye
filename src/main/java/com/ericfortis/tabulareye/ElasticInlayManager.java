@@ -97,7 +97,7 @@ public class ElasticInlayManager {
 				 new SpacerRenderer(gap)
 			);
 
-			if (inlay != null) 
+			if (inlay != null)
 				activeInlays.add(inlay);
 		}
 	}

@@ -1,11 +1,11 @@
 <idea-plugin>
   <id>com.ericfortis.tabulareye</id>
-  <name>JS Object Value Aligner</name>
+  <name>Tabular Eye</name>
   <version>1.0.0</version>
   <vendor>Eric Fortis</vendor>
 
   <description><![CDATA[
-        Render-only alignment of values inside JavaScript object literals.<br/>
+        Render-only alignment of values inside JavaScript object literals and CSS declarations.<br/>
         For every multiline <code>{ key: value }</code> block, transparent inlay
         spacers are inserted after each <code>:</code> so all values line up to
         the same visual column — without modifying the document.
@@ -15,6 +15,7 @@
 
   <depends>com.intellij.modules.platform</depends>
   <depends>JavaScript</depends>
+  <depends>com.intellij.css</depends>
 
   <extensions defaultExtensionNs="com.intellij">
     <editorFactoryListener implementation="com.ericfortis.tabulareye.TabularEyeListener"/>

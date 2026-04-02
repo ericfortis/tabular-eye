@@ -41,7 +41,8 @@ public class TabularEyeListener implements EditorFactoryListener {
 
 	private final List<AlignmentFinder> finders = List.of(
 		 new JSObjectLiteralFinder(),
-		 new JSTupleArrayFinder()
+		 new JSTupleArrayFinder(),
+		 new CSSPropertyFinder()
 	);
 
 	private final Map<Editor, ElasticInlayManager> managers = new HashMap<>();
