@@ -35,7 +35,7 @@ import java.util.Map;
  */
 public class TabularEyeListener implements EditorFactoryListener {
 
-	private final Map<Editor, AlignmentInlayManager> managers = new HashMap<>();
+	private final Map<Editor, ElasticInlayManager> managers = new HashMap<>();
 	private final Map<Editor, Disposable> disposables = new HashMap<>();
 
 
@@ -45,7 +45,7 @@ public class TabularEyeListener implements EditorFactoryListener {
 		if (!isJsEditor(editor))
 			return;
 
-		var manager = new AlignmentInlayManager(editor);
+		var manager = new ElasticInlayManager(editor);
 		managers.put(editor, manager);
 
 		// A dedicated Disposable whose sole job is to own the document listener.
@@ -95,7 +95,7 @@ public class TabularEyeListener implements EditorFactoryListener {
 		return vf != null && vf.getFileType() instanceof JavaScriptFileType;
 	}
 
-	private void scheduleRefresh(Editor editor, AlignmentInlayManager manager) {
+	private void scheduleRefresh(Editor editor, ElasticInlayManager manager) {
 		var project = editor.getProject();
 		if (project == null || project.isDisposed()) {
 			for (Project p : ProjectManager.getInstance().getOpenProjects())
@@ -108,7 +108,7 @@ public class TabularEyeListener implements EditorFactoryListener {
 		doRefresh(editor, manager, project);
 	}
 
-	private void doRefresh(Editor editor, AlignmentInlayManager manager, Project project) {
+	private void doRefresh(Editor editor, ElasticInlayManager manager, Project project) {
 		var document = editor.getDocument();
 		var psiDocManager = PsiDocumentManager.getInstance(project);
 
@@ -118,7 +118,7 @@ public class TabularEyeListener implements EditorFactoryListener {
 
 			var psiFile = psiDocManager.getPsiFile(document);
 			if (psiFile != null)
-				manager.refresh(ObjectLiteralFinder.findGroups(psiFile, document));
+				manager.refresh(JSObjectLiteralFinder.findGroups(psiFile, document));
 		});
 	}
 }

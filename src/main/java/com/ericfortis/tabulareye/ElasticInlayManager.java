@@ -1,6 +1,6 @@
 package com.ericfortis.tabulareye;
 
-import com.ericfortis.tabulareye.ObjectLiteralFinder.ObjectGroup;
+import com.ericfortis.tabulareye.JSObjectLiteralFinder.ObjectGroup;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.Inlay;
 import com.intellij.openapi.editor.InlayModel;
@@ -24,7 +24,7 @@ import java.util.List;
  * Inlays are tracked and disposed before every re-render so stale spacers
  * never accumulate.
  */
-public class AlignmentInlayManager {
+public class ElasticInlayManager {
 
 	/**
 	 * All currently live inlays owned by this manager for one editor.
@@ -34,7 +34,7 @@ public class AlignmentInlayManager {
 
 	private final Editor editor;
 
-	public AlignmentInlayManager(Editor editor) {
+	public ElasticInlayManager(Editor editor) {
 		this.editor = editor;
 	}
 

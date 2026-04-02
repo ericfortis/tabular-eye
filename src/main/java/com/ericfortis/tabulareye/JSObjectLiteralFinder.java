@@ -23,7 +23,7 @@ import java.util.List;
  * - Single-line objects   ({ a: 1, b: 2 })
  * - Nested object values  (handled as separate objects if multiline)
  */
-public class ObjectLiteralFinder {
+public class JSObjectLiteralFinder {
 
 	/**
 	 * One alignable property: the key name text and the document offset
