@@ -18,7 +18,6 @@ import java.util.List;
  * Excluded intentionally:
  * - Shorthand properties  ({ foo })
  * - Spread elements       ({ ...rest })
- * - Computed keys         ({ [expr]: val })
  * - Single-line objects   ({ a: 1, b: 2 })
  */
 public class JSObjectLiteralFinder implements AlignmentFinder {
@@ -85,19 +84,24 @@ public class JSObjectLiteralFinder implements AlignmentFinder {
 			if (prop.isShorthanded())
 				continue;
 
-			// Skip computed keys: { [expr]: val }
-			if (prop.getName() == null)
-				continue;
-
 			// Find the colon offset.
 			int colonOffset = findColonOffset(prop);
 			if (colonOffset < 0)
 				continue;
 
-			var nameIdentifier = prop.getNameIdentifier();
-			String keyText = nameIdentifier == null 
-				 ? prop.getName() 
-				 : nameIdentifier.getText();
+			// Extract all text before the colon to form the key text.
+			// This covers normal, quoted, and computed keys ([expr]).
+			StringBuilder keyBuilder = new StringBuilder();
+			var child = prop.getFirstChild();
+			while (child != null && !":".equals(child.getText())) {
+				keyBuilder.append(child.getText());
+				child = child.getNextSibling();
+			}
+			String keyText = keyBuilder.toString().trim();
+
+			if (keyText.isEmpty())
+				continue;
+
 			group.props.add(new PropInfo(keyText, colonOffset));
 		}
 
