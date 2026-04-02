@@ -17,6 +17,6 @@
   <depends>JavaScript</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <editorFactoryListener implementation="com.ericfortis.tabulareye.ObjectAlignmentPlugin"/>
+    <editorFactoryListener implementation="com.ericfortis.tabulareye.TabularEyeListener"/>
   </extensions>
 </idea-plugin>

@@ -30,7 +30,7 @@ import java.util.Map;
  * <p>
  * One AlignmentInlayManager and one Disposable are kept per editor instance.
  */
-public class ObjectAlignmentPlugin implements EditorFactoryListener {
+public class TabularEyeListener implements EditorFactoryListener {
 
 	private final Map<Editor, AlignmentInlayManager> managers = new HashMap<>();
 	private final Map<Editor, Disposable> disposables = new HashMap<>();
