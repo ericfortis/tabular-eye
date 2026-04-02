@@ -1,8 +1,8 @@
 package com.ericfortis.tabulareye;
 
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.Inlay;
 import com.intellij.openapi.editor.EditorCustomElementRenderer;
+import com.intellij.openapi.editor.Inlay;
 import com.intellij.openapi.editor.colors.EditorFontType;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.util.Disposer;
@@ -127,6 +127,8 @@ public class ElasticInlayManager {
 	/**
 	 * A fully transparent inlay that occupies exactly `widthPx` pixels.
 	 * Nothing is painted — the space is reserved by calcWidthInPixels alone.
+	 * <p>
+	 * Note: Antialising (user setting) greyscale, makes the columns not to align 100% perfect.
 	 */
 	static class SpacerRenderer implements EditorCustomElementRenderer {
 
@@ -138,9 +140,9 @@ public class ElasticInlayManager {
 
 		@Override
 		public int calcWidthInPixels(@NotNull Inlay inlay) {
-			return Math.max(1, widthPx); // must always be > 0
+			return widthPx;
 		}
-		
+
 		@Override
 		public int calcHeightInPixels(@NotNull Inlay inlay) {
 			return 1;
