@@ -1,6 +1,6 @@
 <!-- Keep a Changelog guide -> https://keepachangelog.com -->
 
-# Tailwind Eye
+# Tabular Eye
 
 ## [Unreleased]
 ### Added
