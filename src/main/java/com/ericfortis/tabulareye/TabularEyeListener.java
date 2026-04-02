@@ -8,9 +8,12 @@ import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.editor.event.EditorFactoryEvent;
 import com.intellij.openapi.editor.event.EditorFactoryListener;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.util.Disposer;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,7 +61,18 @@ public class TabularEyeListener implements EditorFactoryListener {
 			}
 		}, parentDisposable);
 
-		scheduleRefresh(editor, manager);
+		
+		// Initial setup
+		var project = editor.getProject();
+		if (project == null) return;
+		project.getMessageBus()
+			 .connect(parentDisposable)
+			 .subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {
+				 @Override
+				 public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
+					 scheduleRefresh(editor, manager);
+				 }
+			 });
 	}
 
 	@Override
