@@ -1,8 +1,4 @@
 <idea-plugin>
-
-  <!-- ================================================================ -->
-  <!--  Identity                                                         -->
-  <!-- ================================================================ -->
   <id>com.ericfortis.tabulareye</id>
   <name>JS Object Value Aligner</name>
   <version>1.0.0</version>
@@ -15,34 +11,12 @@
         the same visual column — without modifying the document.
     ]]></description>
 
-  <!-- ================================================================ -->
-  <!--  Compatibility                                                    -->
-  <!--  223 = 2022.3, first build with stable inline inlay + PSI APIs   -->
-  <!-- ================================================================ -->
   <idea-version since-build="223"/>
 
-  <!-- ================================================================ -->
-  <!--  Dependencies                                                     -->
-  <!--                                                                   -->
-  <!--  com.intellij.modules.platform  — Editor, PSI, VFS APIs          -->
-  <!--  JavaScript                     — JSObjectExpression, JSProperty, -->
-  <!--                                   JavaScriptFileType              -->
-  <!-- ================================================================ -->
   <depends>com.intellij.modules.platform</depends>
   <depends>JavaScript</depends>
 
-  <!-- ================================================================ -->
-  <!--  Extensions                                                       -->
-  <!-- ================================================================ -->
   <extensions defaultExtensionNs="com.intellij">
-
-    <!--
-        Application-scoped listener — fires for every editor in every
-        project, which is exactly what we need to cover all open JS files.
-    -->
-    <editorFactoryListener
-      implementation="com.ericfortis.tabulareye.ObjectAlignmentPlugin"/>
-
+    <editorFactoryListener implementation="com.ericfortis.tabulareye.ObjectAlignmentPlugin"/>
   </extensions>
-
 </idea-plugin>

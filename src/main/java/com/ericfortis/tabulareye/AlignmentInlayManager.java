@@ -74,7 +74,8 @@ public class AlignmentInlayManager {
 		for (int i = 0; i < group.props.size(); i++) {
 			int w = fm.stringWidth(group.props.get(i).keyText());
 			widths[i] = w;
-			if (w > maxWidth) maxWidth = w;
+			if (w > maxWidth)
+				maxWidth = w;
 		}
 
 		// Step 2: for keys narrower than the max, place a spacer inlay.
@@ -82,7 +83,8 @@ public class AlignmentInlayManager {
 
 		for (int i = 0; i < group.props.size(); i++) {
 			int gap = maxWidth - widths[i];
-			if (gap <= 0) continue; // widest key — no inlay needed
+			if (gap <= 0)
+				continue; // widest key — no inlay needed
 
 			// Inlay goes at colonOffset + 1, i.e., right after ':' and before
 			// the existing space character. The existing space + this inlay =
@@ -107,12 +109,14 @@ public class AlignmentInlayManager {
 	 * Returns null only if the editor is disposed of or has no graphics context.
 	 */
 	private FontMetrics getFontMetrics() {
-		if (editor.isDisposed()) return null;
+		if (editor.isDisposed()) 
+			return null;
 
 		Font font = editor.getColorsScheme().getFont(EditorFontType.PLAIN);
 		Component component = editor.getContentComponent();
 		Graphics g = component.getGraphics();
-		if (g == null) return null;
+		if (g == null) 
+			return null;
 
 		try {
 			return g.getFontMetrics(font);
@@ -121,7 +125,7 @@ public class AlignmentInlayManager {
 		}
 	}
 
-	
+
 	/**
 	 * A fully transparent inlay that occupies exactly `widthPx` pixels.
 	 * Nothing is painted — the space is reserved by calcWidthInPixels alone.

@@ -41,7 +41,8 @@ public class ObjectAlignmentPlugin implements EditorFactoryListener {
 	public void editorCreated(@NotNull EditorFactoryEvent event) {
 		Editor editor = event.getEditor();
 
-		if (!isJsEditor(editor)) return;
+		if (!isJsEditor(editor)) 
+			return;
 
 		AlignmentInlayManager manager = new AlignmentInlayManager(editor);
 		managers.put(editor, manager);
