@@ -10,7 +10,6 @@ import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -59,10 +58,9 @@ public class ObjectLiteralFinder {
 		List<ObjectGroup> groups = new ArrayList<>();
 
 		// Collect every JSObjectLiteralExpression in the file.
-		Collection<JSObjectLiteralExpression> allObjects =
-			 PsiTreeUtil.collectElementsOfType(file, JSObjectLiteralExpression.class);
+		var allObjects = PsiTreeUtil.collectElementsOfType(file, JSObjectLiteralExpression.class);
 
-		for (JSObjectLiteralExpression obj : allObjects) {
+		for (var obj : allObjects) {
 			// Only top-level objects (not nested inside another object value).
 			if (isNestedInObject(obj))
 				continue;
@@ -71,7 +69,7 @@ public class ObjectLiteralFinder {
 			if (!isMultiline(obj, document))
 				continue;
 
-			ObjectGroup group = buildGroup(obj, document);
+			var group = buildGroup(obj);
 			if (group != null && group.props.size() > 1) {
 				// Nothing to align if there's only one property.
 				groups.add(group);
@@ -86,7 +84,7 @@ public class ObjectLiteralFinder {
 	 * value of another object expression (i.e., it is a nested object).
 	 */
 	private static boolean isNestedInObject(JSObjectLiteralExpression obj) {
-		PsiElement parent = obj.getParent();
+		var parent = obj.getParent();
 		// The parent of a property value is JSProperty; its parent is JSObjectLiteralExpression.
 		if (parent instanceof JSProperty) {
 			PsiElement grandParent = parent.getParent();
@@ -108,11 +106,8 @@ public class ObjectLiteralFinder {
 	 * Builds an ObjectGroup from a qualifying JSObjectLiteralExpression.
 	 * Returns null if no alignable properties were found.
 	 */
-	private static ObjectGroup buildGroup(
-		 JSObjectLiteralExpression obj,
-		 Document document
-	) {
-		ObjectGroup group = new ObjectGroup();
+	private static ObjectGroup buildGroup(JSObjectLiteralExpression obj) {
+		var group = new ObjectGroup();
 
 		for (JSProperty prop : obj.getProperties()) {
 			// Skip spread elements (JSSpreadExpression appears as a child, not JSProperty,
@@ -152,7 +147,7 @@ public class ObjectLiteralFinder {
 	 * so we walk child tokens.
 	 */
 	private static int findColonOffset(JSProperty prop) {
-		PsiElement child = prop.getFirstChild();
+		var child = prop.getFirstChild();
 		while (child != null) {
 			if (":".equals(child.getText()))
 				return child.getTextRange().getStartOffset();

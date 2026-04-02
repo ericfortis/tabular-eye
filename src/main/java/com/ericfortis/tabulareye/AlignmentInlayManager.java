@@ -18,8 +18,8 @@ import java.util.List;
  * Given a list of ObjectGroups (from ObjectLiteralFinder), this class:
  * 1. Measures the pixel width of each property key in the editor's current font.
  * 2. Finds the maximum key width per group.
- * 3. Places a transparent inline inlay at (colonOffset + 1) for each property
- * whose key is narrower than the max. The inlay width = maxWidth - thisWidth,
+ * 3. Places a transparent inline inlay at (`colonOffset + 1`) for each property
+ * whose key is narrower than the max. The inlay `width = maxWidth - thisWidth`,
  * so combined with the existing space char, all values start at the same column.
  * Inlays are tracked and disposed before every re-render so stale spacers
  * never accumulate.
@@ -45,19 +45,19 @@ public class AlignmentInlayManager {
 	public void refresh(List<ObjectGroup> groups) {
 		clearAll();
 
-		FontMetrics fm = getFontMetrics();
-		if (fm == null) return;
+		var fm = getFontMetrics();
+		if (fm == null)
+			return;
 
-		for (ObjectGroup group : groups)
+		for (var group : groups)
 			renderGroup(group, fm);
 	}
 
 	/**
 	 * Disposes every inlay this manager created. Safe to call multiple times.
 	 */
-	@SuppressWarnings("rawtypes")
 	public void clearAll() {
-		for (Inlay inlay : activeInlays)
+		for (var inlay : activeInlays)
 			if (inlay.isValid())
 				Disposer.dispose(inlay);
 		activeInlays.clear();
@@ -98,9 +98,8 @@ public class AlignmentInlayManager {
 				 new SpacerRenderer(gap)
 			);
 
-			if (inlay != null) {
+			if (inlay != null) 
 				activeInlays.add(inlay);
-			}
 		}
 	}
 
@@ -109,13 +108,13 @@ public class AlignmentInlayManager {
 	 * Returns null only if the editor is disposed of or has no graphics context.
 	 */
 	private FontMetrics getFontMetrics() {
-		if (editor.isDisposed()) 
+		if (editor.isDisposed())
 			return null;
 
-		Font font = editor.getColorsScheme().getFont(EditorFontType.PLAIN);
+		var font = editor.getColorsScheme().getFont(EditorFontType.PLAIN);
 		Component component = editor.getContentComponent();
-		Graphics g = component.getGraphics();
-		if (g == null) 
+		var g = component.getGraphics();
+		if (g == null)
 			return null;
 
 		try {
