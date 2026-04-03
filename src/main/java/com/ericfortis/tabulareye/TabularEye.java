@@ -20,7 +20,6 @@ import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -39,6 +38,7 @@ public class TabularEye implements EditorFactoryListener {
 
 	private final Map<Editor, Spacers> managers = new HashMap<>();
 	private final Map<Editor, Disposable> disposables = new HashMap<>();
+	private final Map<Editor, List<AlignmentFinder>> applicableFindersMap = new HashMap<>();
 
 
 	@Override
@@ -49,21 +49,21 @@ public class TabularEye implements EditorFactoryListener {
 
 		var document = editor.getDocument();
 		PsiDocumentManager.getInstance(project).performForCommittedDocument(document, () -> {
-			if (!editor.isDisposed()) {
-				var psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
-				if (psiFile != null && isSupported(psiFile))
-					initializeManager(editor, project);
-			}
+			if (!editor.isDisposed())
+				initializeManager(editor, project);
 		});
-	}
-
-	private boolean isSupported(@NotNull PsiFile file) {
-		return finders.stream().anyMatch(f -> f.isApplicable(file));
 	}
 
 	private void initializeManager(Editor editor, Project project) {
 		if (managers.containsKey(editor))
 			return;
+
+		var psiFile = PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
+		if (psiFile == null) return;
+
+		var applicable = finders.stream().filter(f -> f.isApplicable(psiFile)).toList();
+		if (applicable.isEmpty()) return;
+		applicableFindersMap.put(editor, applicable);
 
 		var manager = new Spacers(editor);
 		managers.put(editor, manager);
@@ -92,9 +92,8 @@ public class TabularEye implements EditorFactoryListener {
 				 public void selectionChanged(@NotNull com.intellij.openapi.fileEditor.FileEditorManagerEvent event) {
 					 if (event.getNewFile() != null) {
 						 var psiFile = PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
-						 if (psiFile != null && event.getNewFile().equals(psiFile.getVirtualFile())) {
+						 if (psiFile != null && event.getNewFile().equals(psiFile.getVirtualFile()))
 							 scheduleRefresh(editor, manager);
-						 }
 					 }
 				 }
 			 });
@@ -110,7 +109,8 @@ public class TabularEye implements EditorFactoryListener {
 	public void editorReleased(@NotNull EditorFactoryEvent event) {
 		var editor = event.getEditor();
 
-		// Disposing the Disposable automatically unregisters the document listener.
+		applicableFindersMap.remove(editor);
+
 		var d = disposables.remove(editor);
 		if (d != null)
 			Disposer.dispose(d);
@@ -143,11 +143,11 @@ public class TabularEye implements EditorFactoryListener {
 				return;
 
 			var psiFile = psiDocManager.getPsiFile(doc);
-			if (psiFile != null) {
+			var applicable = applicableFindersMap.get(editor);
+			if (psiFile != null && applicable != null) {
 				List<AlignmentGroup> allGroups = new ArrayList<>();
-				for (AlignmentFinder finder : finders)
-					if (finder.isApplicable(psiFile))
-						allGroups.addAll(finder.findGroups(psiFile, doc));
+				for (AlignmentFinder finder : applicable)
+					allGroups.addAll(finder.findGroups(psiFile, doc));
 				manager.refresh(allGroups);
 			}
 		});
