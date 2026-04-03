@@ -23,13 +23,19 @@ public class JsTupleArrayFinder implements AlignmentFinder {
 		List<AlignmentGroup> groups = new ArrayList<>();
 
 		for (var array : PsiTreeUtil.collectElementsOfType(file, JSArrayLiteralExpression.class))
-			if (hasTuples(array) && isMultiline(array, document)) {
+			if (isMultiline(array, document) && hasTuples(array)) {
 				var group = buildGroup(array);
 				if (group != null && group.props.size() > 1)
 					groups.add(group);
 			}
 
 		return groups;
+	}
+
+	private static boolean isMultiline(JSArrayLiteralExpression array, Document doc) {
+		int startLine = doc.getLineNumber(array.getTextRange().getStartOffset());
+		int endLine = doc.getLineNumber(array.getTextRange().getEndOffset());
+		return endLine > startLine;
 	}
 
 	private static boolean hasTuples(JSArrayLiteralExpression array) {
@@ -41,12 +47,6 @@ public class JsTupleArrayFinder implements AlignmentFinder {
 				if (tuple.getExpressions().length == 2)
 					return true;
 		return false;
-	}
-
-	private static boolean isMultiline(JSArrayLiteralExpression array, Document doc) {
-		int startLine = doc.getLineNumber(array.getTextRange().getStartOffset());
-		int endLine = doc.getLineNumber(array.getTextRange().getEndOffset());
-		return endLine > startLine;
 	}
 
 	private static AlignmentGroup buildGroup(JSArrayLiteralExpression array) {
