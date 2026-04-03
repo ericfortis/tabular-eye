@@ -3,6 +3,8 @@ package com.ericfortis.tabulareye.finders;
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.css.CssBlock;
+import com.intellij.psi.css.CssDeclaration;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,43 +24,29 @@ public class CssPropertyFinder implements AlignmentFinder {
 
 	@Override
 	public boolean isApplicable(@NotNull PsiFile file) {
-		String id = file.getLanguage().getID();
-		return "CSS".equals(id) || "SCSS".equals(id) || "LESS".equals(id);
+		return "CSS".equals(file.getLanguage().getID());
 	}
 
 	@Override
 	@NotNull
 	public List<AlignmentGroup> findGroups(@NotNull PsiFile file, @NotNull Document doc) {
 		List<AlignmentGroup> groups = new ArrayList<>();
-		try {
-			@SuppressWarnings("unchecked")
-			Class<? extends PsiElement> declarationClass = (Class<? extends PsiElement>) Class.forName("com.intellij.psi.css.CssDeclaration");
-			@SuppressWarnings("unchecked")
-			Class<? extends PsiElement> blockClass = (Class<? extends PsiElement>) Class.forName("com.intellij.psi.css.CssBlock");
+		Class<? extends PsiElement> declarationClass = CssDeclaration.class;
+		Class<? extends PsiElement> blockClass = CssBlock.class;
 
-			var allBlocks = PsiTreeUtil.collectElementsOfType(file, blockClass);
-			for (var block : allBlocks) {
-				if (!isMultiline(block, doc)) continue;
+		for (var block : PsiTreeUtil.collectElementsOfType(file, blockClass)) {
+			if (!isMultiline(block, doc))
+				continue;
 
-				var group = new AlignmentGroup();
-				var declarations = PsiTreeUtil.getChildrenOfTypeAsList(block, declarationClass);
-
-				for (var decl : declarations) {
-					int colonOffset = findColonOffset(decl);
-					if (colonOffset > 0) {
-						// For CssDeclaration, we can try to get the property name
-						// but AlignmentGroup uses PropInfo which takes (keyText, colonOffset).
-						// We can get text before colon or just use decl.getFirstChild().getText() if it's the property.
-						group.props.add(new PropInfo(getPropertyName(decl), colonOffset));
-					}
-				}
-
-				if (group.props.size() > 1)
-					groups.add(group);
+			var group = new AlignmentGroup();
+			for (var decl : PsiTreeUtil.getChildrenOfTypeAsList(block, declarationClass)) {
+				int colonOffset = findColonOffset(decl);
+				if (colonOffset > 0) 
+					group.props.add(new PropInfo(getPropertyName(decl), colonOffset));
 			}
-		} catch (ClassNotFoundException e) {
-			// Fallback or log? If the classes aren't there, we can't do much.
-			// But they SHOULD be there if we added the dependency.
+
+			if (group.props.size() > 1)
+				groups.add(group);
 		}
 
 		return groups;
@@ -82,9 +70,9 @@ public class CssPropertyFinder implements AlignmentFinder {
 		return -1;
 	}
 
-	private static boolean isMultiline(PsiElement element, Document doc) {
-		int startLine = doc.getLineNumber(element.getTextRange().getStartOffset());
-		int endLine = doc.getLineNumber(element.getTextRange().getEndOffset());
+	private static boolean isMultiline(PsiElement elem, Document doc) {
+		int startLine = doc.getLineNumber(elem.getTextRange().getStartOffset());
+		int endLine = doc.getLineNumber(elem.getTextRange().getEndOffset());
 		return endLine > startLine;
 	}
 }
