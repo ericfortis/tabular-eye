@@ -1,6 +1,7 @@
 package com.ericfortis.tabulareye;
 
 import com.ericfortis.tabulareye.finders.AlignmentFinder.AlignmentGroup;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorCustomElementRenderer;
 import com.intellij.openapi.editor.Inlay;
@@ -12,11 +13,14 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class Spacers {
-	private final List<Inlay<Spacer>> activeInlays = new ArrayList<>();
+	private static final Logger LOG = Logger.getInstance(Spacers.class);
 
+	private final List<Inlay<Spacer>> activeInlays = new ArrayList<>();
 	private final Editor editor;
+
+	/** Cached to avoid repeated Graphics-context acquisition on every refresh. */
+	private FontMetrics cachedFontMetrics;
 
 	public Spacers(Editor editor) {
 		this.editor = editor;
@@ -30,7 +34,6 @@ public class Spacers {
 				renderGroup(g, fm);
 	}
 
-
 	public void clearAll() {
 		for (var inlay : activeInlays)
 			if (inlay.isValid())
@@ -38,13 +41,23 @@ public class Spacers {
 		activeInlays.clear();
 	}
 
+	/**
+	 * Called when the editor color scheme changes (font size, typeface, etc.)
+	 * so that the next refresh re-acquires correct metrics.
+	 */
+	public void invalidateFontMetricsCache() {
+		cachedFontMetrics = null;
+	}
+
 
 	private void renderGroup(AlignmentGroup group, FontMetrics fm) {
+		var props = group.props();
+
 		// measure keys
-		int[] widths = new int[group.props.size()];
-		int maxWidth = 0;
-		for (int i = 0; i < group.props.size(); i++) {
-			int w = fm.stringWidth(group.props.get(i).keyText()); // supports proportional fonts 
+		int[] widths   = new int[props.size()];
+		int   maxWidth = 0;
+		for (int i = 0; i < props.size(); i++) {
+			int w = fm.stringWidth(props.get(i).keyText()); // supports proportional fonts
 			widths[i] = w;
 			if (w > maxWidth)
 				maxWidth = w;
@@ -52,11 +65,11 @@ public class Spacers {
 
 		// insert spacers
 		var model = editor.getInlayModel();
-		for (int i = 0; i < group.props.size(); i++) {
+		for (int i = 0; i < props.size(); i++) {
 			int spacerWidth = maxWidth - widths[i];
-			if (spacerWidth > 0) { // ignores longest left-side
-				int placeAt = group.props.get(i).colonOffset() + 1;
-				var inlay = model.addInlineElement(placeAt, true, new Spacer(spacerWidth));
+			if (spacerWidth > 0) { // skip the longest key — it needs no padding
+				int placeAt = props.get(i).colonOffset() + 1;
+				var inlay   = model.addInlineElement(placeAt, true, new Spacer(spacerWidth));
 				if (inlay != null)
 					activeInlays.add(inlay);
 			}
@@ -68,12 +81,18 @@ public class Spacers {
 		if (editor.isDisposed())
 			return null;
 
+		if (cachedFontMetrics != null)
+			return cachedFontMetrics;
+
 		var g = editor.getContentComponent().getGraphics();
-		if (g == null)
+		if (g == null) {
+			LOG.warn("TabularEye: could not acquire Graphics context from editor component; skipping render.");
 			return null;
+		}
 
 		try {
-			return g.getFontMetrics(editor.getColorsScheme().getFont(EditorFontType.PLAIN));
+			cachedFontMetrics = g.getFontMetrics(editor.getColorsScheme().getFont(EditorFontType.PLAIN));
+			return cachedFontMetrics;
 		} finally {
 			g.dispose();
 		}
@@ -81,8 +100,8 @@ public class Spacers {
 
 
 	/**
-	 * A fully transparent inlay that occupies exactly `widthPx` pixels.
-	 * Note: Antialising (user setting) greyscale makes the columns not to align 100% perfect.
+	 * A fully transparent inlay that occupies exactly {@code widthPx} pixels.
+	 * Note: antialiasing (user setting) greyscale makes columns not align 100% perfectly.
 	 */
 	private record Spacer(int widthPx) implements EditorCustomElementRenderer {
 

@@ -28,12 +28,12 @@ public class CssPropertyFinder extends AlignmentFinder {
 				var group = new AlignmentGroup();
 				for (var child = block.getFirstChild(); child != null; child = child.getNextSibling())
 					if (child instanceof CssDeclaration decl) {
-						int colonOffset = findColonOffset(decl);
+						int colonOffset = findTokenOffset(decl, ":");
 						if (colonOffset > 0)
-							group.props.add(new PropInfo(getPropertyName(decl), colonOffset));
+							group.add(new PropInfo(getPropertyName(decl), colonOffset));
 					}
 
-				if (group.props.size() > 1)
+				if (group.isValid())
 					groups.add(group);
 			}
 
@@ -41,20 +41,9 @@ public class CssPropertyFinder extends AlignmentFinder {
 	}
 
 	private String getPropertyName(PsiElement decl) {
-		// Usually the first child is the property
 		var firstChild = decl.getFirstChild();
 		return firstChild == null
 			 ? ""
 			 : firstChild.getText();
-	}
-
-	private int findColonOffset(PsiElement decl) {
-		var child = decl.getFirstChild();
-		while (child != null) {
-			if (":".equals(child.getText()))
-				return child.getTextRange().getStartOffset();
-			child = child.getNextSibling();
-		}
-		return -1;
 	}
 }

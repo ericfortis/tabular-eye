@@ -2,7 +2,6 @@ package com.ericfortis.tabulareye.finders;
 
 import com.intellij.lang.javascript.JavaScriptFileType;
 import com.intellij.lang.javascript.psi.JSObjectLiteralExpression;
-import com.intellij.lang.javascript.psi.JSProperty;
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -26,22 +25,22 @@ public class JsObjectLiteralFinder extends AlignmentFinder {
 		for (var obj : PsiTreeUtil.collectElementsOfType(file, JSObjectLiteralExpression.class))
 			if (isMultiline(obj, doc)) {
 				var group = buildGroup(obj);
-				if (group != null && group.props.size() > 1)
+				if (group != null && group.isValid())
 					groups.add(group);
 			}
 
 		return groups;
 	}
 
-	
-	private static AlignmentGroup buildGroup(JSObjectLiteralExpression obj) {
+
+	private AlignmentGroup buildGroup(JSObjectLiteralExpression obj) {
 		var group = new AlignmentGroup();
 
 		for (var prop : obj.getProperties()) {
 			if (prop == null || prop.isShorthanded())
 				continue;
 
-			int colonOffset = findColonOffset(prop);
+			int colonOffset = findTokenOffset(prop, ":");
 			if (colonOffset < 0)
 				continue;
 
@@ -54,22 +53,11 @@ public class JsObjectLiteralFinder extends AlignmentFinder {
 
 			var keyText = keyBuilder.toString().trim();
 			if (!keyText.isEmpty())
-				group.props.add(new PropInfo(keyText, colonOffset));
+				group.add(new PropInfo(keyText, colonOffset));
 		}
 
-		return group.props.isEmpty()
+		return group.props().isEmpty()
 			 ? null
 			 : group;
-	}
-	
-
-	private static int findColonOffset(JSProperty prop) {
-		var child = prop.getFirstChild();
-		while (child != null) {
-			if (":".equals(child.getText()))
-				return child.getTextRange().getStartOffset();
-			child = child.getNextSibling();
-		}
-		return -1;
 	}
 }

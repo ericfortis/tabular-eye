@@ -23,19 +23,26 @@ public class JsTupleArrayFinder extends AlignmentFinder {
 		List<AlignmentGroup> groups = new ArrayList<>();
 
 		for (var array : PsiTreeUtil.collectElementsOfType(file, JSArrayLiteralExpression.class))
-			if (isMultiline(array, doc) && hasTuples(array)) {
+			if (isMultiline(array, doc) && isTupleArray(array)) {
 				var group = buildGroup(array);
-				if (group != null && group.props.size() > 1)
+				if (group != null && group.isValid())
 					groups.add(group);
 			}
 
 		return groups;
 	}
 
-	private static boolean hasTuples(JSArrayLiteralExpression array) {
-		if (array.getExpressions().length == 2)
-			return false;
-
+	/**
+	 * A "tuple-array" is an array whose elements are themselves 2-element arrays,
+	 * e.g. [[key1, val1], [key2, val2]].
+	 * <p>
+	 * We require at least one such child tuple to qualify. A flat [key, value]
+	 * pair is NOT a tuple-array — it is a single tuple, not a container of them.
+	 * Note: a top-level array with exactly 2 elements could itself be a single
+	 * tuple, but if those elements happen to be 2-element arrays, we still treat
+	 * it as a tuple-array (e.g. [[a, 1], [b, 2]]).
+	 */
+	private static boolean isTupleArray(JSArrayLiteralExpression array) {
 		for (var element : array.getExpressions())
 			if (element instanceof JSArrayLiteralExpression tuple)
 				if (tuple.getExpressions().length == 2)
@@ -51,24 +58,14 @@ public class JsTupleArrayFinder extends AlignmentFinder {
 				var tupleElements = tuple.getExpressions();
 				if (tupleElements.length == 2) {
 					var first = tupleElements[0];
-					int commaOffset = findCommaOffset(tuple);
+					int commaOffset = findTokenOffset(tuple, ",");
 					if (commaOffset > 0)
-						group.props.add(new PropInfo(first.getText(), commaOffset));
+						group.add(new PropInfo(first.getText(), commaOffset));
 				}
 			}
 
-		return group.props.isEmpty()
+		return group.props().isEmpty()
 			 ? null
 			 : group;
-	}
-
-	private static int findCommaOffset(JSArrayLiteralExpression tuple) {
-		var child = tuple.getFirstChild();
-		while (child != null) {
-			if (",".equals(child.getText()))
-				return child.getTextRange().getStartOffset();
-			child = child.getNextSibling();
-		}
-		return -1;
 	}
 }
