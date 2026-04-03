@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class TabularEyeListener implements EditorFactoryListener {
+public class TabularEye implements EditorFactoryListener {
 
 	private final List<AlignmentFinder> finders = List.of(
 		 new JsObjectLiteralFinder(),

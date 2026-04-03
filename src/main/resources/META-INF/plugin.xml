@@ -9,6 +9,6 @@
   <depends>com.intellij.css</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <editorFactoryListener implementation="com.ericfortis.tabulareye.TabularEyeListener"/>
+    <editorFactoryListener implementation="com.ericfortis.tabulareye.TabularEye"/>
   </extensions>
 </idea-plugin>
