@@ -4,13 +4,6 @@
   <version>0.0.1</version>
   <vendor>Eric Fortis</vendor>
 
-  <description><![CDATA[
-        Render-only alignment of values inside JavaScript object literals and CSS declarations.<br/>
-        For every multiline <code>{ key: value }</code> block, transparent inlay
-        spacers are inserted after each <code>:</code> so all values line up to
-        the same visual column — without modifying the document.
-    ]]></description>
-
   <depends>com.intellij.modules.platform</depends>
   <depends>JavaScript</depends>
   <depends>com.intellij.css</depends>
