@@ -14,14 +14,13 @@ import java.util.List;
 
 
 public class Spacers {
-	private final List<Inlay<?>> activeInlays = new ArrayList<>();
+	private final List<Inlay<Spacer>> activeInlays = new ArrayList<>();
 
 	private final Editor editor;
 
 	public Spacers(Editor editor) {
 		this.editor = editor;
 	}
-
 
 	public void refresh(List<AlignmentGroup> groups) {
 		clearAll();
@@ -57,7 +56,7 @@ public class Spacers {
 			int gap = maxWidth - widths[i];
 			if (gap > 0) { // ignore longest key
 				int inlayOffset = group.props.get(i).colonOffset() + 1;
-				Inlay<?> inlay = model.addInlineElement(inlayOffset, true, new Spacer(gap));
+				var inlay = model.addInlineElement(inlayOffset, true, new Spacer(gap));
 				if (inlay != null)
 					activeInlays.add(inlay);
 			}
