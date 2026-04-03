@@ -10,17 +10,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * AlignmentInlayManager
- * Given a list of ObjectGroups (from ObjectLiteralFinder), this class:
- * 1. Measures the pixel width of each property key in the editor's current font.
- * 2. Finds the maximum key width per group.
- * 3. Places a transparent inline inlay at (`colonOffset + 1`) for each property
- * whose key is narrower than the max. The inlay `width = maxWidth - thisWidth`,
- * so combined with the existing space char, all values start at the same column.
- * Inlays are tracked and disposed before every re-render so stale spacers
- * never accumulate.
- */
+
 public class ElasticInlayManager {
 	private final List<Inlay<?>> activeInlays = new ArrayList<>();
 
@@ -73,11 +63,11 @@ public class ElasticInlayManager {
 			//  the same total visual width for every property in the group.
 			int inlayOffset = group.props.get(i).colonOffset() + 1;
 
-			Inlay<?> inlay = model.addInlineElement(
-				 inlayOffset,
-				 true,  // relatesToPrecedingText
-				 new Spacer(gap)
-			);
+				Inlay<?> inlay = model.addInlineElement(
+					 inlayOffset,
+					 true,  // relatesToPrecedingText
+					 new Spacer(gap)
+				);
 
 			if (inlay != null)
 				activeInlays.add(inlay);
