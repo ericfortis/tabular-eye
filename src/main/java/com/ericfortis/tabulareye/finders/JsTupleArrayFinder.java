@@ -19,11 +19,11 @@ public class JsTupleArrayFinder implements AlignmentFinder {
 
 	@Override
 	@NotNull
-	public List<AlignmentGroup> findGroups(@NotNull PsiFile file, @NotNull Document document) {
+	public List<AlignmentGroup> findGroups(@NotNull PsiFile file, @NotNull Document doc) {
 		List<AlignmentGroup> groups = new ArrayList<>();
 
 		for (var array : PsiTreeUtil.collectElementsOfType(file, JSArrayLiteralExpression.class))
-			if (isMultiline(array, document) && hasTuples(array)) {
+			if (isMultiline(array, doc) && hasTuples(array)) {
 				var group = buildGroup(array);
 				if (group != null && group.props.size() > 1)
 					groups.add(group);

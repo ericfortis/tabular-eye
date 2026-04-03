@@ -20,11 +20,11 @@ public class JsObjectLiteralFinder implements AlignmentFinder {
 
 	@Override
 	@NotNull
-	public List<AlignmentGroup> findGroups(@NotNull PsiFile file, @NotNull Document document) {
+	public List<AlignmentGroup> findGroups(@NotNull PsiFile file, @NotNull Document doc) {
 		List<AlignmentGroup> groups = new ArrayList<>();
 
 		for (var obj : PsiTreeUtil.collectElementsOfType(file, JSObjectLiteralExpression.class))
-			if (isMultiline(obj, document)) {
+			if (isMultiline(obj, doc)) {
 				var group = buildGroup(obj);
 				if (group != null && group.props.size() > 1)
 					groups.add(group);
