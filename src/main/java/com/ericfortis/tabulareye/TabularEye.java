@@ -15,11 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Entry point registered in plugin.xml as an {@link EditorFactoryListener}.
- * Responsible only for creating and destroying {@link EditorSession} objects —
- * all per-editor state and logic lives in {@code EditorSession}.
- */
 public class TabularEye implements EditorFactoryListener {
 
 	private final List<AlignmentFinder> finders = List.of(
