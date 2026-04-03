@@ -45,7 +45,7 @@ public class CssPropertyFinder implements AlignmentFinder {
 
 	private String getPropertyName(PsiElement decl) {
 		// Usually the first child is the property
-		PsiElement firstChild = decl.getFirstChild();
+		var firstChild = decl.getFirstChild();
 		return firstChild == null
 			 ? ""
 			 : firstChild.getText();
