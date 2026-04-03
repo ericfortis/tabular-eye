@@ -73,8 +73,7 @@ public class ElasticInlayManager {
 			//  the same total visual width for every property in the group.
 			int inlayOffset = group.props.get(i).colonOffset() + 1;
 
-			@SuppressWarnings({"rawtypes"})
-			Inlay inlay = model.addInlineElement(
+			Inlay<?> inlay = model.addInlineElement(
 				 inlayOffset,
 				 true,  // relatesToPrecedingText
 				 new Spacer(gap)
