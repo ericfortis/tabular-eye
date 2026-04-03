@@ -60,7 +60,7 @@ public class Spacers {
 				Inlay<?> inlay = model.addInlineElement(inlayOffset, true, new Spacer(gap));
 				if (inlay != null)
 					activeInlays.add(inlay);
-			} 
+			}
 		}
 	}
 
@@ -69,14 +69,12 @@ public class Spacers {
 		if (editor.isDisposed())
 			return null;
 
-		var font = editor.getColorsScheme().getFont(EditorFontType.PLAIN);
-		Component component = editor.getContentComponent();
-		var g = component.getGraphics();
+		var g = editor.getContentComponent().getGraphics();
 		if (g == null)
 			return null;
 
 		try {
-			return g.getFontMetrics(font);
+			return g.getFontMetrics(editor.getColorsScheme().getFont(EditorFontType.PLAIN));
 		} finally {
 			g.dispose();
 		}
