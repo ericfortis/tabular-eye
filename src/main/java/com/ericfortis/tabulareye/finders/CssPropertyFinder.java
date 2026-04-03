@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class CssPropertyFinder implements AlignmentFinder {
 
 	@Override
@@ -24,21 +23,19 @@ public class CssPropertyFinder implements AlignmentFinder {
 	public List<AlignmentGroup> findGroups(@NotNull PsiFile file, @NotNull Document doc) {
 		List<AlignmentGroup> groups = new ArrayList<>();
 
-		for (var block : PsiTreeUtil.findChildrenOfType(file, CssBlock.class)) {
-			if (!isMultiline(block, doc)) 
-				continue;
+		for (var block : PsiTreeUtil.findChildrenOfType(file, CssBlock.class))
+			if (isMultiline(block, doc)) {
+				var group = new AlignmentGroup();
+				for (var child = block.getFirstChild(); child != null; child = child.getNextSibling())
+					if (child instanceof CssDeclaration decl) {
+						int colonOffset = findColonOffset(decl);
+						if (colonOffset > 0)
+							group.props.add(new PropInfo(getPropertyName(decl), colonOffset));
+					}
 
-			var group = new AlignmentGroup();
-			for (var child = block.getFirstChild(); child != null; child = child.getNextSibling())
-				if (child instanceof CssDeclaration decl) {
-					int colonOffset = findColonOffset(decl);
-					if (colonOffset > 0)
-						group.props.add(new PropInfo(getPropertyName(decl), colonOffset));
-				}
-
-			if (group.props.size() > 1)
-				groups.add(group);
-		}
+				if (group.props.size() > 1)
+					groups.add(group);
+			}
 
 		return groups;
 	}
