@@ -6,9 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * A fully transparent inlay that occupies exactly `widthPx` pixels.
- * Nothing is painted — the space is reserved by calcWidthInPixels alone.
- * <p>
- * Note: Antialising (user setting) greyscale, makes the columns not to align 100% perfect.
+ * Note: Antialising (user setting) greyscale makes the columns not to align 100% perfect.
  */
 class Spacer implements EditorCustomElementRenderer {
 
