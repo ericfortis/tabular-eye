@@ -43,6 +43,12 @@ public class CssPropertyFinder implements AlignmentFinder {
 		return groups;
 	}
 
+	private static boolean isMultiline(PsiElement elem, Document doc) {
+		int startLine = doc.getLineNumber(elem.getTextRange().getStartOffset());
+		int endLine = doc.getLineNumber(elem.getTextRange().getEndOffset());
+		return endLine > startLine;
+	}
+
 	private String getPropertyName(PsiElement decl) {
 		// Usually the first child is the property
 		var firstChild = decl.getFirstChild();
@@ -59,11 +65,5 @@ public class CssPropertyFinder implements AlignmentFinder {
 			child = child.getNextSibling();
 		}
 		return -1;
-	}
-
-	private static boolean isMultiline(PsiElement elem, Document doc) {
-		int startLine = doc.getLineNumber(elem.getTextRange().getStartOffset());
-		int endLine = doc.getLineNumber(elem.getTextRange().getEndOffset());
-		return endLine > startLine;
 	}
 }
