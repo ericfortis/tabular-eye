@@ -83,13 +83,13 @@ public class JsObjectLiteralFinder implements AlignmentFinder {
 
 			// Extract all text before the colon to form the key text.
 			// This covers normal, quoted, and computed keys ([expr]).
-			StringBuilder keyBuilder = new StringBuilder();
+			var keyBuilder = new StringBuilder();
 			var child = prop.getFirstChild();
 			while (child != null && !":".equals(child.getText())) {
 				keyBuilder.append(child.getText());
 				child = child.getNextSibling();
 			}
-			String keyText = keyBuilder.toString().trim();
+			var keyText = keyBuilder.toString().trim();
 
 			if (keyText.isEmpty())
 				continue;
