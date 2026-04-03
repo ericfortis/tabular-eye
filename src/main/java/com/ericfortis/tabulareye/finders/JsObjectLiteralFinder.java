@@ -4,7 +4,6 @@ import com.intellij.lang.javascript.JavaScriptFileType;
 import com.intellij.lang.javascript.psi.JSObjectLiteralExpression;
 import com.intellij.lang.javascript.psi.JSProperty;
 import com.intellij.openapi.editor.Document;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JsObjectLiteralFinder implements AlignmentFinder {
+public class JsObjectLiteralFinder extends AlignmentFinder {
 
 	@Override
 	public boolean isApplicable(@NotNull PsiFile file) {
@@ -32,12 +31,6 @@ public class JsObjectLiteralFinder implements AlignmentFinder {
 			}
 
 		return groups;
-	}
-
-	private static boolean isMultiline(PsiElement elem, Document doc) {
-		int startLine = doc.getLineNumber(elem.getTextRange().getStartOffset());
-		int endLine = doc.getLineNumber(elem.getTextRange().getEndOffset());
-		return endLine > startLine;
 	}
 
 	private static AlignmentGroup buildGroup(JSObjectLiteralExpression obj) {

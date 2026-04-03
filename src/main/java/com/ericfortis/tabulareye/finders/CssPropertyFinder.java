@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CssPropertyFinder implements AlignmentFinder {
+public class CssPropertyFinder extends AlignmentFinder {
 
 	@Override
 	public boolean isApplicable(@NotNull PsiFile file) {
@@ -38,12 +38,6 @@ public class CssPropertyFinder implements AlignmentFinder {
 			}
 
 		return groups;
-	}
-
-	private static boolean isMultiline(PsiElement elem, Document doc) {
-		int startLine = doc.getLineNumber(elem.getTextRange().getStartOffset());
-		int endLine = doc.getLineNumber(elem.getTextRange().getEndOffset());
-		return endLine > startLine;
 	}
 
 	private String getPropertyName(PsiElement decl) {
