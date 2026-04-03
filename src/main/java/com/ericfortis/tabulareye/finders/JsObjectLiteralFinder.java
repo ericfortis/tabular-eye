@@ -20,7 +20,7 @@ import java.util.List;
  * - Spread elements       ({ ...rest })
  * - Single-line objects   ({ a: 1, b: 2 })
  */
-public class JSObjectLiteralFinder implements AlignmentFinder {
+public class JsObjectLiteralFinder implements AlignmentFinder {
 
 	@Override
 	public boolean isApplicable(@NotNull PsiFile file) {

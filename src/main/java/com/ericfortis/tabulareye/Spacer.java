@@ -10,11 +10,11 @@ import org.jetbrains.annotations.NotNull;
  * <p>
  * Note: Antialising (user setting) greyscale, makes the columns not to align 100% perfect.
  */
-class SpacerRenderer implements EditorCustomElementRenderer {
+class Spacer implements EditorCustomElementRenderer {
 
 	private final int widthPx;
 
-	SpacerRenderer(int widthPx) {
+	Spacer(int widthPx) {
 		this.widthPx = widthPx;
 	}
 

@@ -92,7 +92,7 @@ public class ElasticInlayManager {
 			Inlay inlay = model.addInlineElement(
 				 inlayOffset,
 				 true,  // relatesToPrecedingText
-				 new SpacerRenderer(gap)
+				 new Spacer(gap)
 			);
 
 			if (inlay != null)

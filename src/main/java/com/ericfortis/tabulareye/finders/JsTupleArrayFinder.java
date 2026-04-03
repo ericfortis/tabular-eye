@@ -21,7 +21,7 @@ import java.util.List;
  * [123, 456]
  * ]
  */
-public class JSTupleArrayFinder implements AlignmentFinder {
+public class JsTupleArrayFinder implements AlignmentFinder {
 
 	@Override
 	public boolean isApplicable(@NotNull PsiFile file) {

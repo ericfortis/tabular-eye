@@ -38,9 +38,9 @@ import java.util.Map;
 public class TabularEyeListener implements EditorFactoryListener {
 
 	private final List<AlignmentFinder> finders = List.of(
-		 new JSObjectLiteralFinder(),
-		 new JSTupleArrayFinder(),
-		 new CSSPropertyFinder()
+		 new JsObjectLiteralFinder(),
+		 new JsTupleArrayFinder(),
+		 new CssPropertyFinder()
 	);
 
 	private final Map<Editor, ElasticInlayManager> managers = new HashMap<>();
