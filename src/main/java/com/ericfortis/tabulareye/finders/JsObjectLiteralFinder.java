@@ -60,9 +60,6 @@ public class JsObjectLiteralFinder implements AlignmentFinder {
 		return groups;
 	}
 
-	/**
-	 * Returns true if the object literal spans more than one line.
-	 */
 	private static boolean isMultiline(JSObjectLiteralExpression obj, Document doc) {
 		int startLine = doc.getLineNumber(obj.getTextRange().getStartOffset());
 		int endLine = doc.getLineNumber(obj.getTextRange().getEndOffset());
@@ -76,17 +73,10 @@ public class JsObjectLiteralFinder implements AlignmentFinder {
 	private static AlignmentGroup buildGroup(JSObjectLiteralExpression obj) {
 		var group = new AlignmentGroup();
 
-		for (JSProperty prop : obj.getProperties()) {
-			// Skip spread elements (JSSpreadExpression appears as a child, not JSProperty,
-			// but guard defensively).
-			if (prop == null)
-				continue;
+		for (var prop : obj.getProperties()) {
+			if (prop == null || prop.isShorthanded()) 
+				continue; 
 
-			// Skip shorthand: shorthand props have no value distinct from name.
-			if (prop.isShorthanded())
-				continue;
-
-			// Find the colon offset.
 			int colonOffset = findColonOffset(prop);
 			if (colonOffset < 0)
 				continue;
