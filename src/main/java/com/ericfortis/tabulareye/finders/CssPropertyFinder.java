@@ -31,19 +31,19 @@ public class CssPropertyFinder implements AlignmentFinder {
 	@NotNull
 	public List<AlignmentGroup> findGroups(@NotNull PsiFile file, @NotNull Document doc) {
 		List<AlignmentGroup> groups = new ArrayList<>();
-		Class<? extends PsiElement> declarationClass = CssDeclaration.class;
-		Class<? extends PsiElement> blockClass = CssBlock.class;
 
-		for (var block : PsiTreeUtil.collectElementsOfType(file, blockClass)) {
-			if (!isMultiline(block, doc))
+		for (var block : PsiTreeUtil.findChildrenOfType(file, CssBlock.class)) {
+			if (!isMultiline(block, doc)) 
 				continue;
 
 			var group = new AlignmentGroup();
-			for (var decl : PsiTreeUtil.getChildrenOfTypeAsList(block, declarationClass)) {
-				int colonOffset = findColonOffset(decl);
-				if (colonOffset > 0) 
-					group.props.add(new PropInfo(getPropertyName(decl), colonOffset));
-			}
+
+			for (var child = block.getFirstChild(); child != null; child = child.getNextSibling())
+				if (child instanceof CssDeclaration decl) {
+					int colonOffset = findColonOffset(decl);
+					if (colonOffset > 0)
+						group.props.add(new PropInfo(getPropertyName(decl), colonOffset));
+				}
 
 			if (group.props.size() > 1)
 				groups.add(group);
