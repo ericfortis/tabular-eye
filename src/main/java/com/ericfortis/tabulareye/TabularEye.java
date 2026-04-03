@@ -35,7 +35,7 @@ public class TabularEye implements EditorFactoryListener {
 		 new CssPropertyFinder()
 	);
 
-	private final Map<Editor, SpacerManager> managers = new HashMap<>();
+	private final Map<Editor, Spacers> managers = new HashMap<>();
 	private final Map<Editor, Disposable> disposables = new HashMap<>();
 
 
@@ -63,7 +63,7 @@ public class TabularEye implements EditorFactoryListener {
 		if (managers.containsKey(editor))
 			return;
 
-		var manager = new SpacerManager(editor);
+		var manager = new Spacers(editor);
 		managers.put(editor, manager);
 
 		var parentDisposable = Disposer.newDisposable("tabulareye-" + editor.hashCode());
@@ -113,7 +113,7 @@ public class TabularEye implements EditorFactoryListener {
 	}
 
 
-	private void scheduleRefresh(Editor editor, SpacerManager manager) {
+	private void scheduleRefresh(Editor editor, Spacers manager) {
 		var project = editor.getProject();
 		if (project == null || project.isDisposed()) {
 			for (Project p : ProjectManager.getInstance().getOpenProjects())
@@ -126,7 +126,7 @@ public class TabularEye implements EditorFactoryListener {
 		doRefresh(editor, manager, project);
 	}
 
-	private void doRefresh(Editor editor, SpacerManager manager, Project project) {
+	private void doRefresh(Editor editor, Spacers manager, Project project) {
 		var document = editor.getDocument();
 		var psiDocManager = PsiDocumentManager.getInstance(project);
 

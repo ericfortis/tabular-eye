@@ -13,12 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class SpacerManager {
+public class Spacers {
 	private final List<Inlay<?>> activeInlays = new ArrayList<>();
 
 	private final Editor editor;
 
-	public SpacerManager(Editor editor) {
+	public Spacers(Editor editor) {
 		this.editor = editor;
 	}
 
