@@ -11,12 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ElasticInlayManager {
+public class SpacerManager {
 	private final List<Inlay<?>> activeInlays = new ArrayList<>();
 
 	private final Editor editor;
 
-	public ElasticInlayManager(Editor editor) {
+	public SpacerManager(Editor editor) {
 		this.editor = editor;
 	}
 
