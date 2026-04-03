@@ -32,7 +32,6 @@ public class CssPropertyFinder extends AlignmentFinder {
 						if (colonOffset > 0)
 							group.add(new PropInfo(getPropertyName(decl), colonOffset));
 					}
-
 				if (group.isValid())
 					groups.add(group);
 			}

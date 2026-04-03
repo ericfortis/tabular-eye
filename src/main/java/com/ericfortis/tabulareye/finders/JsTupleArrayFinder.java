@@ -32,16 +32,7 @@ public class JsTupleArrayFinder extends AlignmentFinder {
 		return groups;
 	}
 
-	/**
-	 * A "tuple-array" is an array whose elements are themselves 2-element arrays,
-	 * e.g. [[key1, val1], [key2, val2]].
-	 * <p>
-	 * We require at least one such child tuple to qualify. A flat [key, value]
-	 * pair is NOT a tuple-array — it is a single tuple, not a container of them.
-	 * Note: a top-level array with exactly 2 elements could itself be a single
-	 * tuple, but if those elements happen to be 2-element arrays, we still treat
-	 * it as a tuple-array (e.g. [[a, 1], [b, 2]]).
-	 */
+
 	private static boolean isTupleArray(JSArrayLiteralExpression array) {
 		for (var elem : array.getExpressions())
 			if (elem instanceof JSArrayLiteralExpression tuple)
