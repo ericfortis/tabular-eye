@@ -2,9 +2,11 @@ package com.ericfortis.tabulareye;
 
 import com.ericfortis.tabulareye.finders.AlignmentFinder.AlignmentGroup;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.EditorCustomElementRenderer;
 import com.intellij.openapi.editor.Inlay;
 import com.intellij.openapi.editor.colors.EditorFontType;
 import com.intellij.openapi.util.Disposer;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -20,16 +22,15 @@ public class SpacerManager {
 		this.editor = editor;
 	}
 
+	
 	public void refresh(List<AlignmentGroup> groups) {
 		clearAll();
-
 		var fm = getFontMetrics();
-		if (fm == null)
-			return;
-
-		for (var group : groups)
-			renderGroup(group, fm);
+		if (fm != null)
+			for (var group : groups)
+				renderGroup(group, fm);
 	}
+
 
 	public void clearAll() {
 		for (var inlay : activeInlays)
@@ -37,6 +38,7 @@ public class SpacerManager {
 				Disposer.dispose(inlay);
 		activeInlays.clear();
 	}
+
 
 	private void renderGroup(AlignmentGroup group, FontMetrics fm) {
 		// Step 1: measure every key.
@@ -70,6 +72,7 @@ public class SpacerManager {
 		}
 	}
 
+	
 	private FontMetrics getFontMetrics() {
 		if (editor.isDisposed())
 			return null;
@@ -84,6 +87,24 @@ public class SpacerManager {
 			return g.getFontMetrics(font);
 		} finally {
 			g.dispose();
+		}
+	}
+
+
+	/**
+	 * A fully transparent inlay that occupies exactly `widthPx` pixels.
+	 * Note: Antialising (user setting) greyscale makes the columns not to align 100% perfect.
+	 */
+	private record Spacer(int widthPx) implements EditorCustomElementRenderer {
+
+		@Override
+		public int calcWidthInPixels(@NotNull Inlay inlay) {
+			return widthPx;
+		}
+
+		@Override
+		public int calcHeightInPixels(@NotNull Inlay inlay) {
+			return 1;
 		}
 	}
 }
