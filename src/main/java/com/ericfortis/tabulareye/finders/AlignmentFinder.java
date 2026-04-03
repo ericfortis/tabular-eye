@@ -45,9 +45,6 @@ public abstract class AlignmentFinder {
 			props.add(p);
 		}
 
-		/**
-		 * A group is only meaningful when at least two properties can be aligned.
-		 */
 		public boolean isValid() {
 			return props.size() > 1;
 		}
