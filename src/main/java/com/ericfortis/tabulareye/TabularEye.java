@@ -23,9 +23,9 @@ import java.util.Map;
 public class TabularEye implements EditorFactoryListener {
 
 	private final List<AlignmentFinder> finders = List.of(
-		new JsObjectLiteralFinder(),
-		new JsTupleArrayFinder(),
-		new CssPropertyFinder()
+		 new JsObjectLiteralFinder(),
+		 new JsTupleArrayFinder(),
+		 new CssPropertyFinder()
 	);
 
 	private final Map<Editor, EditorSession> sessions = new HashMap<>();
@@ -33,7 +33,7 @@ public class TabularEye implements EditorFactoryListener {
 
 	@Override
 	public void editorCreated(@NotNull EditorFactoryEvent event) {
-		var editor  = event.getEditor();
+		var editor = event.getEditor();
 		var project = editor.getProject();
 		if (project == null) return;
 

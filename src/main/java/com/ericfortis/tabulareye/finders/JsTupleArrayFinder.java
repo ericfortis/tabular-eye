@@ -22,11 +22,11 @@ public class JsTupleArrayFinder extends AlignmentFinder {
 	public List<AlignmentGroup> findGroups(@NotNull PsiFile file, @NotNull Document doc) {
 		List<AlignmentGroup> groups = new ArrayList<>();
 
-		for (var array : PsiTreeUtil.collectElementsOfType(file, JSArrayLiteralExpression.class))
-			if (isMultiline(array, doc) && isTupleArray(array)) {
-				var group = buildGroup(array);
-				if (group != null && group.isValid())
-					groups.add(group);
+		for (var arr : PsiTreeUtil.collectElementsOfType(file, JSArrayLiteralExpression.class))
+			if (isMultiline(arr, doc) && isTupleArray(arr)) {
+				var g = buildGroup(arr);
+				if (g != null && g.isValid())
+					groups.add(g);
 			}
 
 		return groups;
@@ -43,18 +43,18 @@ public class JsTupleArrayFinder extends AlignmentFinder {
 	 * it as a tuple-array (e.g. [[a, 1], [b, 2]]).
 	 */
 	private static boolean isTupleArray(JSArrayLiteralExpression array) {
-		for (var element : array.getExpressions())
-			if (element instanceof JSArrayLiteralExpression tuple)
+		for (var elem : array.getExpressions())
+			if (elem instanceof JSArrayLiteralExpression tuple)
 				if (tuple.getExpressions().length == 2)
 					return true;
 		return false;
 	}
 
-	private static AlignmentGroup buildGroup(JSArrayLiteralExpression array) {
+	private static AlignmentGroup buildGroup(JSArrayLiteralExpression arr) {
 		var group = new AlignmentGroup();
 
-		for (var element : array.getExpressions())
-			if (element instanceof JSArrayLiteralExpression tuple) {
+		for (var elem : arr.getExpressions())
+			if (elem instanceof JSArrayLiteralExpression tuple) {
 				var tupleElements = tuple.getExpressions();
 				if (tupleElements.length == 2) {
 					var first = tupleElements[0];

@@ -32,7 +32,7 @@ class EditorSession implements Disposable {
 	private final Disposable listenerDisposable;
 
 	EditorSession(Editor editor, Project project, List<AlignmentFinder> finders) {
-		this.editor  = editor;
+		this.editor = editor;
 		this.finders = finders;
 		this.spacers = new Spacers(editor);
 
@@ -46,35 +46,35 @@ class EditorSession implements Disposable {
 		}, listenerDisposable);
 
 		project.getMessageBus()
-			   .connect(listenerDisposable)
-			   .subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {
-				   @Override
-				   public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
-					   refresh(project);
-				   }
+			 .connect(listenerDisposable)
+			 .subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {
+				 @Override
+				 public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
+					 refresh(project);
+				 }
 
-				   // Handles returning to an already-open tab
-				   @Override
-				   public void selectionChanged(@NotNull com.intellij.openapi.fileEditor.FileEditorManagerEvent event) {
-					   if (event.getNewFile() == null) return;
-					   var psiFile = PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
-					   if (psiFile != null && event.getNewFile().equals(psiFile.getVirtualFile()))
-						   refresh(project);
-				   }
-			   });
+				 // Handles returning to an already-open tab
+				 @Override
+				 public void selectionChanged(@NotNull com.intellij.openapi.fileEditor.FileEditorManagerEvent event) {
+					 if (event.getNewFile() == null) return;
+					 var psiFile = PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
+					 if (psiFile != null && event.getNewFile().equals(psiFile.getVirtualFile()))
+						 refresh(project);
+				 }
+			 });
 
 		// Handles font size / color-scheme changes; invalidates the cached FontMetrics
 		project.getMessageBus()
-			   .connect(listenerDisposable)
-			   .subscribe(EditorColorsManager.TOPIC, (EditorColorsListener) scheme -> {
-				   spacers.invalidateFontMetricsCache();
-				   refresh(project);
-			   });
+			 .connect(listenerDisposable)
+			 .subscribe(EditorColorsManager.TOPIC, (EditorColorsListener) scheme -> {
+				 spacers.invalidateFontMetricsCache();
+				 refresh(project);
+			 });
 	}
 
 	void refresh(Project project) {
 		if (project.isDisposed()) return;
-		var doc           = editor.getDocument();
+		var doc = editor.getDocument();
 		var psiDocManager = PsiDocumentManager.getInstance(project);
 
 		psiDocManager.performForCommittedDocument(doc, () -> {

@@ -17,7 +17,7 @@ public abstract class AlignmentFinder {
 
 	static boolean isMultiline(PsiElement elem, Document doc) {
 		int startLine = doc.getLineNumber(elem.getTextRange().getStartOffset());
-		int endLine   = doc.getLineNumber(elem.getTextRange().getEndOffset());
+		int endLine = doc.getLineNumber(elem.getTextRange().getEndOffset());
 		return endLine > startLine;
 	}
 
@@ -28,7 +28,7 @@ public abstract class AlignmentFinder {
 	protected static int findTokenOffset(PsiElement elem, String tokenText) {
 		var child = elem.getFirstChild();
 		while (child != null) {
-			if (tokenText.equals(child.getText()))
+			if (tokenText.equals(child.getText())) 
 				return child.getTextRange().getStartOffset();
 			child = child.getNextSibling();
 		}
@@ -45,7 +45,9 @@ public abstract class AlignmentFinder {
 			props.add(p);
 		}
 
-		/** A group is only meaningful when at least two properties can be aligned. */
+		/**
+		 * A group is only meaningful when at least two properties can be aligned.
+		 */
 		public boolean isValid() {
 			return props.size() > 1;
 		}

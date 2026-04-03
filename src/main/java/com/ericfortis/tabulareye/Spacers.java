@@ -19,7 +19,9 @@ public class Spacers {
 	private final List<Inlay<Spacer>> activeInlays = new ArrayList<>();
 	private final Editor editor;
 
-	/** Cached to avoid repeated Graphics-context acquisition on every refresh. */
+	/**
+	 * Cached to avoid repeated Graphics-context acquisition on every refresh.
+	 */
 	private FontMetrics cachedFontMetrics;
 
 	public Spacers(Editor editor) {
@@ -54,8 +56,8 @@ public class Spacers {
 		var props = group.props();
 
 		// measure keys
-		int[] widths   = new int[props.size()];
-		int   maxWidth = 0;
+		int[] widths = new int[props.size()];
+		int maxWidth = 0;
 		for (int i = 0; i < props.size(); i++) {
 			int w = fm.stringWidth(props.get(i).keyText()); // supports proportional fonts
 			widths[i] = w;
@@ -69,7 +71,7 @@ public class Spacers {
 			int spacerWidth = maxWidth - widths[i];
 			if (spacerWidth > 0) { // skip the longest key — it needs no padding
 				int placeAt = props.get(i).colonOffset() + 1;
-				var inlay   = model.addInlineElement(placeAt, true, new Spacer(spacerWidth));
+				var inlay = model.addInlineElement(placeAt, true, new Spacer(spacerWidth));
 				if (inlay != null)
 					activeInlays.add(inlay);
 			}
