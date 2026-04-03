@@ -22,19 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Entry point
- * Lifecycle per editor:
- * <p>
- * editorCreated → guard JS file, create a Disposable, attach DocumentListener
- * via the non-deprecated (listener, Disposable) overload, initial render
- * <p>
- * documentChanged→ re-run PSI parse + inlay refresh (via performForCommittedDocument)
- * <p>
- * editorReleased → dispose the per-editor Disposable (auto-removes listener) + clear inlays
- * <p>
- * One AlignmentInlayManager and one Disposable are kept per editor instance.
- */
+
 public class TabularEyeListener implements EditorFactoryListener {
 
 	private final List<AlignmentFinder> finders = List.of(
