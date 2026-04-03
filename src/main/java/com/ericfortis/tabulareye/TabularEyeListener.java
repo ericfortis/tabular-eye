@@ -1,5 +1,6 @@
 package com.ericfortis.tabulareye;
 
+import com.ericfortis.tabulareye.finders.*;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.event.DocumentEvent;

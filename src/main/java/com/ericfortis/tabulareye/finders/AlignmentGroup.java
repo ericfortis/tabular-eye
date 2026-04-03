@@ -1,4 +1,4 @@
-package com.ericfortis.tabulareye;
+package com.ericfortis.tabulareye.finders;
 
 import java.util.ArrayList;
 import java.util.List;

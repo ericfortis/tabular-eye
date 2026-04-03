@@ -1,4 +1,4 @@
-package com.ericfortis.tabulareye;
+package com.ericfortis.tabulareye.finders;
 
 /**
  * One alignable property: the key name text and the document offset

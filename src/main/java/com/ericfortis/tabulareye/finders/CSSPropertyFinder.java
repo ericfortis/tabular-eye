@@ -1,4 +1,4 @@
-package com.ericfortis.tabulareye;
+package com.ericfortis.tabulareye.finders;
 
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiElement;

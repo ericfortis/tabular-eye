@@ -1,4 +1,4 @@
-package com.ericfortis.tabulareye;
+package com.ericfortis.tabulareye.finders;
 
 import com.intellij.lang.javascript.JavaScriptFileType;
 import com.intellij.lang.javascript.psi.JSObjectLiteralExpression;
