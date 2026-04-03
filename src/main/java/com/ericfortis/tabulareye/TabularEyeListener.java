@@ -52,13 +52,14 @@ public class TabularEyeListener implements EditorFactoryListener {
 		var editor = event.getEditor();
 		var project = editor.getProject();
 		if (project == null) return;
-		
+
 		var document = editor.getDocument();
 		PsiDocumentManager.getInstance(project).performForCommittedDocument(document, () -> {
-			if (editor.isDisposed()) return;
-			var psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
-			if (psiFile != null && isSupported(psiFile))
-				initializeManager(editor, project);
+			if (!editor.isDisposed()) {
+				var psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document);
+				if (psiFile != null && isSupported(psiFile))
+					initializeManager(editor, project);
+			}
 		});
 	}
 
@@ -67,7 +68,8 @@ public class TabularEyeListener implements EditorFactoryListener {
 	}
 
 	private void initializeManager(Editor editor, Project project) {
-		if (managers.containsKey(editor)) return;
+		if (managers.containsKey(editor))
+			return;
 
 		var manager = new ElasticInlayManager(editor);
 		managers.put(editor, manager);
