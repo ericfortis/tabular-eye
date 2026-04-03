@@ -11,15 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Finds CSS properties to align.
- * <p>
- * header {
- * display: flex;
- * flex:    0 0 100%;
- * padding: 16px;
- * }
- */
+
 public class CssPropertyFinder implements AlignmentFinder {
 
 	@Override
@@ -37,7 +29,6 @@ public class CssPropertyFinder implements AlignmentFinder {
 				continue;
 
 			var group = new AlignmentGroup();
-
 			for (var child = block.getFirstChild(); child != null; child = child.getNextSibling())
 				if (child instanceof CssDeclaration decl) {
 					int colonOffset = findColonOffset(decl);
