@@ -53,10 +53,10 @@ public class Spacers {
 		// insert spacers
 		var model = editor.getInlayModel();
 		for (int i = 0; i < group.props.size(); i++) {
-			int gap = maxWidth - widths[i];
-			if (gap > 0) { // ignore longest key
-				int inlayOffset = group.props.get(i).colonOffset() + 1;
-				var inlay = model.addInlineElement(inlayOffset, true, new Spacer(gap));
+			int spacerWidth = maxWidth - widths[i];
+			if (spacerWidth > 0) { // ignore longest key
+				int placeAt = group.props.get(i).colonOffset() + 1;
+				var inlay = model.addInlineElement(placeAt, true, new Spacer(spacerWidth));
 				if (inlay != null)
 					activeInlays.add(inlay);
 			}

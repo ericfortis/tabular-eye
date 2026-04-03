@@ -53,6 +53,7 @@ public class TabularEye implements EditorFactoryListener {
 				initializeManager(editor, project);
 		});
 	}
+	
 
 	private void initializeManager(Editor editor, Project project) {
 		if (managers.containsKey(editor))
@@ -104,6 +105,7 @@ public class TabularEye implements EditorFactoryListener {
 			 .subscribe(EditorColorsManager.TOPIC, (EditorColorsListener) scheme ->
 					scheduleRefresh(editor, manager));
 	}
+	
 
 	@Override
 	public void editorReleased(@NotNull EditorFactoryEvent event) {
@@ -133,6 +135,7 @@ public class TabularEye implements EditorFactoryListener {
 		}
 		doRefresh(editor, manager, project);
 	}
+	
 
 	private void doRefresh(Editor editor, Spacers manager, Project project) {
 		var doc = editor.getDocument();

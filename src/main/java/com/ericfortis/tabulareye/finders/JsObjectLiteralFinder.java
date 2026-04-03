@@ -33,6 +33,7 @@ public class JsObjectLiteralFinder extends AlignmentFinder {
 		return groups;
 	}
 
+	
 	private static AlignmentGroup buildGroup(JSObjectLiteralExpression obj) {
 		var group = new AlignmentGroup();
 
@@ -60,6 +61,7 @@ public class JsObjectLiteralFinder extends AlignmentFinder {
 			 ? null
 			 : group;
 	}
+	
 
 	private static int findColonOffset(JSProperty prop) {
 		var child = prop.getFirstChild();
