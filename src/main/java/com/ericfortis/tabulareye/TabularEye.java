@@ -7,6 +7,8 @@ import com.ericfortis.tabulareye.finders.JsObjectLiteralFinder;
 import com.ericfortis.tabulareye.finders.JsTupleArrayFinder;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.colors.EditorColorsListener;
+import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.editor.event.EditorFactoryEvent;
@@ -96,6 +98,12 @@ public class TabularEye implements EditorFactoryListener {
 					 }
 				 }
 			 });
+
+		// Handles font size change
+		project.getMessageBus()
+			 .connect(parentDisposable)
+			 .subscribe(EditorColorsManager.TOPIC, (EditorColorsListener) scheme ->
+					scheduleRefresh(editor, manager));
 	}
 
 	@Override
