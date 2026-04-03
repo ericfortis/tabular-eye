@@ -135,19 +135,19 @@ public class TabularEye implements EditorFactoryListener {
 	}
 
 	private void doRefresh(Editor editor, Spacers manager, Project project) {
-		var document = editor.getDocument();
+		var doc = editor.getDocument();
 		var psiDocManager = PsiDocumentManager.getInstance(project);
 
-		psiDocManager.performForCommittedDocument(document, () -> {
+		psiDocManager.performForCommittedDocument(doc, () -> {
 			if (editor.isDisposed())
 				return;
 
-			var psiFile = psiDocManager.getPsiFile(document);
+			var psiFile = psiDocManager.getPsiFile(doc);
 			if (psiFile != null) {
 				List<AlignmentGroup> allGroups = new ArrayList<>();
 				for (AlignmentFinder finder : finders)
 					if (finder.isApplicable(psiFile))
-						allGroups.addAll(finder.findGroups(psiFile, document));
+						allGroups.addAll(finder.findGroups(psiFile, doc));
 				manager.refresh(allGroups);
 			}
 		});
