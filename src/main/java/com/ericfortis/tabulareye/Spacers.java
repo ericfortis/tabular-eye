@@ -22,7 +22,7 @@ public class Spacers {
 		this.editor = editor;
 	}
 
-	
+
 	public void refresh(List<AlignmentGroup> groups) {
 		clearAll();
 		var fm = getFontMetrics();
@@ -41,10 +41,9 @@ public class Spacers {
 
 
 	private void renderGroup(AlignmentGroup group, FontMetrics fm) {
-		// Step 1: measure every key.
+		// measure keys
 		int[] widths = new int[group.props.size()];
 		int maxWidth = 0;
-
 		for (int i = 0; i < group.props.size(); i++) {
 			int w = fm.stringWidth(group.props.get(i).keyText());
 			widths[i] = w;
@@ -52,27 +51,20 @@ public class Spacers {
 				maxWidth = w;
 		}
 
-		// Step 2: for keys narrower than the max, place a spacer inlay.
+		// insert spacers
 		var model = editor.getInlayModel();
-
 		for (int i = 0; i < group.props.size(); i++) {
 			int gap = maxWidth - widths[i];
-			if (gap <= 0)
-				continue; // widest key — no inlay needed
-
-			// Inlay goes at colonOffset + 1, i.e., right after ':' and before
-			// the existing space character. The existing space + this inlay =
-			//  the same total visual width for every property in the group.
-			int inlayOffset = group.props.get(i).colonOffset() + 1;
-
-			Inlay<?> inlay = model.addInlineElement(inlayOffset, true, new Spacer(gap));
-
-			if (inlay != null)
-				activeInlays.add(inlay);
+			if (gap > 0) { // ignore longest key
+				int inlayOffset = group.props.get(i).colonOffset() + 1;
+				Inlay<?> inlay = model.addInlineElement(inlayOffset, true, new Spacer(gap));
+				if (inlay != null)
+					activeInlays.add(inlay);
+			} 
 		}
 	}
 
-	
+
 	private FontMetrics getFontMetrics() {
 		if (editor.isDisposed())
 			return null;
