@@ -54,7 +54,7 @@ public class Spacers {
 		var model = editor.getInlayModel();
 		for (int i = 0; i < group.props.size(); i++) {
 			int spacerWidth = maxWidth - widths[i];
-			if (spacerWidth > 0) { // ignore longest key
+			if (spacerWidth > 0) { // ignores longest left-side
 				int placeAt = group.props.get(i).colonOffset() + 1;
 				var inlay = model.addInlineElement(placeAt, true, new Spacer(spacerWidth));
 				if (inlay != null)
