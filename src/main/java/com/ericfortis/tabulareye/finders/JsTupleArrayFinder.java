@@ -3,6 +3,7 @@ package com.ericfortis.tabulareye.finders;
 import com.intellij.lang.javascript.JavaScriptFileType;
 import com.intellij.lang.javascript.psi.JSArrayLiteralExpression;
 import com.intellij.openapi.editor.Document;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
@@ -32,9 +33,9 @@ public class JsTupleArrayFinder implements AlignmentFinder {
 		return groups;
 	}
 
-	private static boolean isMultiline(JSArrayLiteralExpression array, Document doc) {
-		int startLine = doc.getLineNumber(array.getTextRange().getStartOffset());
-		int endLine = doc.getLineNumber(array.getTextRange().getEndOffset());
+	private static boolean isMultiline(PsiElement elem, Document doc) {
+		int startLine = doc.getLineNumber(elem.getTextRange().getStartOffset());
+		int endLine = doc.getLineNumber(elem.getTextRange().getEndOffset());
 		return endLine > startLine;
 	}
 
