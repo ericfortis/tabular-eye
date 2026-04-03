@@ -21,14 +21,10 @@ public abstract class AlignmentFinder {
 		return endLine > startLine;
 	}
 
-	/**
-	 * Walks the immediate children of {@code elem} looking for a child whose
-	 * text equals {@code tokenText} and returns its start offset, or -1 if not found.
-	 */
-	protected static int findTokenOffset(PsiElement elem, String tokenText) {
+	protected static int findSeparatorOffset(PsiElement elem, String separator) {
 		var child = elem.getFirstChild();
 		while (child != null) {
-			if (tokenText.equals(child.getText())) 
+			if (separator.equals(child.getText()))
 				return child.getTextRange().getStartOffset();
 			child = child.getNextSibling();
 		}

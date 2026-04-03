@@ -40,7 +40,7 @@ public class JsObjectLiteralFinder extends AlignmentFinder {
 			if (prop == null || prop.isShorthanded())
 				continue;
 
-			int colonOffset = findTokenOffset(prop, ":");
+			int colonOffset = findSeparatorOffset(prop, ":");
 			if (colonOffset < 0)
 				continue;
 

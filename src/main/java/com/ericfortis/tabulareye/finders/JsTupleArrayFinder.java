@@ -58,7 +58,7 @@ public class JsTupleArrayFinder extends AlignmentFinder {
 				var tupleElements = tuple.getExpressions();
 				if (tupleElements.length == 2) {
 					var first = tupleElements[0];
-					int commaOffset = findTokenOffset(tuple, ",");
+					int commaOffset = findSeparatorOffset(tuple, ",");
 					if (commaOffset > 0)
 						group.add(new PropInfo(first.getText(), commaOffset));
 				}

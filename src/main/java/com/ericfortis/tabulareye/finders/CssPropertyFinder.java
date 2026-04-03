@@ -28,7 +28,7 @@ public class CssPropertyFinder extends AlignmentFinder {
 				var group = new AlignmentGroup();
 				for (var child = block.getFirstChild(); child != null; child = child.getNextSibling())
 					if (child instanceof CssDeclaration decl) {
-						int colonOffset = findTokenOffset(decl, ":");
+						int colonOffset = findSeparatorOffset(decl, ":");
 						if (colonOffset > 0)
 							group.add(new PropInfo(getPropertyName(decl), colonOffset));
 					}
