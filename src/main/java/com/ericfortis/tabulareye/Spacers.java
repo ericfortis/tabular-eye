@@ -55,7 +55,7 @@ public class Spacers {
 	private void renderGroup(AlignmentGroup group, FontMetrics fm) {
 		var props = group.props();
 
-		// measure keys
+		// measure left-side tokens
 		int[] widths = new int[props.size()];
 		int maxWidth = 0;
 		for (int i = 0; i < props.size(); i++) {
