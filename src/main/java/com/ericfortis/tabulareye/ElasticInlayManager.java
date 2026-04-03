@@ -30,10 +30,6 @@ public class ElasticInlayManager {
 		this.editor = editor;
 	}
 
-	/**
-	 * Clears all existing inlays and re-creates them from the given groups.
-	 * Call this whenever the document changes or the file is first opened.
-	 */
 	public void refresh(List<AlignmentGroup> groups) {
 		clearAll();
 
