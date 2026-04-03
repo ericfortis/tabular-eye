@@ -90,6 +90,7 @@ public class TabularEyeListener implements EditorFactoryListener {
 					 scheduleRefresh(editor, manager);
 				 }
 
+				 // Handles returning to an open tab
 				 @Override
 				 public void selectionChanged(@NotNull com.intellij.openapi.fileEditor.FileEditorManagerEvent event) {
 					 if (event.getNewFile() != null) {
