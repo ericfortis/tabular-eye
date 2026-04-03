@@ -22,12 +22,7 @@ import java.util.List;
  * never accumulate.
  */
 public class ElasticInlayManager {
-
-	/**
-	 * All currently live inlays owned by this manager for one editor.
-	 */
-	@SuppressWarnings("rawtypes")
-	private final List<Inlay> activeInlays = new ArrayList<>();
+	private final List<Inlay<?>> activeInlays = new ArrayList<>();
 
 	private final Editor editor;
 
@@ -50,9 +45,6 @@ public class ElasticInlayManager {
 			renderGroup(group, fm);
 	}
 
-	/**
-	 * Disposes every inlay this manager created. Safe to call multiple times.
-	 */
 	public void clearAll() {
 		for (var inlay : activeInlays)
 			if (inlay.isValid())
@@ -60,9 +52,6 @@ public class ElasticInlayManager {
 		activeInlays.clear();
 	}
 
-	/**
-	 * Computes widths, finds max, places inlays for one group.
-	 */
 	private void renderGroup(AlignmentGroup group, FontMetrics fm) {
 		// Step 1: measure every key.
 		int[] widths = new int[group.props.size()];
@@ -100,10 +89,6 @@ public class ElasticInlayManager {
 		}
 	}
 
-	/**
-	 * Derives FontMetrics from the editor's current plain font.
-	 * Returns null only if the editor is disposed of or has no graphics context.
-	 */
 	private FontMetrics getFontMetrics() {
 		if (editor.isDisposed())
 			return null;
