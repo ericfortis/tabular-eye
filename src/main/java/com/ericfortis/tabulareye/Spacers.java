@@ -27,8 +27,8 @@ public class Spacers {
 		clearAll();
 		var fm = getFontMetrics();
 		if (fm != null)
-			for (var group : groups)
-				renderGroup(group, fm);
+			for (var g : groups)
+				renderGroup(g, fm);
 	}
 
 
