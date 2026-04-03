@@ -1,6 +1,6 @@
 package com.ericfortis.tabulareye;
 
-import com.ericfortis.tabulareye.finders.AlignmentGroup;
+import com.ericfortis.tabulareye.finders.AlignmentFinder.AlignmentGroup;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.Inlay;
 import com.intellij.openapi.editor.colors.EditorFontType;

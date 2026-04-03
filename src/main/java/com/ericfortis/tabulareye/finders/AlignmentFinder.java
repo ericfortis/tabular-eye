@@ -4,6 +4,7 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface AlignmentFinder {
@@ -11,4 +12,11 @@ public interface AlignmentFinder {
 
 	@NotNull
 	List<AlignmentGroup> findGroups(@NotNull PsiFile file, @NotNull Document document);
+
+	class AlignmentGroup {
+		public final List<PropInfo> props = new ArrayList<>();
+	}
+
+	record PropInfo(String keyText, int colonOffset) {
+	}
 }

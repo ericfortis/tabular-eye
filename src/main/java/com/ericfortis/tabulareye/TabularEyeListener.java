@@ -1,6 +1,10 @@
 package com.ericfortis.tabulareye;
 
-import com.ericfortis.tabulareye.finders.*;
+import com.ericfortis.tabulareye.finders.AlignmentFinder;
+import com.ericfortis.tabulareye.finders.AlignmentFinder.AlignmentGroup;
+import com.ericfortis.tabulareye.finders.CssPropertyFinder;
+import com.ericfortis.tabulareye.finders.JsObjectLiteralFinder;
+import com.ericfortis.tabulareye.finders.JsTupleArrayFinder;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.event.DocumentEvent;
