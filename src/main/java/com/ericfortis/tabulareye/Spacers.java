@@ -44,7 +44,7 @@ public class Spacers {
 		int[] widths = new int[group.props.size()];
 		int maxWidth = 0;
 		for (int i = 0; i < group.props.size(); i++) {
-			int w = fm.stringWidth(group.props.get(i).keyText());
+			int w = fm.stringWidth(group.props.get(i).keyText()); // supports proportional fonts 
 			widths[i] = w;
 			if (w > maxWidth)
 				maxWidth = w;
