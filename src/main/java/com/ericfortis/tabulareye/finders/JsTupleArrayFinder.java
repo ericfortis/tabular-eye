@@ -19,25 +19,15 @@ public class JsTupleArrayFinder implements AlignmentFinder {
 
 	@Override
 	@NotNull
-	public List<AlignmentGroup> findGroups(
-		 @NotNull PsiFile file,
-		 @NotNull Document document
-	) {
+	public List<AlignmentGroup> findGroups(@NotNull PsiFile file, @NotNull Document document) {
 		List<AlignmentGroup> groups = new ArrayList<>();
 
-		var allArrays = PsiTreeUtil.collectElementsOfType(file, JSArrayLiteralExpression.class);
-
-		for (var array : allArrays) {
-			if (!hasTuples(array))
-				continue;
-
-			if (!isMultiline(array, document))
-				continue;
-
-			var group = buildGroup(array);
-			if (group != null && group.props.size() > 1)
-				groups.add(group);
-		}
+		for (var array : PsiTreeUtil.collectElementsOfType(file, JSArrayLiteralExpression.class))
+			if (hasTuples(array) && isMultiline(array, document)) {
+				var group = buildGroup(array);
+				if (group != null && group.props.size() > 1)
+					groups.add(group);
+			}
 
 		return groups;
 	}
@@ -81,7 +71,7 @@ public class JsTupleArrayFinder implements AlignmentFinder {
 	private static int findCommaOffset(JSArrayLiteralExpression tuple) {
 		var child = tuple.getFirstChild();
 		while (child != null) {
-			if (",".equals(child.getText())) 
+			if (",".equals(child.getText()))
 				return child.getTextRange().getStartOffset();
 			child = child.getNextSibling();
 		}
