@@ -124,7 +124,7 @@ public class TabularEye implements EditorFactoryListener {
 	private void scheduleRefresh(Editor editor, Spacers manager) {
 		var project = editor.getProject();
 		if (project == null || project.isDisposed()) {
-			for (Project p : ProjectManager.getInstance().getOpenProjects())
+			for (var p : ProjectManager.getInstance().getOpenProjects())
 				if (!p.isDisposed()) {
 					doRefresh(editor, manager, p);
 					return;
@@ -146,7 +146,7 @@ public class TabularEye implements EditorFactoryListener {
 			var applicable = applicableFindersMap.get(editor);
 			if (psiFile != null && applicable != null) {
 				List<AlignmentGroup> allGroups = new ArrayList<>();
-				for (AlignmentFinder finder : applicable)
+				for (var finder : applicable)
 					allGroups.addAll(finder.findGroups(psiFile, doc));
 				manager.refresh(allGroups);
 			}
