@@ -21,9 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// BUGS:
-// switching editor tabs, doesn't refresh
-
 /**
  * Entry point
  * Lifecycle per editor:
@@ -54,7 +51,7 @@ public class TabularEyeListener implements EditorFactoryListener {
 		var editor = event.getEditor();
 		var project = editor.getProject();
 		if (project == null) return;
-
+		
 		var document = editor.getDocument();
 		PsiDocumentManager.getInstance(project).performForCommittedDocument(document, () -> {
 			if (editor.isDisposed()) return;
@@ -85,13 +82,22 @@ public class TabularEyeListener implements EditorFactoryListener {
 		}, parentDisposable);
 
 
-		// initial trigger, we need to wait until the file is fully open
 		project.getMessageBus()
 			 .connect(parentDisposable)
 			 .subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {
 				 @Override
 				 public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
 					 scheduleRefresh(editor, manager);
+				 }
+
+				 @Override
+				 public void selectionChanged(@NotNull com.intellij.openapi.fileEditor.FileEditorManagerEvent event) {
+					 if (event.getNewFile() != null) {
+						 var psiFile = PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
+						 if (psiFile != null && event.getNewFile().equals(psiFile.getVirtualFile())) {
+							 scheduleRefresh(editor, manager);
+						 }
+					 }
 				 }
 			 });
 	}
