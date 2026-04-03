@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.ericfortis.tabulareye</id>
   <name>Tabular Eye</name>
-  <version>1.0.0</version>
+  <version>0.0.1</version>
   <vendor>Eric Fortis</vendor>
 
   <description><![CDATA[
@@ -10,8 +10,6 @@
         spacers are inserted after each <code>:</code> so all values line up to
         the same visual column — without modifying the document.
     ]]></description>
-
-  <idea-version since-build="223"/>
 
   <depends>com.intellij.modules.platform</depends>
   <depends>JavaScript</depends>
