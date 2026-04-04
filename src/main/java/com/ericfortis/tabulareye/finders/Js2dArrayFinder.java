@@ -1,6 +1,5 @@
 package com.ericfortis.tabulareye.finders;
 
-import com.intellij.lang.javascript.JavaScriptFileType;
 import com.intellij.lang.javascript.psi.JSArrayLiteralExpression;
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiFile;
@@ -10,12 +9,17 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Only aligns the second column */
+/**
+ * Only aligns the second column
+ */
 public class Js2dArrayFinder extends AlignmentFinder {
 
 	@Override
 	public boolean isApplicable(@NotNull PsiFile file) {
-		return file.getFileType() instanceof JavaScriptFileType;
+		var lang = file.getLanguage().getID();
+		return lang.equals("ECMAScript 6")
+			 || lang.equals("TypeScript")
+			 || lang.equals("TypeScript JSX");
 	}
 
 	@Override

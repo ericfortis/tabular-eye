@@ -1,6 +1,5 @@
 package com.ericfortis.tabulareye.finders;
 
-import com.intellij.lang.javascript.JavaScriptFileType;
 import com.intellij.lang.javascript.psi.JSObjectLiteralExpression;
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiFile;
@@ -15,7 +14,10 @@ public class JsObjectLiteralFinder extends AlignmentFinder {
 
 	@Override
 	public boolean isApplicable(@NotNull PsiFile file) {
-		return file.getFileType() instanceof JavaScriptFileType;
+		var lang = file.getLanguage().getID();
+		return lang.equals("ECMAScript 6")
+			 || lang.equals("TypeScript")
+			 || lang.equals("TypeScript JSX");
 	}
 
 	@Override
