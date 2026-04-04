@@ -1,5 +1,6 @@
 package com.ericfortis.tabulareye.finders;
 
+import com.intellij.lang.javascript.psi.ecma6.impl.TypeScriptObjectTypeImpl;
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -22,13 +23,12 @@ public class TsInterfaceFinder extends AlignmentFinder {
 	public List<AlignmentGroup> findGroups(@NotNull PsiFile file, @NotNull Document doc) {
 		List<AlignmentGroup> groups = new ArrayList<>();
 
-		for (var el : PsiTreeUtil.collectElements(file, el -> "TypeScriptObjectTypeImpl".equals(el.getClass().getSimpleName()))) {
+		for (var el : PsiTreeUtil.collectElementsOfType(file, TypeScriptObjectTypeImpl.class))
 			if (isMultiline(el, doc)) {
 				var group = buildGroup(el);
 				if (group != null && group.isValid())
 					groups.add(group);
 			}
-		}
 
 		return groups;
 	}
