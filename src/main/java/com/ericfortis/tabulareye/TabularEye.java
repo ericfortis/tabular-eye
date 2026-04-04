@@ -52,7 +52,7 @@ public class TabularEye implements EditorFactoryListener {
 		if (psiFile == null) return;
 
 		var applicable = EP_NAME.getExtensionList().stream().filter(f -> f.isApplicable(psiFile)).toList();
-		if (applicable.isEmpty()) 
+		if (applicable.isEmpty())
 			return;
 
 		var session = new EditorSession(editor, project, applicable);

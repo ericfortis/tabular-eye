@@ -15,6 +15,19 @@ import java.util.List;
 public abstract class AlignmentFinder {
 	public abstract boolean isApplicable(@NotNull PsiFile file);
 
+	public static boolean isJs(@NotNull PsiFile file) {
+		var type = file.getFileType();
+		return type instanceof com.intellij.lang.javascript.JavaScriptFileType
+			 || type instanceof com.intellij.lang.javascript.TypeScriptFileType
+			 || type instanceof com.intellij.lang.javascript.TypeScriptJSXFileType
+			 || type instanceof com.intellij.lang.javascript.JSXFileType;
+	}
+
+	public static boolean isCss(@NotNull PsiFile file) {
+		var type = file.getFileType();
+		return type instanceof com.intellij.psi.css.CssFileType;
+	}
+
 	static boolean isMultiline(PsiElement elem, Document doc) {
 		int startLine = doc.getLineNumber(elem.getTextRange().getStartOffset());
 		int endLine = doc.getLineNumber(elem.getTextRange().getEndOffset());
@@ -38,11 +51,15 @@ public abstract class AlignmentFinder {
 		private final List<PropInfo> props = new ArrayList<>();
 
 		public int getStartOffset() {
-			return props.isEmpty() ? -1 : props.get(0).keyStartOffset();
+			return props.isEmpty()
+				 ? -1
+				 : props.getFirst().keyStartOffset();
 		}
 
 		public int getEndOffset() {
-			return props.isEmpty() ? -1 : props.get(props.size() - 1).colonOffset();
+			return props.isEmpty()
+				 ? -1
+				 : props.getLast().colonOffset();
 		}
 
 		public void add(PropInfo p) {

@@ -15,7 +15,7 @@ public class CssPropertyFinder extends AlignmentFinder {
 
 	@Override
 	public boolean isApplicable(@NotNull PsiFile file) {
-		return "CSS".equals(file.getLanguage().getID());
+		return isCss(file);
 	}
 
 	@Override

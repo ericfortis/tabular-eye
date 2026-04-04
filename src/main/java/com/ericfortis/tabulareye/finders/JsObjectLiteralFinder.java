@@ -14,11 +14,7 @@ public class JsObjectLiteralFinder extends AlignmentFinder {
 
 	@Override
 	public boolean isApplicable(@NotNull PsiFile file) {
-		var type = file.getFileType();
-		return type instanceof com.intellij.lang.javascript.JavaScriptFileType
-			 || type instanceof com.intellij.lang.javascript.TypeScriptFileType
-			 || type instanceof com.intellij.lang.javascript.TypeScriptJSXFileType
-			 || type instanceof com.intellij.lang.javascript.JSXFileType;
+		return isJs(file);
 	}
 
 	@Override
