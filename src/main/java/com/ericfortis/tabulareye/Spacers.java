@@ -40,10 +40,6 @@ public class Spacers {
 		activeInlays.clear();
 	}
 
-	/**
-	 * Called when the editor color scheme changes (font size, typeface, etc.)
-	 * so that the next refresh re-acquires correct metrics.
-	 */
 	public void invalidateFontMetricsCache() {
 		cachedFontMetrics = null;
 	}
