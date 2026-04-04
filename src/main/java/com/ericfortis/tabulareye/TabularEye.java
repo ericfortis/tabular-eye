@@ -15,6 +15,8 @@ import java.util.Map;
 
 public class TabularEye implements EditorFactoryListener {
 
+	// This way CSS and JS plugins (bundled) could be optional
+	// Not sure if they can be disabled, at least in WebStorm I can't.
 	private static final ExtensionPointName<AlignmentFinder> EP_NAME =
 		 ExtensionPointName.create("com.ericfortis.tabulareye.alignmentFinder");
 
@@ -50,7 +52,8 @@ public class TabularEye implements EditorFactoryListener {
 		if (psiFile == null) return;
 
 		var applicable = EP_NAME.getExtensionList().stream().filter(f -> f.isApplicable(psiFile)).toList();
-		if (applicable.isEmpty()) return;
+		if (applicable.isEmpty()) 
+			return;
 
 		var session = new EditorSession(editor, project, applicable);
 		sessions.put(editor, session);
