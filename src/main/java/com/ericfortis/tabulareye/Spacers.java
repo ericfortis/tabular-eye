@@ -20,7 +20,7 @@ public class Spacers {
 	private final List<Inlay<Spacer>> activeInlays = new ArrayList<>();
 	private final Editor editor;
 
-	// This is mainly because we want to handle non-monospaces fonts.
+	// This is mainly because we want to handle non-monospace fonts.
 	// i.e., we could later implement an optimized path for mono (I don't use mono, so…)
 	private final Map<Integer, FontMetrics> metricsCache = new HashMap<>();
 
