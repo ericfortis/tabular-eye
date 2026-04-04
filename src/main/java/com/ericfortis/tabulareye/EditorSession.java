@@ -60,7 +60,7 @@ class EditorSession implements Disposable {
 				 @Override
 				 public void selectionChanged(@NotNull com.intellij.openapi.fileEditor.FileEditorManagerEvent event) {
 					 if (event.getNewFile() == null) return;
-					 ReadAction.run(() -> {
+					 ReadAction.runBlocking(() -> {
 						 var psiFile = PsiDocumentManager.getInstance(p).getPsiFile(ed.getDocument());
 						 if (psiFile != null && event.getNewFile().equals(psiFile.getVirtualFile()))
 							 refresh(p);
@@ -84,7 +84,7 @@ class EditorSession implements Disposable {
 		var doc = editor.getDocument();
 		var psiDocManager = PsiDocumentManager.getInstance(p);
 
-		psiDocManager.performForCommittedDocument(doc, () -> ReadAction.run(() -> {
+		psiDocManager.performForCommittedDocument(doc, () -> ReadAction.runBlocking(() -> {
 			if (editor.isDisposed()) return;
 			var psiFile = psiDocManager.getPsiFile(doc);
 			if (psiFile == null) return;

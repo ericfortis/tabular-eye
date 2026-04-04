@@ -30,7 +30,7 @@ public class Spacers {
 		if (isRefreshing) return;
 		isRefreshing = true;
 		try {
-			ReadAction.run(() -> {
+			ReadAction.runBlocking(() -> {
 				if (editor.isDisposed()) 
 					return;
 				clearAll();
