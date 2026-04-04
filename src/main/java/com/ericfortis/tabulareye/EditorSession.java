@@ -3,6 +3,9 @@ package com.ericfortis.tabulareye;
 import com.ericfortis.tabulareye.finders.AlignmentFinder;
 import com.ericfortis.tabulareye.finders.AlignmentFinder.AlignmentGroup;
 import com.intellij.openapi.Disposable;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ModalityState;
+import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.colors.EditorColorsListener;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
@@ -57,9 +60,11 @@ class EditorSession implements Disposable {
 				 @Override
 				 public void selectionChanged(@NotNull com.intellij.openapi.fileEditor.FileEditorManagerEvent event) {
 					 if (event.getNewFile() == null) return;
-					 var psiFile = PsiDocumentManager.getInstance(p).getPsiFile(ed.getDocument());
-					 if (psiFile != null && event.getNewFile().equals(psiFile.getVirtualFile()))
-						 refresh(p);
+					 ReadAction.run(() -> {
+						 var psiFile = PsiDocumentManager.getInstance(p).getPsiFile(ed.getDocument());
+						 if (psiFile != null && event.getNewFile().equals(psiFile.getVirtualFile()))
+							 refresh(p);
+					 });
 				 }
 			 });
 
@@ -70,6 +75,8 @@ class EditorSession implements Disposable {
 				 spacers.invalidateFontMetricsCache();
 				 refresh(p);
 			 });
+
+		ed.getScrollingModel().addVisibleAreaListener(e -> refresh(p), disposable);
 	}
 
 	void refresh(Project p) {
@@ -77,7 +84,7 @@ class EditorSession implements Disposable {
 		var doc = editor.getDocument();
 		var psiDocManager = PsiDocumentManager.getInstance(p);
 
-		psiDocManager.performForCommittedDocument(doc, () -> {
+		psiDocManager.performForCommittedDocument(doc, () -> ReadAction.run(() -> {
 			if (editor.isDisposed()) return;
 			var psiFile = psiDocManager.getPsiFile(doc);
 			if (psiFile == null) return;
@@ -85,8 +92,12 @@ class EditorSession implements Disposable {
 			List<AlignmentGroup> allGroups = new ArrayList<>();
 			for (var finder : finders)
 				allGroups.addAll(finder.findGroups(psiFile, doc));
-			spacers.refresh(allGroups);
-		});
+
+			ApplicationManager.getApplication().invokeLater(() -> {
+				if (!editor.isDisposed())
+					spacers.refresh(allGroups);
+			}, ModalityState.any());
+		}));
 	}
 
 	@Override

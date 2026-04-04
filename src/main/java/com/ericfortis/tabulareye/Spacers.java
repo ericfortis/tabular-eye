@@ -1,6 +1,7 @@
 package com.ericfortis.tabulareye;
 
 import com.ericfortis.tabulareye.finders.AlignmentFinder.AlignmentGroup;
+import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorCustomElementRenderer;
 import com.intellij.openapi.editor.Inlay;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Spacers {
+	private boolean isRefreshing = false;
 	private final List<Inlay<Spacer>> activeInlays = new ArrayList<>();
 	private final Editor editor;
 
@@ -25,9 +27,31 @@ public class Spacers {
 	}
 
 	public void refresh(List<AlignmentGroup> groups) {
-		clearAll();
-		for (var g : groups)
-			renderGroup(g);
+		if (isRefreshing) return;
+		isRefreshing = true;
+		try {
+			ReadAction.run(() -> {
+				if (editor.isDisposed()) 
+					return;
+				clearAll();
+
+				var visibleArea = editor.getScrollingModel().getVisibleArea();
+				int startVisualLine = editor.xyToLogicalPosition(new Point(0, visibleArea.y)).line;
+				int endVisualLine = editor.xyToLogicalPosition(new Point(0, visibleArea.y + visibleArea.height)).line;
+
+				for (var g : groups) {
+					int groupStartLine = editor.offsetToLogicalPosition(g.getStartOffset()).line;
+					int groupEndLine = editor.offsetToLogicalPosition(g.getEndOffset()).line;
+
+					if (groupEndLine < startVisualLine || groupStartLine > endVisualLine)
+						continue;
+
+					renderGroup(g);
+				}
+			});
+		} finally {
+			isRefreshing = false;
+		}
 	}
 
 	public void clearAll() {

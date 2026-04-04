@@ -4,6 +4,7 @@ import com.ericfortis.tabulareye.finders.AlignmentFinder;
 import com.ericfortis.tabulareye.finders.CssPropertyFinder;
 import com.ericfortis.tabulareye.finders.JsObjectLiteralFinder;
 import com.ericfortis.tabulareye.finders.Js2dArrayFinder;
+import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.event.EditorFactoryEvent;
 import com.intellij.openapi.editor.event.EditorFactoryListener;
@@ -33,10 +34,10 @@ public class TabularEye implements EditorFactoryListener {
 		if (project == null) return;
 
 		var document = editor.getDocument();
-		PsiDocumentManager.getInstance(project).performForCommittedDocument(document, () -> {
+		PsiDocumentManager.getInstance(project).performForCommittedDocument(document, () -> ReadAction.run(() -> {
 			if (!editor.isDisposed())
 				openSession(editor, project);
-		});
+		}));
 	}
 
 	@Override

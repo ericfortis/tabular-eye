@@ -37,6 +37,14 @@ public abstract class AlignmentFinder {
 	public static class AlignmentGroup {
 		private final List<PropInfo> props = new ArrayList<>();
 
+		public int getStartOffset() {
+			return props.isEmpty() ? -1 : props.get(0).keyStartOffset();
+		}
+
+		public int getEndOffset() {
+			return props.isEmpty() ? -1 : props.get(props.size() - 1).colonOffset();
+		}
+
 		public void add(PropInfo p) {
 			props.add(p);
 		}
