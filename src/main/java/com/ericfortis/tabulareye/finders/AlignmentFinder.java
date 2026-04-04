@@ -50,6 +50,6 @@ public abstract class AlignmentFinder {
 		}
 	}
 
-	public record PropInfo(String keyText, int colonOffset) {
+	public record PropInfo(String keyText, int keyStartOffset, int colonOffset) {
 	}
 }

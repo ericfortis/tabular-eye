@@ -1,7 +1,6 @@
 package com.ericfortis.tabulareye;
 
 import com.ericfortis.tabulareye.finders.AlignmentFinder.AlignmentGroup;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorCustomElementRenderer;
 import com.intellij.openapi.editor.Inlay;
@@ -11,15 +10,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Spacers {
-	private static final Logger LOG = Logger.getInstance(Spacers.class);
-
 	private final List<Inlay<Spacer>> activeInlays = new ArrayList<>();
 	private final Editor editor;
 
-	private FontMetrics cachedFontMetrics;
+	private final Map<Integer, FontMetrics> metricsCache = new HashMap<>();
 
 	public Spacers(Editor editor) {
 		this.editor = editor;
@@ -27,10 +26,8 @@ public class Spacers {
 
 	public void refresh(List<AlignmentGroup> groups) {
 		clearAll();
-		var fm = getFontMetrics();
-		if (fm != null)
-			for (var g : groups)
-				renderGroup(g, fm);
+		for (var g : groups)
+			renderGroup(g);
 	}
 
 	public void clearAll() {
@@ -41,18 +38,22 @@ public class Spacers {
 	}
 
 	public void invalidateFontMetricsCache() {
-		cachedFontMetrics = null;
+		metricsCache.clear();
 	}
 
 
-	private void renderGroup(AlignmentGroup group, FontMetrics fm) {
+	private void renderGroup(AlignmentGroup group) {
 		var props = group.props();
 
 		// measure left-side tokens
 		int[] widths = new int[props.size()];
 		int maxWidth = 0;
 		for (int i = 0; i < props.size(); i++) {
-			int w = fm.stringWidth(props.get(i).keyText()); // supports proportional fonts
+			var prop = props.get(i);
+			var fm = getFontMetrics(prop.keyStartOffset());
+			if (fm == null) continue;
+
+			int w = fm.stringWidth(prop.keyText()); // supports proportional fonts
 			widths[i] = w;
 			if (w > maxWidth)
 				maxWidth = w;
@@ -72,25 +73,18 @@ public class Spacers {
 	}
 
 
-	private FontMetrics getFontMetrics() {
+	private FontMetrics getFontMetrics(int offset) {
 		if (editor.isDisposed())
 			return null;
 
-		if (cachedFontMetrics != null)
-			return cachedFontMetrics;
+		var iterator = editor.getHighlighter().createIterator(offset);
+		int fontStyle = iterator.getTextAttributes().getFontType();
 
-		var g = editor.getContentComponent().getGraphics();
-		if (g == null) {
-			LOG.warn("TabularEye: could not acquire Graphics context from editor component; skipping render.");
-			return null;
-		}
-
-		try {
-			cachedFontMetrics = g.getFontMetrics(editor.getColorsScheme().getFont(EditorFontType.PLAIN));
-			return cachedFontMetrics;
-		} finally {
-			g.dispose();
-		}
+		return metricsCache.computeIfAbsent(fontStyle, style -> {
+			var type = EditorFontType.forJavaStyle(style);
+			var font = editor.getColorsScheme().getFont(type);
+			return editor.getContentComponent().getFontMetrics(font);
+		});
 	}
 
 

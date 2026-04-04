@@ -52,7 +52,7 @@ public class Js2dArrayFinder extends AlignmentFinder {
 					var first = innerElements[0];
 					int commaOffset = findSeparatorOffset(inner, ",");
 					if (commaOffset > 0)
-						group.add(new PropInfo(first.getText(), commaOffset));
+						group.add(new PropInfo(first.getText(), first.getTextRange().getStartOffset(), commaOffset));
 				}
 			}
 

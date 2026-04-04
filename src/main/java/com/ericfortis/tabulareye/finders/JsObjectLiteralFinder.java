@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class JsObjectLiteralFinder extends AlignmentFinder {
 
@@ -52,8 +53,10 @@ public class JsObjectLiteralFinder extends AlignmentFinder {
 			}
 
 			var keyText = keyBuilder.toString().trim();
-			if (!keyText.isEmpty())
-				group.add(new PropInfo(keyText, colonOffset));
+			if (!keyText.isEmpty()) {
+				int startOffset = Objects.requireNonNull(prop.getFirstChild()).getTextRange().getStartOffset();
+				group.add(new PropInfo(keyText, startOffset, colonOffset));
+			}
 		}
 
 		return group.props().isEmpty()

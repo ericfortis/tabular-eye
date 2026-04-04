@@ -29,8 +29,11 @@ public class CssPropertyFinder extends AlignmentFinder {
 				for (var child = block.getFirstChild(); child != null; child = child.getNextSibling())
 					if (child instanceof CssDeclaration decl) {
 						int colonOffset = findSeparatorOffset(decl, ":");
-						if (colonOffset > 0)
-							group.add(new PropInfo(getPropertyName(decl), colonOffset));
+						if (colonOffset > 0) {
+							var name = getPropertyName(decl);
+							int startOffset = decl.getFirstChild() != null ? decl.getFirstChild().getTextRange().getStartOffset() : colonOffset;
+							group.add(new PropInfo(name, startOffset, colonOffset));
+						}
 					}
 				if (group.isValid())
 					groups.add(group);
