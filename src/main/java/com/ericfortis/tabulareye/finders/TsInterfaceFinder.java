@@ -22,10 +22,7 @@ public class TsInterfaceFinder extends AlignmentFinder {
 	public List<AlignmentGroup> findGroups(@NotNull PsiFile file, @NotNull Document doc) {
 		List<AlignmentGroup> groups = new ArrayList<>();
 
-		for (var el : PsiTreeUtil.collectElements(file, el -> {
-			String name = el.getClass().getSimpleName();
-			return name.equals("TypeScriptObjectTypeImpl") || name.equals("TypeScriptObjectType");
-		})) {
+		for (var el : PsiTreeUtil.collectElements(file, el -> "TypeScriptObjectTypeImpl".equals(el.getClass().getSimpleName()))) {
 			if (isMultiline(el, doc)) {
 				var group = buildGroup(el);
 				if (group != null && group.isValid())
