@@ -23,6 +23,12 @@ public abstract class AlignmentFinder {
 			 || type instanceof com.intellij.lang.javascript.JSXFileType;
 	}
 
+	public static boolean isTs(@NotNull PsiFile file) {
+		var type = file.getFileType();
+		return type instanceof com.intellij.lang.javascript.TypeScriptFileType
+			 || type instanceof com.intellij.lang.javascript.TypeScriptJSXFileType;
+	}
+
 	public static boolean isCss(@NotNull PsiFile file) {
 		var type = file.getFileType();
 		return type instanceof com.intellij.psi.css.CssFileType;

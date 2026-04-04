@@ -2,5 +2,6 @@
   <extensions defaultExtensionNs="com.ericfortis.tabulareye">
     <alignmentFinder implementation="com.ericfortis.tabulareye.finders.JsObjectLiteralFinder"/>
     <alignmentFinder implementation="com.ericfortis.tabulareye.finders.Js2dArrayFinder"/>
+    <alignmentFinder implementation="com.ericfortis.tabulareye.finders.TsInterfaceFinder"/>
   </extensions>
 </idea-plugin>
