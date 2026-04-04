@@ -19,9 +19,6 @@ public class Spacers {
 	private final List<Inlay<Spacer>> activeInlays = new ArrayList<>();
 	private final Editor editor;
 
-	/**
-	 * Cached to avoid repeated Graphics-context acquisition on every refresh.
-	 */
 	private FontMetrics cachedFontMetrics;
 
 	public Spacers(Editor editor) {
