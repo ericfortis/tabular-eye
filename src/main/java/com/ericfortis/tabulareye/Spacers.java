@@ -29,11 +29,13 @@ public class Spacers {
 	}
 
 	public void refresh(List<AlignmentGroup> groups) {
-		if (isRefreshing) return;
+		if (isRefreshing)
+			return;
 		isRefreshing = true;
+		
 		try {
 			ReadAction.runBlocking(() -> {
-				if (editor.isDisposed()) 
+				if (editor.isDisposed())
 					return;
 				clearAll();
 
@@ -42,13 +44,10 @@ public class Spacers {
 				int endVisualLine = editor.xyToLogicalPosition(new Point(0, visibleArea.y + visibleArea.height)).line;
 
 				for (var g : groups) {
-					int groupStartLine = editor.offsetToLogicalPosition(g.getStartOffset()).line;
-					int groupEndLine = editor.offsetToLogicalPosition(g.getEndOffset()).line;
-
-					if (groupEndLine < startVisualLine || groupStartLine > endVisualLine)
-						continue;
-
-					renderGroup(g);
+					int start = editor.offsetToLogicalPosition(g.getStartOffset()).line;
+					int end = editor.offsetToLogicalPosition(g.getEndOffset()).line;
+					if (end >= startVisualLine && start <= endVisualLine)
+						renderGroup(g);
 				}
 			});
 		} finally {
