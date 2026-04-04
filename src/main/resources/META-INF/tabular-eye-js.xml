@@ -1,0 +1,6 @@
+<idea-plugin>
+  <extensions defaultExtensionNs="com.ericfortis.tabulareye">
+    <alignmentFinder implementation="com.ericfortis.tabulareye.finders.JsObjectLiteralFinder"/>
+    <alignmentFinder implementation="com.ericfortis.tabulareye.finders.Js2dArrayFinder"/>
+  </extensions>
+</idea-plugin>

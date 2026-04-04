@@ -5,8 +5,12 @@
   <vendor>Eric Fortis</vendor>
 
   <depends>com.intellij.modules.platform</depends>
-  <depends>JavaScript</depends>
-  <depends>com.intellij.css</depends>
+  <depends optional="true" config-file="tabular-eye-js.xml">JavaScript</depends>
+  <depends optional="true" config-file="tabular-eye-css.xml">com.intellij.css</depends>
+
+  <extensionPoints>
+    <extensionPoint name="alignmentFinder" interface="com.ericfortis.tabulareye.finders.AlignmentFinder" dynamic="true"/>
+  </extensionPoints>
 
   <extensions defaultExtensionNs="com.intellij">
     <editorFactoryListener implementation="com.ericfortis.tabulareye.TabularEye"/>
