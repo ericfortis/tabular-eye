@@ -3,7 +3,7 @@ package com.ericfortis.tabulareye;
 import com.ericfortis.tabulareye.finders.AlignmentFinder;
 import com.ericfortis.tabulareye.finders.CssPropertyFinder;
 import com.ericfortis.tabulareye.finders.JsObjectLiteralFinder;
-import com.ericfortis.tabulareye.finders.JsTupleArrayFinder;
+import com.ericfortis.tabulareye.finders.Js2dArrayFinder;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.event.EditorFactoryEvent;
 import com.intellij.openapi.editor.event.EditorFactoryListener;
@@ -19,7 +19,7 @@ public class TabularEye implements EditorFactoryListener {
 
 	private final List<AlignmentFinder> finders = List.of(
 		 new JsObjectLiteralFinder(),
-		 new JsTupleArrayFinder(),
+		 new Js2dArrayFinder(),
 		 new CssPropertyFinder()
 	);
 

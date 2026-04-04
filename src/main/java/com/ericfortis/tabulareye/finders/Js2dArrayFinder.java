@@ -10,7 +10,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JsTupleArrayFinder extends AlignmentFinder {
+/** Only aligns the second column */
+public class Js2dArrayFinder extends AlignmentFinder {
 
 	@Override
 	public boolean isApplicable(@NotNull PsiFile file) {
@@ -23,7 +24,7 @@ public class JsTupleArrayFinder extends AlignmentFinder {
 		List<AlignmentGroup> groups = new ArrayList<>();
 
 		for (var arr : PsiTreeUtil.collectElementsOfType(file, JSArrayLiteralExpression.class))
-			if (isMultiline(arr, doc) && isTupleArray(arr)) {
+			if (isMultiline(arr, doc) && is2dArray(arr)) {
 				var g = buildGroup(arr);
 				if (g != null && g.isValid())
 					groups.add(g);
@@ -33,10 +34,10 @@ public class JsTupleArrayFinder extends AlignmentFinder {
 	}
 
 
-	private static boolean isTupleArray(JSArrayLiteralExpression array) {
+	private static boolean is2dArray(JSArrayLiteralExpression array) {
 		for (var elem : array.getExpressions())
-			if (elem instanceof JSArrayLiteralExpression tuple)
-				if (tuple.getExpressions().length == 2)
+			if (elem instanceof JSArrayLiteralExpression inner)
+				if (inner.getExpressions().length >= 2)
 					return true;
 		return false;
 	}
@@ -45,11 +46,11 @@ public class JsTupleArrayFinder extends AlignmentFinder {
 		var group = new AlignmentGroup();
 
 		for (var elem : arr.getExpressions())
-			if (elem instanceof JSArrayLiteralExpression tuple) {
-				var tupleElements = tuple.getExpressions();
-				if (tupleElements.length == 2) {
-					var first = tupleElements[0];
-					int commaOffset = findSeparatorOffset(tuple, ",");
+			if (elem instanceof JSArrayLiteralExpression inner) {
+				var innerElements = inner.getExpressions();
+				if (innerElements.length >= 2) {
+					var first = innerElements[0];
+					int commaOffset = findSeparatorOffset(inner, ",");
 					if (commaOffset > 0)
 						group.add(new PropInfo(first.getText(), commaOffset));
 				}
