@@ -10,9 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class YamlListFinder extends AlignmentFinder {
-	@Override
-	protected List<String> getExtensions() {
-		return YML_EXT;
+	YamlListFinder() {
+		super(YML_EXT);
 	}
 
 	@Override

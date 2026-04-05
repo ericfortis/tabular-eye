@@ -11,10 +11,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class JsObjectLiteralFinder extends AlignmentFinder {
-
-	@Override
-	protected List<String> getExtensions() {
-		return JS_EXT;
+	JsObjectLiteralFinder() {
+		super(JS_EXT);
 	}
 
 	@Override

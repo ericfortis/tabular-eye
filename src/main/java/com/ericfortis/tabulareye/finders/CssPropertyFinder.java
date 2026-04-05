@@ -12,9 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CssPropertyFinder extends AlignmentFinder {
-	@Override
-	protected List<String> getExtensions() {
-		return CSS_EXT;
+	CssPropertyFinder() {
+		super(CSS_EXT);
 	}
 
 	@Override

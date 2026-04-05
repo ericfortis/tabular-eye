@@ -12,10 +12,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class TsInterfaceFinder extends AlignmentFinder {
-
-	@Override
-	protected List<String> getExtensions() {
-		return TS_EXT;
+	TsInterfaceFinder() {
+		super(TS_EXT);
 	}
 
 	@Override

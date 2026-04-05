@@ -13,7 +13,11 @@ import java.util.List;
  * Visitor for finding the column spacing needed for tabularizing.
  */
 public abstract class AlignmentFinder {
-	protected abstract List<String> getExtensions();
+	protected final List<String> extensions;
+
+	protected AlignmentFinder(List<String> extensions) {
+		this.extensions = extensions;
+	}
 
 	public static final List<String> JSON_EXT = List.of("json");
 	public static final List<String> JS_EXT = List.of("js", "jsx", "ts", "tsx");
@@ -22,7 +26,7 @@ public abstract class AlignmentFinder {
 	public static final List<String> YML_EXT = List.of("yml", "yaml");
 
 	public final boolean isApplicable(@NotNull PsiFile file) {
-		return getExtensions().contains(file.getVirtualFile().getExtension());
+		return extensions.contains(file.getVirtualFile().getExtension());
 	}
 
 	static boolean isMultiline(PsiElement elem, Document doc) {

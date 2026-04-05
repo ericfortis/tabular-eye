@@ -12,10 +12,8 @@ import java.util.List;
 // TODO maybe we can improve this by excluding the keylength of a nested obj
 
 public class YamlObjectFinder extends AlignmentFinder {
-
-	@Override
-	protected List<String> getExtensions() {
-		return YML_EXT;
+	YamlObjectFinder() {
+		super(YML_EXT);
 	}
 
 	@Override

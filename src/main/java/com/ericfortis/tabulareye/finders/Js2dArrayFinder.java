@@ -13,9 +13,8 @@ import java.util.List;
  * Only aligns the second column
  */
 public class Js2dArrayFinder extends AlignmentFinder {
-	@Override
-	protected List<String> getExtensions() {
-		return JS_EXT;
+	Js2dArrayFinder() {
+		super(JS_EXT);
 	}
 
 	@Override
