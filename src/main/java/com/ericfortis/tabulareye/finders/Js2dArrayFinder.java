@@ -21,14 +21,12 @@ public class Js2dArrayFinder extends AlignmentFinder {
 	@NotNull
 	public List<AlignmentGroup> findGroups(@NotNull PsiFile file, @NotNull Document doc) {
 		List<AlignmentGroup> groups = new ArrayList<>();
-
 		for (var arr : PsiTreeUtil.collectElementsOfType(file, JSArrayLiteralExpression.class))
 			if (isMultiline(arr, doc) && is2dArray(arr)) {
 				var g = buildGroup(arr);
-				if (g != null && g.isValid())
+				if (g.isValid())
 					groups.add(g);
 			}
-
 		return groups;
 	}
 
@@ -43,7 +41,6 @@ public class Js2dArrayFinder extends AlignmentFinder {
 
 	private static AlignmentGroup buildGroup(JSArrayLiteralExpression arr) {
 		var group = new AlignmentGroup();
-
 		for (var elem : arr.getExpressions())
 			if (elem instanceof JSArrayLiteralExpression inner) {
 				var innerElements = inner.getExpressions();
@@ -54,9 +51,6 @@ public class Js2dArrayFinder extends AlignmentFinder {
 						group.add(new PropInfo(first.getText(), first.getTextRange().getStartOffset(), commaOffset));
 				}
 			}
-
-		return group.props().isEmpty()
-			 ? null
-			 : group;
+		return group;
 	}
 }

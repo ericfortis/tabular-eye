@@ -26,6 +26,6 @@ public class TsInterfaceFinder extends AlignmentFinder {
 			if (kv != null)
 				group.add(kv);
 		}
-		return group.props().isEmpty() ? null : group;
+		return group;
 	}
 }

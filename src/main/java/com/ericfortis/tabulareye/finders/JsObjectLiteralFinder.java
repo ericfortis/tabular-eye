@@ -28,7 +28,7 @@ public class JsObjectLiteralFinder extends AlignmentFinder {
 				if (kv != null)
 					group.add(kv);
 			}
-		return group.props().isEmpty() ? null : group;
+		return group;
 	}
 
 	static PropInfo describeKV(PsiElement prop) {

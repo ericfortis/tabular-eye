@@ -22,7 +22,6 @@ public class YamlObjectFinder extends AlignmentFinder {
 
 	private AlignmentGroup buildGroup(YAMLMapping mapping) {
 		var group = new AlignmentGroup();
-
 		for (var keyValue : mapping.getKeyValues()) {
 			var key = keyValue.getKey();
 			if (key == null)
@@ -38,7 +37,6 @@ public class YamlObjectFinder extends AlignmentFinder {
 				group.add(new PropInfo(keyText, startOffset, colonOffset));
 			}
 		}
-
-		return group.props().isEmpty() ? null : group;
+		return group;
 	}
 }

@@ -90,8 +90,11 @@ class EditorSession implements Disposable {
 			if (psiFile == null) return;
 
 			List<AlignmentGroup> allGroups = new ArrayList<>();
-			for (var finder : finders)
-				allGroups.addAll(finder.findGroups(psiFile, doc));
+			for (var finder : finders) {
+				var g = finder.findGroups(psiFile, doc);
+				if (!g.isEmpty())
+					allGroups.addAll(g);
+			}
 
 			ApplicationManager.getApplication().invokeLater(() -> {
 				if (!editor.isDisposed())

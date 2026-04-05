@@ -21,7 +21,6 @@ public class JsonAlignmentFinder extends AlignmentFinder {
 
 	private AlignmentGroup buildGroup(JsonObject obj) {
 		var group = new AlignmentGroup();
-
 		for (var prop : obj.getPropertyList()) {
 			int colonOffset = findSeparatorOffset(prop, ":");
 			if (colonOffset < 0)
@@ -33,7 +32,6 @@ public class JsonAlignmentFinder extends AlignmentFinder {
 				group.add(new PropInfo(keyText, startOffset, colonOffset));
 			}
 		}
-
-		return group.props().isEmpty() ? null : group;
+		return group;
 	}
 }
