@@ -1,5 +1,6 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.ericfortis.tabulareye">
     <alignmentFinder implementation="com.ericfortis.tabulareye.finders.YamlListFinder"/>
+    <alignmentFinder implementation="com.ericfortis.tabulareye.finders.YamlObjectFinder"/>
   </extensions>
 </idea-plugin>
