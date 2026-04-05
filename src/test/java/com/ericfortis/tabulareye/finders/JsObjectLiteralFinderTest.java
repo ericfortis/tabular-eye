@@ -34,12 +34,14 @@ public class JsObjectLiteralFinderTest extends BasePlatformTestCase {
 		assertEquals(2, blocks.size());
 		
 		var block0 = blocks.getFirst();
-		assertEquals("a", block0.props().getFirst().key());
-		assertEquals("b", block0.props().getLast().key());
-		
 		var block1 = blocks.getLast();
-		assertEquals("c", block1.props().getFirst().key());
-		assertEquals("d", block1.props().getLast().key());
+		assertEquals(2, block0.size());
+		assertEquals(2, block1.size());
+		
+		assertEquals("a", block0.get(0).key());
+		assertEquals("b", block0.get(1).key());
+		assertEquals("c", block1.get(0).key());
+		assertEquals("d", block1.get(1).key());
 	}
 
 	public void testIgnoresShorthandProps() {
@@ -53,9 +55,9 @@ public class JsObjectLiteralFinderTest extends BasePlatformTestCase {
 			 """);
 		var b = blocks.getFirst();
 		assertEquals(1, blocks.size());
-		assertEquals(2, b.props().size()); // 'foo' is shorthanded, should be ignored
-		assertEquals("baz", b.props().get(0).key());
-		assertEquals("qux", b.props().get(1).key());
+		assertEquals(2, b.size()); // 'foo' is shorthanded, should be ignored
+		assertEquals("baz", b.get(0).key());
+		assertEquals("qux", b.get(1).key());
 	}
 
 	public void testIgnoresInlineObjects() {
@@ -74,11 +76,10 @@ public class JsObjectLiteralFinderTest extends BasePlatformTestCase {
 			   baz: 123
 			 };
 			 """);
-		// It should find groups for the outer object and potentially the inner one if it was multiline and has > 1 prop
-		// Here inner has only 1 prop, so it shouldn't be a valid group (props.size() > 1)
 		assertEquals(1, blocks.size());
-		assertEquals("foo", blocks.getFirst().props().get(0).key());
-		assertEquals("baz", blocks.getFirst().props().get(1).key());
+		var b = blocks.getFirst();
+		assertEquals("foo", b.get(0).key());
+		assertEquals("baz", b.get(1).key());
 	}
 
 

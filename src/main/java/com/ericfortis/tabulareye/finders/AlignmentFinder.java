@@ -76,6 +76,14 @@ public abstract class AlignmentFinder {
 	public static class AlignmentBlock {
 		private final List<PropInfo> props = new ArrayList<>();
 
+		public PropInfo get(int index) {
+			return props.get(index);
+		}
+		
+		public int size() {
+			return props.size();
+		}
+
 		public int getStartOffset() {
 			return props.isEmpty()
 				 ? -1
