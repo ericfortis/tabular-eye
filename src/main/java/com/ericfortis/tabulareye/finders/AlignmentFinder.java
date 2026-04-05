@@ -18,14 +18,9 @@ public abstract class AlignmentFinder {
 	public final List<String> JS_EXT = List.of("js", "jsx", "ts", "tsx");
 	public final List<String> TS_EXT = List.of("ts", "tsx");
 	public final List<String> CSS_EXT = List.of("css");
-	public final List<String> YML_EXT = List.of("yml", "yaml");
 
 	public boolean isApplicable(@NotNull PsiFile file) {
-		var ext = file.getVirtualFile().getExtension();
-		for (var e : getExtensions())
-			if (e.equals(ext))
-				return true;
-		return false;
+		return getExtensions().contains(file.getVirtualFile().getExtension());
 	}
 
 	static boolean isMultiline(PsiElement elem, Document doc) {
