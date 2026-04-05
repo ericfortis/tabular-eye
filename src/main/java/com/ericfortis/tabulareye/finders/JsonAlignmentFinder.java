@@ -20,9 +20,9 @@ public class JsonAlignmentFinder extends AlignmentFinder {
 	public List<AlignmentGroup> findGroups(@NotNull PsiFile file, @NotNull Document doc) {
 		List<AlignmentGroup> groups = new ArrayList<>();
 
-		for (var obj : PsiTreeUtil.collectElementsOfType(file, JsonObject.class))
-			if (isMultiline(obj, doc)) {
-				var group = buildGroup(obj);
+		for (var el : PsiTreeUtil.collectElementsOfType(file, JsonObject.class))
+			if (isMultiline(el, doc)) {
+				var group = buildGroup(el);
 				if (group != null && group.isValid())
 					groups.add(group);
 			}

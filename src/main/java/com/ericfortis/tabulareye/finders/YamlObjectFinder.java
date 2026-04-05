@@ -21,9 +21,9 @@ public class YamlObjectFinder extends AlignmentFinder {
 	public List<AlignmentGroup> findGroups(@NotNull PsiFile file, @NotNull Document doc) {
 		List<AlignmentGroup> groups = new ArrayList<>();
 
-		for (var mapping : PsiTreeUtil.collectElementsOfType(file, YAMLMapping.class))
-			if (isMultiline(mapping, doc)) {
-				var group = buildGroup(mapping);
+		for (var el : PsiTreeUtil.collectElementsOfType(file, YAMLMapping.class))
+			if (isMultiline(el, doc)) {
+				var group = buildGroup(el);
 				if (group != null && group.isValid())
 					groups.add(group);
 			}
