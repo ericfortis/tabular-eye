@@ -100,6 +100,6 @@ public abstract class AlignmentFinder {
 		}
 	}
 
-	public record PropInfo(String keyText, int keyStartOffset, int separatorOffset) {
+	public record PropInfo(String key, int keyStartOffset, int separatorOffset) {
 	}
 }

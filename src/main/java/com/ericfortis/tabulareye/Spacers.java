@@ -78,7 +78,7 @@ public class Spacers {
 			var fm = getFontMetrics(prop.keyStartOffset());
 			if (fm == null) continue;
 
-			int w = fm.stringWidth(prop.keyText()); // supports proportional fonts
+			int w = fm.stringWidth(prop.key()); // supports proportional fonts
 			widths[i] = w;
 			if (w > maxWidth)
 				maxWidth = w;
