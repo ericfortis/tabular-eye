@@ -20,40 +20,53 @@ public class JsObjectLiteralFinderTest extends BasePlatformTestCase {
 		return finder.findGroups(file, doc);
 	}
 
+	public void testFindGroups_MultipleGroups() {
+		var groups = getGroups("""
+			 const first = {
+			   a: 1,
+			   b: 2
+			 };
+			 const second = {
+			   c: 3,
+			   d: 4
+			 };
+			 """);
+		assertEquals(2, groups.size());
+	}
+
 	public void testFindGroups_SimpleObject() {
 		var groups = getGroups("""
-			 const obj = {
+			 const first = {
 			   foo: "bar",
 			   baz: 123
 			 };
 			 """);
+		var g = groups.getFirst();
 		assertEquals(1, groups.size());
-		var group = groups.getFirst();
-		assertEquals(2, group.props().size());
-		assertEquals("foo", group.props().get(0).keyText());
-		assertEquals("baz", group.props().get(1).keyText());
+		assertEquals(2, g.props().size());
+		assertEquals("foo", g.props().get(0).keyText());
+		assertEquals("baz", g.props().get(1).keyText());
 	}
 
 	public void testFindGroups_IgnoreShorthand() {
 		var groups = getGroups("""
 			 const foo = "bar";
-			 const obj = {
+			 const first = {
 			  foo,
 			  baz: 123,
 			  qux: "quux"
 			 };
 			 """);
-
+		var g = groups.getFirst();
 		assertEquals(1, groups.size());
-		var group = groups.getFirst();
-		assertEquals(2, group.props().size()); // 'foo' is shorthanded, should be ignored
-		assertEquals("baz", group.props().get(0).keyText());
-		assertEquals("qux", group.props().get(1).keyText());
+		assertEquals(2, g.props().size()); // 'foo' is shorthanded, should be ignored
+		assertEquals("baz", g.props().get(0).keyText());
+		assertEquals("qux", g.props().get(1).keyText());
 	}
 
 	public void testFindGroups_IgnoresSingleLineObject() {
 		var groups = getGroups("""
-			 const obj = { foo: "bar", baz: 123 };
+			 const first = { foo: "bar", baz: 123 };
 			 """);
 		assertTrue(groups.isEmpty());
 	}
@@ -67,7 +80,6 @@ public class JsObjectLiteralFinderTest extends BasePlatformTestCase {
 			   baz: 123
 			 };
 			 """);
-
 		// It should find groups for the outer object and potentially the inner one if it was multiline and has > 1 prop
 		// Here inner has only 1 prop, so it shouldn't be a valid group (props.size() > 1)
 		assertEquals(1, groups.size());
@@ -75,17 +87,5 @@ public class JsObjectLiteralFinderTest extends BasePlatformTestCase {
 		assertEquals("baz", groups.getFirst().props().get(1).keyText());
 	}
 
-	public void testFindGroups_MultipleGroups() {
-		var groups = getGroups("""
-			 const obj1 = {
-			   a: 1,
-			   b: 2
-			 };
-			 const obj2 = {
-			   c: 3,
-			   d: 4
-			 };
-			 """);
-		assertEquals(2, groups.size());
-	}
+
 }
