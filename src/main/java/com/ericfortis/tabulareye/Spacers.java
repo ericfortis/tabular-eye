@@ -16,6 +16,22 @@ import java.util.List;
 import java.util.Map;
 
 public class Spacers {
+	/**
+	 * A fully transparent inlay that occupies exactly {@code widthPx} pixels.
+	 * Note: antialiasing (user setting) greyscale makes columns not align 100% perfectly.
+	 */
+	private record Spacer(int widthPx) implements EditorCustomElementRenderer {
+		@Override
+		public int calcWidthInPixels(@NotNull Inlay inlay) {
+			return widthPx;
+		}
+
+		@Override
+		public int calcHeightInPixels(@NotNull Inlay inlay) {
+			return 1;
+		}
+	}
+
 	private boolean isRefreshing = false;
 	private final List<Inlay<Spacer>> activeInlays = new ArrayList<>();
 	private final Editor editor;
@@ -112,21 +128,4 @@ public class Spacers {
 		});
 	}
 
-
-	/**
-	 * A fully transparent inlay that occupies exactly {@code widthPx} pixels.
-	 * Note: antialiasing (user setting) greyscale makes columns not align 100% perfectly.
-	 */
-	private record Spacer(int widthPx) implements EditorCustomElementRenderer {
-
-		@Override
-		public int calcWidthInPixels(@NotNull Inlay inlay) {
-			return widthPx;
-		}
-
-		@Override
-		public int calcHeightInPixels(@NotNull Inlay inlay) {
-			return 1;
-		}
-	}
 }
