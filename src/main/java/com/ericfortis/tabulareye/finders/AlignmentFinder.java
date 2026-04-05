@@ -33,8 +33,15 @@ public abstract class AlignmentFinder {
 	}
 
 	static boolean isMultiline(PsiElement elem, Document doc) {
-		int startLine = doc.getLineNumber(elem.getTextRange().getStartOffset());
-		int endLine = doc.getLineNumber(elem.getTextRange().getEndOffset());
+		int startOffset = elem.getTextRange().getStartOffset();
+		int endOffset = elem.getTextRange().getEndOffset();
+		int docLength = doc.getTextLength();
+
+		if (startOffset < 0 || startOffset > docLength || endOffset < 0 || endOffset > docLength)
+			return false;
+
+		int startLine = doc.getLineNumber(startOffset);
+		int endLine = doc.getLineNumber(endOffset);
 		return endLine > startLine;
 	}
 

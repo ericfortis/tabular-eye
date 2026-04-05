@@ -115,6 +115,8 @@ class EditorSession implements Disposable {
 					 if (psiFile == null)
 						 return null;
 
+					 psiDocManager.commitDocument(doc);
+
 					 List<AlignmentBlock> allBlocks = new ArrayList<>();
 					 for (var finder : finders) {
 						 var blocks = finder.findBlocks(psiFile, doc, startOffset, endOffset);
