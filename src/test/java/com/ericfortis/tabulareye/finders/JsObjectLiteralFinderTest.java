@@ -23,12 +23,12 @@ public class JsObjectLiteralFinderTest extends BasePlatformTestCase {
 	public void testMultipleBlocks() {
 		var blocks = getBlocks("""
 			 const first = {
-			   a: 1,
-			   b: 2
+			  a: 1,
+			  b: 2
 			 };
 			 const second = {
-			   c: 3,
-			   d: 4
+			  c: 3,
+			  d: 4
 			 };
 			 """);
 		assertEquals(2, blocks.size());

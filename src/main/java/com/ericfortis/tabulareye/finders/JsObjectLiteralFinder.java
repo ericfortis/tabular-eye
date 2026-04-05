@@ -36,8 +36,8 @@ public class JsObjectLiteralFinder extends AlignmentFinder {
 		if (separatorOffset < 0)
 			return null;
 		
-		var firstChild = prop.getFirstChild();
 		var keyBuilder = new StringBuilder();
+		var firstChild = prop.getFirstChild();
 		var child = firstChild;
 		while (child != null && !":".equals(child.getText())) {
 			keyBuilder.append(child.getText());
