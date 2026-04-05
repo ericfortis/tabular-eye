@@ -22,30 +22,24 @@ public class JsObjectLiteralFinderTest extends BasePlatformTestCase {
 
 	public void testMultipleBlocks() {
 		var blocks = getBlocks("""
-			 const first = {
+			 const block0 = {
 			  a: 1,
 			  b: 2
-			 };
-			 const second = {
+			 }
+			 const block1 = {
 			  c: 3,
 			  d: 4
-			 };
+			 }
 			 """);
 		assertEquals(2, blocks.size());
-	}
-
-	public void testSimpleObject() {
-		var blocks = getBlocks("""
-			 const first = {
-			   foo: "bar",
-			   baz: 123
-			 };
-			 """);
-		var b = blocks.getFirst();
-		assertEquals(1, blocks.size());
-		assertEquals(2, b.props().size());
-		assertEquals("foo", b.props().get(0).key());
-		assertEquals("baz", b.props().get(1).key());
+		
+		var block0 = blocks.getFirst();
+		assertEquals("a", block0.props().getFirst().key());
+		assertEquals("b", block0.props().getLast().key());
+		
+		var block1 = blocks.getLast();
+		assertEquals("c", block1.props().getFirst().key());
+		assertEquals("d", block1.props().getLast().key());
 	}
 
 	public void testIgnoresShorthandProps() {
