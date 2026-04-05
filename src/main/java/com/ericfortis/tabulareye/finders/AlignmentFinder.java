@@ -15,9 +15,9 @@ import java.util.List;
 public abstract class AlignmentFinder {
 	protected abstract List<String> getExtensions();
 
-	public final List<String> JS_EXT = List.of("js", "jsx", "ts", "tsx");
-	public final List<String> TS_EXT = List.of("ts", "tsx");
-	public final List<String> CSS_EXT = List.of("css");
+	public static final List<String> JS_EXT = List.of("js", "jsx", "ts", "tsx");
+	public static final List<String> TS_EXT = List.of("ts", "tsx");
+	public static final List<String> CSS_EXT = List.of("css");
 
 	public boolean isApplicable(@NotNull PsiFile file) {
 		return getExtensions().contains(file.getVirtualFile().getExtension());
