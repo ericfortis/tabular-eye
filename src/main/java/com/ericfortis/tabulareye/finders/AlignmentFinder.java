@@ -13,17 +13,17 @@ import java.util.List;
  * Visitor for finding the column spacing needed for tabularizing.
  */
 public abstract class AlignmentFinder {
-	protected final List<String> extensions;
+	final List<String> extensions;
 
-	protected AlignmentFinder(List<String> extensions) {
+	AlignmentFinder(List<String> extensions) {
 		this.extensions = extensions;
 	}
 
-	public static final List<String> JSON_EXT = List.of("json");
-	public static final List<String> JS_EXT = List.of("js", "jsx", "ts", "tsx");
-	public static final List<String> TS_EXT = List.of("ts", "tsx");
-	public static final List<String> CSS_EXT = List.of("css");
-	public static final List<String> YML_EXT = List.of("yml", "yaml");
+	static final List<String> JS_EXT = List.of("js", "jsx", "ts", "tsx");
+	static final List<String> TS_EXT = List.of("ts", "tsx");
+	static final List<String> CSS_EXT = List.of("css");
+	static final List<String> YML_EXT = List.of("yml", "yaml");
+	static final List<String> JSON_EXT = List.of("json");
 
 	public final boolean isApplicable(@NotNull PsiFile file) {
 		return extensions.contains(file.getVirtualFile().getExtension());
@@ -35,7 +35,7 @@ public abstract class AlignmentFinder {
 		return endLine > startLine;
 	}
 
-	protected static int findSeparatorOffset(PsiElement elem, String separator) {
+	static int findSeparatorOffset(PsiElement elem, String separator) {
 		var child = elem.getFirstChild();
 		while (child != null) {
 			if (separator.equals(child.getText()))
