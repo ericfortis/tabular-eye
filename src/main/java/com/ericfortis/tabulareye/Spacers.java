@@ -33,8 +33,8 @@ public class Spacers {
 	}
 
 	private boolean isRefreshing = false;
-	private final List<Inlay<Spacer>> activeInlays = new ArrayList<>();
 	private final Editor editor;
+	private final List<Inlay<Spacer>> activeInlays = new ArrayList<>();
 
 	// This is mainly because we want to handle non-monospace fonts.
 	// i.e., we could later implement an optimized path for mono (I don't use mono, so…)
@@ -47,8 +47,8 @@ public class Spacers {
 	public void refresh(List<AlignmentBlock> blocks) {
 		if (isRefreshing)
 			return;
+		
 		isRefreshing = true;
-
 		try {
 			ReadAction.runBlocking(() -> {
 				if (editor.isDisposed())
@@ -127,5 +127,4 @@ public class Spacers {
 			return editor.getContentComponent().getFontMetrics(font);
 		});
 	}
-
 }
