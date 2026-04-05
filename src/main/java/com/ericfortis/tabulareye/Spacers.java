@@ -76,12 +76,12 @@ public class Spacers {
 		for (int i = 0; i < props.size(); i++) {
 			var prop = props.get(i);
 			var fm = getFontMetrics(prop.keyStartOffset());
-			if (fm == null) continue;
-
-			int w = fm.stringWidth(prop.key()); // supports proportional fonts
-			widths[i] = w;
-			if (w > maxWidth)
-				maxWidth = w;
+			if (fm != null) {
+				int w = fm.stringWidth(prop.key()); // supports proportional fonts
+				widths[i] = w;
+				if (w > maxWidth)
+					maxWidth = w;
+			}
 		}
 
 		// insert spacers
