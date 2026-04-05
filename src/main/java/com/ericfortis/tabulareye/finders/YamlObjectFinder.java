@@ -2,11 +2,9 @@ package com.ericfortis.tabulareye.finders;
 
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLMapping;
 
-import java.util.ArrayList;
 import java.util.List;
 
 // TODO maybe we can improve this by excluding the keylength of a nested obj
@@ -19,16 +17,7 @@ public class YamlObjectFinder extends AlignmentFinder {
 	@Override
 	@NotNull
 	public List<AlignmentGroup> findGroups(@NotNull PsiFile file, @NotNull Document doc) {
-		List<AlignmentGroup> groups = new ArrayList<>();
-
-		for (var el : PsiTreeUtil.collectElementsOfType(file, YAMLMapping.class))
-			if (isMultiline(el, doc)) {
-				var group = buildGroup(el);
-				if (group != null && group.isValid())
-					groups.add(group);
-			}
-
-		return groups;
+		return findGroups(file, doc, YAMLMapping.class, this::buildGroup);
 	}
 
 	private AlignmentGroup buildGroup(YAMLMapping mapping) {
@@ -50,8 +39,6 @@ public class YamlObjectFinder extends AlignmentFinder {
 			}
 		}
 
-		return group.props().isEmpty()
-			 ? null
-			 : group;
+		return group.props().isEmpty() ? null : group;
 	}
 }

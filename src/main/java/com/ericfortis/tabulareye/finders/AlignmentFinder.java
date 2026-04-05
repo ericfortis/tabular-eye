@@ -3,11 +3,13 @@ package com.ericfortis.tabulareye.finders;
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Visitor for finding the column spacing needed for tabularizing.
@@ -47,6 +49,20 @@ public abstract class AlignmentFinder {
 
 	@NotNull
 	public abstract List<AlignmentGroup> findGroups(@NotNull PsiFile file, @NotNull Document document);
+
+	@NotNull
+	protected <T extends PsiElement> List<AlignmentGroup> findGroups(@NotNull PsiFile file, @NotNull Document doc, @NotNull Class<T> clazz, @NotNull Function<T, AlignmentGroup> builder) {
+		List<AlignmentGroup> groups = new ArrayList<>();
+
+		for (var el : PsiTreeUtil.collectElementsOfType(file, clazz))
+			if (isMultiline(el, doc)) {
+				var group = builder.apply(el);
+				if (group != null && group.isValid())
+					groups.add(group);
+			}
+
+		return groups;
+	}
 
 	public static class AlignmentGroup {
 		private final List<PropInfo> props = new ArrayList<>();

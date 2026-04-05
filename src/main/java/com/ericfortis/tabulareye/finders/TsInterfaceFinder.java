@@ -4,10 +4,8 @@ import com.intellij.lang.javascript.psi.ecma6.impl.TypeScriptObjectTypeImpl;
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,16 +17,7 @@ public class TsInterfaceFinder extends AlignmentFinder {
 	@Override
 	@NotNull
 	public List<AlignmentGroup> findGroups(@NotNull PsiFile file, @NotNull Document doc) {
-		List<AlignmentGroup> groups = new ArrayList<>();
-
-		for (var el : PsiTreeUtil.collectElementsOfType(file, TypeScriptObjectTypeImpl.class))
-			if (isMultiline(el, doc)) {
-				var group = buildGroup(el);
-				if (group != null && group.isValid())
-					groups.add(group);
-			}
-
-		return groups;
+		return findGroups(file, doc, TypeScriptObjectTypeImpl.class, this::buildGroup);
 	}
 
 	private AlignmentGroup buildGroup(PsiElement tsInterface) {
@@ -53,8 +42,6 @@ public class TsInterfaceFinder extends AlignmentFinder {
 			}
 		}
 
-		return group.props().isEmpty()
-			 ? null
-			 : group;
+		return group.props().isEmpty() ? null : group;
 	}
 }
