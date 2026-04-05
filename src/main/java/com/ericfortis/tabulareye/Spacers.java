@@ -55,15 +55,8 @@ public class Spacers {
 					return;
 				
 				clearAll();
-				var visibleArea = editor.getScrollingModel().getVisibleArea();
-				int startVisualLine = editor.xyToLogicalPosition(new Point(0, visibleArea.y)).line;
-				int endVisualLine = editor.xyToLogicalPosition(new Point(0, visibleArea.y + visibleArea.height)).line;
-
 				for (var b : blocks) {
-					int start = editor.offsetToLogicalPosition(b.getStartOffset()).line;
-					int end = editor.offsetToLogicalPosition(b.getEndOffset()).line;
-					if (end >= startVisualLine && start <= endVisualLine)
-						renderGroup(b);
+					renderGroup(b);
 				}
 			});
 		} finally {

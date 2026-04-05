@@ -52,23 +52,32 @@ public abstract class AlignmentFinder {
 	@NotNull
 	public abstract List<AlignmentBlock> findBlocks(
 		 @NotNull PsiFile file,
-		 @NotNull Document document
+		 @NotNull Document document,
+		 int startOffset,
+		 int endOffset
 	);
 
 	@NotNull
 	protected <T extends PsiElement> List<AlignmentBlock> findBlocks(
 		 @NotNull PsiFile file,
 		 @NotNull Document doc,
+		 int startOffset,
+		 int endOffset,
 		 @NotNull Class<T> clazz,
 		 @NotNull Function<T, AlignmentBlock> builder
 	) {
 		List<AlignmentBlock> blocks = new ArrayList<>();
-		for (var el : PsiTreeUtil.collectElementsOfType(file, clazz))
+		for (var el : PsiTreeUtil.collectElementsOfType(file, clazz)) {
+			var range = el.getTextRange();
+			if (range.getEndOffset() < startOffset || range.getStartOffset() > endOffset)
+				continue;
+
 			if (isMultiline(el, doc)) {
 				var block = builder.apply(el);
 				if (block != null && block.isValid())
 					blocks.add(block);
 			}
+		}
 		return blocks;
 	}
 
@@ -82,18 +91,6 @@ public abstract class AlignmentFinder {
 		
 		public int size() {
 			return props.size();
-		}
-
-		public int getStartOffset() {
-			return props.isEmpty()
-				 ? -1
-				 : props.getFirst().keyOffset();
-		}
-
-		public int getEndOffset() {
-			return props.isEmpty()
-				 ? -1
-				 : props.getLast().separatorOffset();
 		}
 
 		public void add(PropInfo p) {

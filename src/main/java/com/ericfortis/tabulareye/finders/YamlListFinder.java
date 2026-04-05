@@ -16,10 +16,14 @@ public class YamlListFinder extends AlignmentFinder {
 
 	@Override
 	@NotNull
-	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
+	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc, int startOffset, int endOffset) {
 		List<AlignmentBlock> blocks = new ArrayList<>();
 
-		for (var el : PsiTreeUtil.collectElementsOfType(file, YAMLSequence.class))
+		for (var el : PsiTreeUtil.collectElementsOfType(file, YAMLSequence.class)) {
+			var range = el.getTextRange();
+			if (range.getEndOffset() < startOffset || range.getStartOffset() > endOffset)
+				continue;
+
 			for (var item : el.getItems()) {
 				var hyphen = item.getFirstChild();
 				if (hyphen == null || !"-".equals(hyphen.getText()))
@@ -40,6 +44,7 @@ public class YamlListFinder extends AlignmentFinder {
 				block.add(new PropInfo(" ", -1, -1));
 				blocks.add(block);
 			}
+		}
 
 		return blocks;
 	}

@@ -19,14 +19,19 @@ public class Js2dArrayFinder extends AlignmentFinder {
 
 	@Override
 	@NotNull
-	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
+	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc, int startOffset, int endOffset) {
 		List<AlignmentBlock> blocks = new ArrayList<>();
-		for (var el : PsiTreeUtil.collectElementsOfType(file, JSArrayLiteralExpression.class))
+		for (var el : PsiTreeUtil.collectElementsOfType(file, JSArrayLiteralExpression.class)) {
+			var range = el.getTextRange();
+			if (range.getEndOffset() < startOffset || range.getStartOffset() > endOffset)
+				continue;
+
 			if (isMultiline(el, doc) && is2dArray(el)) {
 				var g = buildBlock(el);
 				if (g.isValid())
 					blocks.add(g);
 			}
+		}
 		return blocks;
 	}
 

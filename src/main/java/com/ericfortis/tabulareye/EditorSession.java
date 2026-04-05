@@ -17,8 +17,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
+import com.intellij.util.Alarm;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,11 +35,16 @@ class EditorSession implements Disposable {
 	private final List<AlignmentFinder> finders;
 	private final Spacers spacers;
 	private final Disposable disposable;
+	private final Alarm alarm;
+
+	private final int DELAY = 40;
+	private final int OVER_LINES = 100;
 
 	EditorSession(Editor ed, Project p, List<AlignmentFinder> finders) {
 		this.editor = ed;
 		this.finders = finders;
 		this.spacers = new Spacers(ed);
+		this.alarm = new Alarm(Alarm.ThreadToUse.POOLED_THREAD, this);
 
 		disposable = Disposer.newDisposable("tabulareye-" + ed.hashCode());
 
@@ -77,29 +84,52 @@ class EditorSession implements Disposable {
 
 	void refresh(Project p) {
 		if (p.isDisposed()) return;
+		alarm.cancelAllRequests();
+		alarm.addRequest(() -> doRefresh(p), DELAY);
+	}
+
+	private void doRefresh(Project p) {
+		if (p.isDisposed() || editor.isDisposed()) return;
 		var doc = editor.getDocument();
 		var psiDocManager = PsiDocumentManager.getInstance(p);
 
-		psiDocManager.performForCommittedDocument(doc, () -> ReadAction.runBlocking(() -> {
-			if (editor.isDisposed())
-				return;
+		ApplicationManager.getApplication().invokeLater(() -> {
+			if (p.isDisposed() || editor.isDisposed()) return;
 
-			var psiFile = psiDocManager.getPsiFile(doc);
-			if (psiFile == null)
-				return;
+			var visibleArea = editor.getScrollingModel().getVisibleArea();
+			var startPos = editor.xyToLogicalPosition(new Point(0, visibleArea.y));
+			var endPos = editor.xyToLogicalPosition(new Point(0, visibleArea.y + visibleArea.height));
 
-			List<AlignmentBlock> allBlocks = new ArrayList<>();
-			for (var finder : finders) {
-				var blocks = finder.findBlocks(psiFile, doc);
-				if (!blocks.isEmpty())
-					allBlocks.addAll(blocks);
-			}
+			// Add a buffer of N lines above and below
+			int startLine = Math.max(0, startPos.line - OVER_LINES);
+			int endLine = Math.min(doc.getLineCount() - 1, endPos.line + OVER_LINES);
 
-			ApplicationManager.getApplication().invokeLater(() -> {
-				if (!editor.isDisposed())
-					spacers.refresh(allBlocks);
-			}, ModalityState.any());
-		}));
+			int startOffset = doc.getLineStartOffset(startLine);
+			int endOffset = doc.getLineEndOffset(endLine);
+
+			ReadAction.nonBlocking(() -> {
+					 if (editor.isDisposed())
+						 return null;
+
+					 var psiFile = psiDocManager.getPsiFile(doc);
+					 if (psiFile == null)
+						 return null;
+
+					 List<AlignmentBlock> allBlocks = new ArrayList<>();
+					 for (var finder : finders) {
+						 var blocks = finder.findBlocks(psiFile, doc, startOffset, endOffset);
+						 if (!blocks.isEmpty())
+							 allBlocks.addAll(blocks);
+					 }
+					 return allBlocks;
+				 })
+				 .finishOnUiThread(ModalityState.any(), allBlocks -> {
+					 if (allBlocks != null && !editor.isDisposed())
+						 spacers.refresh(allBlocks);
+				 })
+				 .expireWith(this)
+				 .submit(com.intellij.util.concurrency.AppExecutorUtil.getAppExecutorService());
+		}, ModalityState.any());
 	}
 
 	@Override

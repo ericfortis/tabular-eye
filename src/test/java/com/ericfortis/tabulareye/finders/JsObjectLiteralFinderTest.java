@@ -17,7 +17,7 @@ public class JsObjectLiteralFinderTest extends BasePlatformTestCase {
 	private @NonNull List<AlignmentFinder.AlignmentBlock> getBlocks(String content) {
 		var file = myFixture.configureByText("test.js", content);
 		var doc = myFixture.getDocument(file);
-		return finder.findBlocks(file, doc);
+		return finder.findBlocks(file, doc, 0, content.length());
 	}
 
 	public void testMultipleBlocks() {
