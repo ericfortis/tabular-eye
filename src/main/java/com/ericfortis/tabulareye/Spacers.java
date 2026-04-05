@@ -1,6 +1,6 @@
 package com.ericfortis.tabulareye;
 
-import com.ericfortis.tabulareye.finders.AlignmentFinder.AlignmentGroup;
+import com.ericfortis.tabulareye.finders.AlignmentFinder.AlignmentBlock;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorCustomElementRenderer;
@@ -28,7 +28,7 @@ public class Spacers {
 		this.editor = editor;
 	}
 
-	public void refresh(List<AlignmentGroup> groups) {
+	public void refresh(List<AlignmentBlock> blocks) {
 		if (isRefreshing)
 			return;
 		isRefreshing = true;
@@ -43,11 +43,11 @@ public class Spacers {
 				int startVisualLine = editor.xyToLogicalPosition(new Point(0, visibleArea.y)).line;
 				int endVisualLine = editor.xyToLogicalPosition(new Point(0, visibleArea.y + visibleArea.height)).line;
 
-				for (var g : groups) {
-					int start = editor.offsetToLogicalPosition(g.getStartOffset()).line;
-					int end = editor.offsetToLogicalPosition(g.getEndOffset()).line;
+				for (var b : blocks) {
+					int start = editor.offsetToLogicalPosition(b.getStartOffset()).line;
+					int end = editor.offsetToLogicalPosition(b.getEndOffset()).line;
 					if (end >= startVisualLine && start <= endVisualLine)
-						renderGroup(g);
+						renderGroup(b);
 				}
 			});
 		} finally {
@@ -67,8 +67,8 @@ public class Spacers {
 	}
 
 
-	private void renderGroup(AlignmentGroup group) {
-		var props = group.props();
+	private void renderGroup(AlignmentBlock block) {
+		var props = block.props();
 
 		// measure left-side tokens
 		int[] widths = new int[props.size()];

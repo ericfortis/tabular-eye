@@ -1,7 +1,7 @@
 package com.ericfortis.tabulareye;
 
 import com.ericfortis.tabulareye.finders.AlignmentFinder;
-import com.ericfortis.tabulareye.finders.AlignmentFinder.AlignmentGroup;
+import com.ericfortis.tabulareye.finders.AlignmentFinder.AlignmentBlock;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
@@ -88,9 +88,9 @@ class EditorSession implements Disposable {
 			if (psiFile == null)
 				return;
 
-			List<AlignmentGroup> allGroups = new ArrayList<>();
+			List<AlignmentBlock> allGroups = new ArrayList<>();
 			for (var finder : finders) {
-				var g = finder.findGroups(psiFile, doc);
+				var g = finder.findBlocks(psiFile, doc);
 				if (!g.isEmpty())
 					allGroups.addAll(g);
 			}

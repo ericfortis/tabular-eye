@@ -16,12 +16,12 @@ public class YamlObjectFinder extends AlignmentFinder {
 
 	@Override
 	@NotNull
-	public List<AlignmentGroup> findGroups(@NotNull PsiFile file, @NotNull Document doc) {
-		return findGroups(file, doc, YAMLMapping.class, this::buildGroup);
+	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
+		return findBlocks(file, doc, YAMLMapping.class, this::buildGroup);
 	}
 
-	private AlignmentGroup buildGroup(YAMLMapping mapping) {
-		var group = new AlignmentGroup();
+	private AlignmentBlock buildGroup(YAMLMapping mapping) {
+		var group = new AlignmentBlock();
 		for (var keyValue : mapping.getKeyValues()) {
 			var key = keyValue.getKey();
 			if (key == null)

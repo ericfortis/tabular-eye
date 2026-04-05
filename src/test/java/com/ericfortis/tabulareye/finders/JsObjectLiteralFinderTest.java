@@ -14,10 +14,10 @@ public class JsObjectLiteralFinderTest extends BasePlatformTestCase {
 		finder = new JsObjectLiteralFinder();
 	}
 
-	private @NonNull List<AlignmentFinder.AlignmentGroup> getGroups(String content) {
+	private @NonNull List<AlignmentFinder.AlignmentBlock> getGroups(String content) {
 		var file = myFixture.configureByText("test.js", content);
 		var doc = myFixture.getDocument(file);
-		return finder.findGroups(file, doc);
+		return finder.findBlocks(file, doc);
 	}
 
 	public void testFindGroups_MultipleGroups() {

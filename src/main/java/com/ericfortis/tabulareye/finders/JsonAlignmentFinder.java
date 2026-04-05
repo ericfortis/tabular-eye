@@ -15,12 +15,12 @@ public class JsonAlignmentFinder extends AlignmentFinder {
 
 	@Override
 	@NotNull
-	public List<AlignmentGroup> findGroups(@NotNull PsiFile file, @NotNull Document doc) {
-		return findGroups(file, doc, JsonObject.class, this::buildGroup);
+	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
+		return findBlocks(file, doc, JsonObject.class, this::buildGroup);
 	}
 
-	private AlignmentGroup buildGroup(JsonObject obj) {
-		var group = new AlignmentGroup();
+	private AlignmentBlock buildGroup(JsonObject obj) {
+		var group = new AlignmentBlock();
 		for (var prop : obj.getPropertyList()) {
 			int colonOffset = findSeparatorOffset(prop, ":");
 			if (colonOffset < 0)

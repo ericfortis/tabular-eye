@@ -46,33 +46,33 @@ public abstract class AlignmentFinder {
 		}
 		return -1;
 	}
-	
+
 
 	@NotNull
-	public abstract List<AlignmentGroup> findGroups(
+	public abstract List<AlignmentBlock> findBlocks(
 		 @NotNull PsiFile file,
 		 @NotNull Document document
 	);
 
 	@NotNull
-	protected <T extends PsiElement> List<AlignmentGroup> findGroups(
+	protected <T extends PsiElement> List<AlignmentBlock> findBlocks(
 		 @NotNull PsiFile file,
 		 @NotNull Document doc,
 		 @NotNull Class<T> clazz,
-		 @NotNull Function<T, AlignmentGroup> builder
+		 @NotNull Function<T, AlignmentBlock> builder
 	) {
-		List<AlignmentGroup> groups = new ArrayList<>();
+		List<AlignmentBlock> blocks = new ArrayList<>();
 		for (var el : PsiTreeUtil.collectElementsOfType(file, clazz))
 			if (isMultiline(el, doc)) {
-				var group = builder.apply(el);
-				if (group != null && group.isValid())
-					groups.add(group);
+				var block = builder.apply(el);
+				if (block != null && block.isValid())
+					blocks.add(block);
 			}
-		return groups;
+		return blocks;
 	}
 
-	
-	public static class AlignmentGroup {
+
+	public static class AlignmentBlock {
 		private final List<PropInfo> props = new ArrayList<>();
 
 		public int getStartOffset() {

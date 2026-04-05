@@ -16,12 +16,12 @@ public class JsObjectLiteralFinder extends AlignmentFinder {
 
 	@Override
 	@NotNull
-	public List<AlignmentGroup> findGroups(@NotNull PsiFile file, @NotNull Document doc) {
-		return findGroups(file, doc, JSObjectLiteralExpression.class, this::buildGroup);
+	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
+		return findBlocks(file, doc, JSObjectLiteralExpression.class, this::buildGroup);
 	}
 
-	private AlignmentGroup buildGroup(JSObjectLiteralExpression obj) {
-		var group = new AlignmentGroup();
+	private AlignmentBlock buildGroup(JSObjectLiteralExpression obj) {
+		var group = new AlignmentBlock();
 		for (var prop : obj.getProperties())
 			if (prop != null && !prop.isShorthanded()) {
 				var kv = describeKV(prop);

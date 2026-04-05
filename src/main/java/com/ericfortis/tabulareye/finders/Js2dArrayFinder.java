@@ -19,8 +19,8 @@ public class Js2dArrayFinder extends AlignmentFinder {
 
 	@Override
 	@NotNull
-	public List<AlignmentGroup> findGroups(@NotNull PsiFile file, @NotNull Document doc) {
-		List<AlignmentGroup> groups = new ArrayList<>();
+	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
+		List<AlignmentBlock> groups = new ArrayList<>();
 		for (var arr : PsiTreeUtil.collectElementsOfType(file, JSArrayLiteralExpression.class))
 			if (isMultiline(arr, doc) && is2dArray(arr)) {
 				var g = buildGroup(arr);
@@ -39,8 +39,8 @@ public class Js2dArrayFinder extends AlignmentFinder {
 		return false;
 	}
 
-	private static AlignmentGroup buildGroup(JSArrayLiteralExpression arr) {
-		var group = new AlignmentGroup();
+	private static AlignmentBlock buildGroup(JSArrayLiteralExpression arr) {
+		var group = new AlignmentBlock();
 		for (var elem : arr.getExpressions())
 			if (elem instanceof JSArrayLiteralExpression inner) {
 				var innerElements = inner.getExpressions();

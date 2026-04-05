@@ -18,12 +18,12 @@ public class CssPropertyFinder extends AlignmentFinder {
 
 	@Override
 	@NotNull
-	public List<AlignmentGroup> findGroups(@NotNull PsiFile file, @NotNull Document doc) {
-		List<AlignmentGroup> groups = new ArrayList<>();
+	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
+		List<AlignmentBlock> groups = new ArrayList<>();
 
 		for (var block : PsiTreeUtil.findChildrenOfType(file, CssBlock.class))
 			if (isMultiline(block, doc)) {
-				var group = new AlignmentGroup();
+				var group = new AlignmentBlock();
 				for (var child = block.getFirstChild(); child != null; child = child.getNextSibling())
 					if (child instanceof CssDeclaration decl) {
 						int colonOffset = findSeparatorOffset(decl, ":");

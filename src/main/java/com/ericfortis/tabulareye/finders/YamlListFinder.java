@@ -16,8 +16,8 @@ public class YamlListFinder extends AlignmentFinder {
 
 	@Override
 	@NotNull
-	public List<AlignmentGroup> findGroups(@NotNull PsiFile file, @NotNull Document doc) {
-		List<AlignmentGroup> groups = new ArrayList<>();
+	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
+		List<AlignmentBlock> groups = new ArrayList<>();
 
 		for (var sequence : PsiTreeUtil.collectElementsOfType(file, YAMLSequence.class))
 			for (var item : sequence.getItems()) {
@@ -35,7 +35,7 @@ public class YamlListFinder extends AlignmentFinder {
 				if (doc.getLineNumber(hyphenStart) != doc.getLineNumber(contentStart))
 					continue;
 
-				var group = new AlignmentGroup();
+				var group = new AlignmentBlock();
 				group.add(new PropInfo("-", hyphenStart, hyphenStart));
 				group.add(new PropInfo(" ", -1, -1));
 				groups.add(group);
