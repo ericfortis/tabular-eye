@@ -19,7 +19,7 @@ public abstract class AlignmentFinder {
 	public static final List<String> TS_EXT = List.of("ts", "tsx");
 	public static final List<String> CSS_EXT = List.of("css");
 
-	public boolean isApplicable(@NotNull PsiFile file) {
+	public final boolean isApplicable(@NotNull PsiFile file) {
 		return getExtensions().contains(file.getVirtualFile().getExtension());
 	}
 
