@@ -78,9 +78,6 @@ public class Spacers {
 		activeInlays.clear();
 	}
 
-	public void invalidateFontMetricsCache() {
-		metricsCache.clear();
-	}
 
 
 	private void renderGroup(AlignmentBlock block) {
@@ -113,6 +110,9 @@ public class Spacers {
 		}
 	}
 
+	public void invalidateFontMetricsCache() {
+		metricsCache.clear();
+	}
 
 	private FontMetrics getFontMetrics(int offset) {
 		if (editor.isDisposed())
