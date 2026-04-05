@@ -28,7 +28,8 @@ public abstract class AlignmentFinder {
 	static final List<String> JSON_EXT = List.of("json");
 
 	public final boolean isApplicable(@NotNull PsiFile file) {
-		return extensions.contains(file.getVirtualFile().getExtension());
+		var vFile = file.getVirtualFile();
+		return vFile != null && extensions.contains(vFile.getExtension());
 	}
 
 	static boolean isMultiline(PsiElement elem, Document doc) {

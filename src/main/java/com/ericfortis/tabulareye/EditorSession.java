@@ -60,7 +60,7 @@ class EditorSession implements Disposable {
 				if (event.getNewFile() == null) return;
 				ReadAction.runBlocking(() -> {
 					var psiFile = PsiDocumentManager.getInstance(p).getPsiFile(ed.getDocument());
-					if (psiFile != null && event.getNewFile().equals(psiFile.getVirtualFile()))
+					if (psiFile != null && psiFile.getVirtualFile() != null && event.getNewFile().equals(psiFile.getVirtualFile()))
 						refresh(p);
 				});
 			}
