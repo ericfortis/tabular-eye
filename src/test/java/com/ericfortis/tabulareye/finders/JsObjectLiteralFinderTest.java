@@ -20,7 +20,7 @@ public class JsObjectLiteralFinderTest extends BasePlatformTestCase {
 		return finder.findBlocks(file, doc);
 	}
 
-	public void testFindGroups_MultipleGroups() {
+	public void testMultipleBlocks() {
 		var blocks = getBlocks("""
 			 const first = {
 			   a: 1,
@@ -34,7 +34,7 @@ public class JsObjectLiteralFinderTest extends BasePlatformTestCase {
 		assertEquals(2, blocks.size());
 	}
 
-	public void testFindGroups_SimpleObject() {
+	public void testSimpleObject() {
 		var blocks = getBlocks("""
 			 const first = {
 			   foo: "bar",
@@ -48,7 +48,7 @@ public class JsObjectLiteralFinderTest extends BasePlatformTestCase {
 		assertEquals("baz", b.props().get(1).keyText());
 	}
 
-	public void testFindGroups_IgnoreShorthand() {
+	public void testIgnoresShorthandProps() {
 		var blocks = getBlocks("""
 			 const foo = "bar";
 			 const first = {
@@ -64,14 +64,14 @@ public class JsObjectLiteralFinderTest extends BasePlatformTestCase {
 		assertEquals("qux", b.props().get(1).keyText());
 	}
 
-	public void testFindGroups_IgnoresSingleLineObject() {
+	public void testIgnoresInlineObjects() {
 		var blocks = getBlocks("""
 			 const first = { foo: "bar", baz: 123 };
 			 """);
 		assertTrue(blocks.isEmpty());
 	}
 
-	public void testFindGroups_DeeplyNested() {
+	public void testFindsNestedObjects() {
 		var blocks = getBlocks("""
 			 const obj = {
 			   foo: {
