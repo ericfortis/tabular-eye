@@ -13,6 +13,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO 1. maybe we should wait a bit. currently, this is acting before the syntax highlight
+//     so computed and when using proportional fonts, we need the syntax (e.g., is it bold?)
+// TODO 2. if the virtual-rendering (just the visible scope) is causing jank (sync)?
+// TODO 3. User Settings? disable/enable 
+
 public class TabularEye implements EditorFactoryListener {
 
 	// This way CSS and JS plugins (bundled) could be optional
