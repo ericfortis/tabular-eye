@@ -87,7 +87,7 @@ public abstract class AlignmentFinder {
 		public int getStartOffset() {
 			return props.isEmpty()
 				 ? -1
-				 : props.getFirst().keyStartOffset();
+				 : props.getFirst().keyOffset();
 		}
 
 		public int getEndOffset() {
@@ -109,6 +109,6 @@ public abstract class AlignmentFinder {
 		}
 	}
 
-	public record PropInfo(String key, int keyStartOffset, int separatorOffset) {
+	public record PropInfo(String key, int keyOffset, int separatorOffset) {
 	}
 }

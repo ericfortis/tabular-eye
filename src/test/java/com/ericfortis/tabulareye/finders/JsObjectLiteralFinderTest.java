@@ -43,7 +43,7 @@ public class JsObjectLiteralFinderTest extends BasePlatformTestCase {
 		assertEquals("c", b1.get(0).key());
 		assertEquals("d", b1.get(1).key());
 
-		assertEquals(18, b0.get(0).keyStartOffset());
+		assertEquals(18, b0.get(0).keyOffset());
 		assertEquals(19, b0.get(0).separatorOffset());
 	}
 
