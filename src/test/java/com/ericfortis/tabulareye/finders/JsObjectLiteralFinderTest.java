@@ -33,15 +33,15 @@ public class JsObjectLiteralFinderTest extends BasePlatformTestCase {
 			 """);
 		assertEquals(2, blocks.size());
 		
-		var block0 = blocks.getFirst();
-		var block1 = blocks.getLast();
-		assertEquals(2, block0.size());
-		assertEquals(2, block1.size());
+		var b0 = blocks.getFirst();
+		var b1 = blocks.getLast();
+		assertEquals(2, b0.size());
+		assertEquals(2, b1.size());
 		
-		assertEquals("a", block0.get(0).key());
-		assertEquals("b", block0.get(1).key());
-		assertEquals("c", block1.get(0).key());
-		assertEquals("d", block1.get(1).key());
+		assertEquals("a", b0.get(0).key());
+		assertEquals("b", b0.get(1).key());
+		assertEquals("c", b1.get(0).key());
+		assertEquals("d", b1.get(1).key());
 	}
 
 	public void testIgnoresShorthandProps() {
@@ -81,6 +81,4 @@ public class JsObjectLiteralFinderTest extends BasePlatformTestCase {
 		assertEquals("foo", b.get(0).key());
 		assertEquals("baz", b.get(1).key());
 	}
-
-
 }
