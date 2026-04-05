@@ -33,12 +33,16 @@ public class TabularEye implements EditorFactoryListener {
 
 		var document = editor.getDocument();
 		var psiDocManager = PsiDocumentManager.getInstance(project);
-		if (psiDocManager.getPsiFile(document) == null || editor.isViewer()) return;
+		var psiFile = psiDocManager.getPsiFile(document);
+		// Check for virtual file to avoid editors not backed by real files (like terminal)
+		if (psiFile == null || psiFile.getVirtualFile() == null || editor.isViewer()) return;
 
-		psiDocManager.performForCommittedDocument(document, () -> ReadAction.runBlocking(() -> {
-			if (!editor.isDisposed())
-				openSession(editor, project);
-		}));
+		psiDocManager.performForCommittedDocument(document, () -> {
+			if (project.isDisposed() || editor.isDisposed()) return;
+			ReadAction.nonBlocking(() -> openSession(editor, project))
+				 .expireWith(project)
+				 .submit(com.intellij.util.concurrency.AppExecutorUtil.getAppExecutorService());
+		});
 	}
 
 	@Override
@@ -49,21 +53,23 @@ public class TabularEye implements EditorFactoryListener {
 	}
 
 
-	private void openSession(Editor editor, com.intellij.openapi.project.Project project) {
-		if (sessions.containsKey(editor))
-			return;
+	private EditorSession openSession(Editor editor, com.intellij.openapi.project.Project project) {
+		if (project.isDisposed() || editor.isDisposed() || sessions.get(editor) != null)
+			return null;
 
 		var psiFile = PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
-		if (psiFile == null) return;
+		if (psiFile == null || psiFile.getVirtualFile() == null) return null;
 
-		var applicable = EP_NAME.getExtensionList().stream().filter(f -> f.isApplicable(psiFile)).toList();
+		var extensionList = EP_NAME.getExtensionList();
+		var applicable = extensionList.stream().filter(f -> f.isApplicable(psiFile)).toList();
 		if (applicable.isEmpty())
-			return;
+			return null;
 
 		var session = new EditorSession(editor, project, applicable);
 		sessions.put(editor, session);
 
 		// Trigger an initial render for files that are open on startup
 		session.refresh(project);
+		return session;
 	}
 }

@@ -29,7 +29,9 @@ public abstract class AlignmentFinder {
 
 	public final boolean isApplicable(@NotNull PsiFile file) {
 		var vFile = file.getVirtualFile();
-		return vFile != null && extensions.contains(vFile.getExtension());
+		if (vFile == null) return false;
+		var ext = vFile.getExtension();
+		return ext != null && extensions.contains(ext);
 	}
 
 	static boolean isMultiline(PsiElement elem, Document doc) {

@@ -11,16 +11,14 @@ import com.intellij.openapi.editor.colors.EditorColorsListener;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
-import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
+import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.util.Alarm;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,34 +48,24 @@ class EditorSession implements Disposable {
 		ed.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
 			public void documentChanged(@NotNull DocumentEvent ev) {
-				System.out.println("EVVV DocumentListener.documentChanged fired");
 				refresh(p, DOCUMENT_DELAY);
 			}
 		}, disposable);
 
 		p.getMessageBus().connect(disposable).subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {
-			@Override
-			public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
-				System.out.println("EVVV FileEditorManagerListener.fileOpened fired");
-				refresh(p);
-			}
-
-			// Handles returning to an already-open tab
+			// Handles returning to an already-open tab. Also, fires when opening a new file
 			@Override
 			public void selectionChanged(@NotNull com.intellij.openapi.fileEditor.FileEditorManagerEvent event) {
-				if (event.getNewFile() == null) return;
-				System.out.println("EVVV FileEditorManagerListener.selectionChanged fired");
-				ReadAction.runBlocking(() -> {
-					var psiFile = PsiDocumentManager.getInstance(p).getPsiFile(ed.getDocument());
-					if (psiFile != null && psiFile.getVirtualFile() != null && event.getNewFile().equals(psiFile.getVirtualFile()))
-						refresh(p);
-				});
+				if (event.getNewFile() != null
+					 && event.getNewEditor() instanceof TextEditor textEditor
+					 && textEditor.getEditor().equals(editor)
+				)
+					refresh(p);
 			}
 		});
 
 		// Handles font size / color-scheme changes; invalidates the cached FontMetrics
 		p.getMessageBus().connect(disposable).subscribe(EditorColorsManager.TOPIC, (EditorColorsListener) scheme -> {
-			System.out.println("EVVV EditorColorsListener fired");
 			spacers.invalidateFontMetricsCache();
 			refresh(p);
 		});
@@ -96,13 +84,13 @@ class EditorSession implements Disposable {
 	private void doRefresh(Project p) {
 		if (p.isDisposed() || editor.isDisposed()) return;
 		var doc = editor.getDocument();
-		var psiDocManager = PsiDocumentManager.getInstance(p);
 
 		ApplicationManager.getApplication().invokeLater(() -> {
 			if (p.isDisposed() || editor.isDisposed()) return;
+			var psiDocManager = PsiDocumentManager.getInstance(p);
 
 			ReadAction.nonBlocking(() -> {
-					 if (editor.isDisposed())
+					 if (p.isDisposed() || editor.isDisposed())
 						 return null;
 
 					 var psiFile = psiDocManager.getPsiFile(doc);
@@ -113,6 +101,7 @@ class EditorSession implements Disposable {
 
 					 List<AlignmentBlock> allBlocks = new ArrayList<>();
 					 for (var finder : finders) {
+						 if (p.isDisposed() || editor.isDisposed()) return null;
 						 var blocks = finder.findBlocks(psiFile, doc);
 						 if (!blocks.isEmpty())
 							 allBlocks.addAll(blocks);
@@ -120,10 +109,11 @@ class EditorSession implements Disposable {
 					 return allBlocks;
 				 })
 				 .finishOnUiThread(ModalityState.any(), allBlocks -> {
-					 if (allBlocks != null && !editor.isDisposed())
+					 if (allBlocks != null && !p.isDisposed() && !editor.isDisposed())
 						 spacers.refresh(allBlocks);
 				 })
 				 .expireWith(this)
+				 .expireWith(p)
 				 .submit(com.intellij.util.concurrency.AppExecutorUtil.getAppExecutorService());
 		}, ModalityState.any());
 	}
