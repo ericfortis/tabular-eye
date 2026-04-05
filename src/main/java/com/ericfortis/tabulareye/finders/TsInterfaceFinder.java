@@ -16,16 +16,16 @@ public class TsInterfaceFinder extends AlignmentFinder {
 	@Override
 	@NotNull
 	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
-		return findBlocks(file, doc, TypeScriptObjectTypeImpl.class, this::buildGroup);
+		return findBlocks(file, doc, TypeScriptObjectTypeImpl.class, this::buildBlock);
 	}
 
-	private AlignmentBlock buildGroup(PsiElement tsInterface) {
-		var group = new AlignmentBlock();
+	private AlignmentBlock buildBlock(PsiElement tsInterface) {
+		var block = new AlignmentBlock();
 		for (var prop : tsInterface.getChildren()) {
 			var kv = JsObjectLiteralFinder.describeKV(prop);
 			if (kv != null)
-				group.add(kv);
+				block.add(kv);
 		}
-		return group;
+		return block;
 	}
 }

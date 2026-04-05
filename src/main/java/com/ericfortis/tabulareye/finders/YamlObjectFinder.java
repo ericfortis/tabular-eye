@@ -17,11 +17,11 @@ public class YamlObjectFinder extends AlignmentFinder {
 	@Override
 	@NotNull
 	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
-		return findBlocks(file, doc, YAMLMapping.class, this::buildGroup);
+		return findBlocks(file, doc, YAMLMapping.class, this::buildBlock);
 	}
 
-	private AlignmentBlock buildGroup(YAMLMapping mapping) {
-		var group = new AlignmentBlock();
+	private AlignmentBlock buildBlock(YAMLMapping mapping) {
+		var block = new AlignmentBlock();
 		for (var keyValue : mapping.getKeyValues()) {
 			var key = keyValue.getKey();
 			if (key == null)
@@ -34,9 +34,9 @@ public class YamlObjectFinder extends AlignmentFinder {
 			var keyText = key.getText().trim();
 			if (!keyText.isEmpty()) {
 				int startOffset = key.getTextRange().getStartOffset();
-				group.add(new PropInfo(keyText, startOffset, colonOffset));
+				block.add(new PropInfo(keyText, startOffset, colonOffset));
 			}
 		}
-		return group;
+		return block;
 	}
 }

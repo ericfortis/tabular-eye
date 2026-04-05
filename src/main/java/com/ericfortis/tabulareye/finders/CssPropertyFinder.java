@@ -21,21 +21,21 @@ public class CssPropertyFinder extends AlignmentFinder {
 	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
 		List<AlignmentBlock> groups = new ArrayList<>();
 
-		for (var block : PsiTreeUtil.findChildrenOfType(file, CssBlock.class))
-			if (isMultiline(block, doc)) {
-				var group = new AlignmentBlock();
-				for (var child = block.getFirstChild(); child != null; child = child.getNextSibling())
+		for (var el : PsiTreeUtil.findChildrenOfType(file, CssBlock.class))
+			if (isMultiline(el, doc)) {
+				var block = new AlignmentBlock();
+				for (var child = el.getFirstChild(); child != null; child = child.getNextSibling())
 					if (child instanceof CssDeclaration decl) {
 						int colonOffset = findSeparatorOffset(decl, ":");
 						if (colonOffset > 0) {
 							int startOffset = decl.getFirstChild() != null 
 								 ? decl.getFirstChild().getTextRange().getStartOffset() 
 								 : colonOffset;
-							group.add(new PropInfo(getPropertyName(decl), startOffset, colonOffset));
+							block.add(new PropInfo(getPropertyName(decl), startOffset, colonOffset));
 						}
 					}
-				if (group.isValid())
-					groups.add(group);
+				if (block.isValid())
+					groups.add(block);
 			}
 
 		return groups;

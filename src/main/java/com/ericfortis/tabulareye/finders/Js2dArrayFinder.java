@@ -20,37 +20,37 @@ public class Js2dArrayFinder extends AlignmentFinder {
 	@Override
 	@NotNull
 	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
-		List<AlignmentBlock> groups = new ArrayList<>();
-		for (var arr : PsiTreeUtil.collectElementsOfType(file, JSArrayLiteralExpression.class))
-			if (isMultiline(arr, doc) && is2dArray(arr)) {
-				var g = buildGroup(arr);
+		List<AlignmentBlock> blocks = new ArrayList<>();
+		for (var el : PsiTreeUtil.collectElementsOfType(file, JSArrayLiteralExpression.class))
+			if (isMultiline(el, doc) && is2dArray(el)) {
+				var g = buildBlock(el);
 				if (g.isValid())
-					groups.add(g);
+					blocks.add(g);
 			}
-		return groups;
+		return blocks;
 	}
 
 
 	private static boolean is2dArray(JSArrayLiteralExpression array) {
-		for (var elem : array.getExpressions())
-			if (elem instanceof JSArrayLiteralExpression inner)
+		for (var el : array.getExpressions())
+			if (el instanceof JSArrayLiteralExpression inner)
 				if (inner.getExpressions().length >= 2)
 					return true;
 		return false;
 	}
 
-	private static AlignmentBlock buildGroup(JSArrayLiteralExpression arr) {
-		var group = new AlignmentBlock();
-		for (var elem : arr.getExpressions())
-			if (elem instanceof JSArrayLiteralExpression inner) {
+	private static AlignmentBlock buildBlock(JSArrayLiteralExpression arr) {
+		var block = new AlignmentBlock();
+		for (var el : arr.getExpressions())
+			if (el instanceof JSArrayLiteralExpression inner) {
 				var innerElements = inner.getExpressions();
 				if (innerElements.length >= 2) {
 					var first = innerElements[0];
 					int commaOffset = findSeparatorOffset(inner, ",");
 					if (commaOffset > 0)
-						group.add(new PropInfo(first.getText(), first.getTextRange().getStartOffset(), commaOffset));
+						block.add(new PropInfo(first.getText(), first.getTextRange().getStartOffset(), commaOffset));
 				}
 			}
-		return group;
+		return block;
 	}
 }

@@ -14,14 +14,14 @@ public class JsObjectLiteralFinderTest extends BasePlatformTestCase {
 		finder = new JsObjectLiteralFinder();
 	}
 
-	private @NonNull List<AlignmentFinder.AlignmentBlock> getGroups(String content) {
+	private @NonNull List<AlignmentFinder.AlignmentBlock> getBlocks(String content) {
 		var file = myFixture.configureByText("test.js", content);
 		var doc = myFixture.getDocument(file);
 		return finder.findBlocks(file, doc);
 	}
 
 	public void testFindGroups_MultipleGroups() {
-		var groups = getGroups("""
+		var blocks = getBlocks("""
 			 const first = {
 			   a: 1,
 			   b: 2
@@ -31,25 +31,25 @@ public class JsObjectLiteralFinderTest extends BasePlatformTestCase {
 			   d: 4
 			 };
 			 """);
-		assertEquals(2, groups.size());
+		assertEquals(2, blocks.size());
 	}
 
 	public void testFindGroups_SimpleObject() {
-		var groups = getGroups("""
+		var blocks = getBlocks("""
 			 const first = {
 			   foo: "bar",
 			   baz: 123
 			 };
 			 """);
-		var g = groups.getFirst();
-		assertEquals(1, groups.size());
-		assertEquals(2, g.props().size());
-		assertEquals("foo", g.props().get(0).keyText());
-		assertEquals("baz", g.props().get(1).keyText());
+		var b = blocks.getFirst();
+		assertEquals(1, blocks.size());
+		assertEquals(2, b.props().size());
+		assertEquals("foo", b.props().get(0).keyText());
+		assertEquals("baz", b.props().get(1).keyText());
 	}
 
 	public void testFindGroups_IgnoreShorthand() {
-		var groups = getGroups("""
+		var blocks = getBlocks("""
 			 const foo = "bar";
 			 const first = {
 			  foo,
@@ -57,22 +57,22 @@ public class JsObjectLiteralFinderTest extends BasePlatformTestCase {
 			  qux: "quux"
 			 };
 			 """);
-		var g = groups.getFirst();
-		assertEquals(1, groups.size());
-		assertEquals(2, g.props().size()); // 'foo' is shorthanded, should be ignored
-		assertEquals("baz", g.props().get(0).keyText());
-		assertEquals("qux", g.props().get(1).keyText());
+		var b = blocks.getFirst();
+		assertEquals(1, blocks.size());
+		assertEquals(2, b.props().size()); // 'foo' is shorthanded, should be ignored
+		assertEquals("baz", b.props().get(0).keyText());
+		assertEquals("qux", b.props().get(1).keyText());
 	}
 
 	public void testFindGroups_IgnoresSingleLineObject() {
-		var groups = getGroups("""
+		var blocks = getBlocks("""
 			 const first = { foo: "bar", baz: 123 };
 			 """);
-		assertTrue(groups.isEmpty());
+		assertTrue(blocks.isEmpty());
 	}
 
 	public void testFindGroups_DeeplyNested() {
-		var groups = getGroups("""
+		var blocks = getBlocks("""
 			 const obj = {
 			   foo: {
 			     inner: "val"
@@ -82,9 +82,9 @@ public class JsObjectLiteralFinderTest extends BasePlatformTestCase {
 			 """);
 		// It should find groups for the outer object and potentially the inner one if it was multiline and has > 1 prop
 		// Here inner has only 1 prop, so it shouldn't be a valid group (props.size() > 1)
-		assertEquals(1, groups.size());
-		assertEquals("foo", groups.getFirst().props().get(0).keyText());
-		assertEquals("baz", groups.getFirst().props().get(1).keyText());
+		assertEquals(1, blocks.size());
+		assertEquals("foo", blocks.getFirst().props().get(0).keyText());
+		assertEquals("baz", blocks.getFirst().props().get(1).keyText());
 	}
 
 
