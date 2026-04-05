@@ -16,8 +16,8 @@ public class JsObjectLiteralFinder extends AlignmentFinder {
 
 	@Override
 	@NotNull
-	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc, int startOffset, int endOffset) {
-		return findBlocks(file, doc, startOffset, endOffset, JSObjectLiteralExpression.class, this::buildBlock);
+	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
+		return findBlocks(file, doc, JSObjectLiteralExpression.class, this::buildBlock);
 	}
 
 	private AlignmentBlock buildBlock(JSObjectLiteralExpression obj) {

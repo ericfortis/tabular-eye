@@ -15,8 +15,8 @@ public class TsInterfaceFinder extends AlignmentFinder {
 
 	@Override
 	@NotNull
-	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc, int startOffset, int endOffset) {
-		return findBlocks(file, doc, startOffset, endOffset, TypeScriptObjectTypeImpl.class, this::buildBlock);
+	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
+		return findBlocks(file, doc, TypeScriptObjectTypeImpl.class, this::buildBlock);
 	}
 
 	private AlignmentBlock buildBlock(PsiElement tsInterface) {

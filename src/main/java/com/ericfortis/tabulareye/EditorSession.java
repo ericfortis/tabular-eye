@@ -36,9 +36,7 @@ class EditorSession implements Disposable {
 	private final Spacers spacers;
 	private final Disposable disposable;
 	private final Alarm alarm;
-
 	private final int DELAY = 40;
-	private final int OVER_LINES = 100;
 
 	EditorSession(Editor ed, Project p, List<AlignmentFinder> finders) {
 		this.editor = ed;
@@ -78,8 +76,6 @@ class EditorSession implements Disposable {
 			spacers.invalidateFontMetricsCache();
 			refresh(p);
 		});
-
-		ed.getScrollingModel().addVisibleAreaListener(e -> refresh(p), disposable);
 	}
 
 	void refresh(Project p) {
@@ -96,17 +92,6 @@ class EditorSession implements Disposable {
 		ApplicationManager.getApplication().invokeLater(() -> {
 			if (p.isDisposed() || editor.isDisposed()) return;
 
-			var visibleArea = editor.getScrollingModel().getVisibleArea();
-			var startPos = editor.xyToLogicalPosition(new Point(0, visibleArea.y));
-			var endPos = editor.xyToLogicalPosition(new Point(0, visibleArea.y + visibleArea.height));
-
-			// Add a buffer of N lines above and below
-			int startLine = Math.max(0, startPos.line - OVER_LINES);
-			int endLine = Math.min(doc.getLineCount() - 1, endPos.line + OVER_LINES);
-
-			int startOffset = doc.getLineStartOffset(startLine);
-			int endOffset = doc.getLineEndOffset(endLine);
-
 			ReadAction.nonBlocking(() -> {
 					 if (editor.isDisposed())
 						 return null;
@@ -119,7 +104,7 @@ class EditorSession implements Disposable {
 
 					 List<AlignmentBlock> allBlocks = new ArrayList<>();
 					 for (var finder : finders) {
-						 var blocks = finder.findBlocks(psiFile, doc, startOffset, endOffset);
+						 var blocks = finder.findBlocks(psiFile, doc);
 						 if (!blocks.isEmpty())
 							 allBlocks.addAll(blocks);
 					 }

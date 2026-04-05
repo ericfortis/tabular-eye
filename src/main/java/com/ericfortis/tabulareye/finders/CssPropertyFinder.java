@@ -18,14 +18,10 @@ public class CssPropertyFinder extends AlignmentFinder {
 
 	@Override
 	@NotNull
-	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc, int startOffset, int endOffset) {
+	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
 		List<AlignmentBlock> groups = new ArrayList<>();
 
 		for (var el : PsiTreeUtil.findChildrenOfType(file, CssBlock.class)) {
-			var range = el.getTextRange();
-			if (range.getEndOffset() < startOffset || range.getStartOffset() > endOffset)
-				continue;
-
 			if (isMultiline(el, doc)) {
 				var block = new AlignmentBlock();
 				for (var child = el.getFirstChild(); child != null; child = child.getNextSibling())
