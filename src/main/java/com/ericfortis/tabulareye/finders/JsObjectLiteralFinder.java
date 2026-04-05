@@ -24,17 +24,19 @@ public class JsObjectLiteralFinder extends AlignmentFinder {
 		var group = new AlignmentGroup();
 		for (var prop : obj.getProperties())
 			if (prop != null && !prop.isShorthanded()) {
-				var kv = describeKV(findSeparatorOffset(prop, ":"), prop.getFirstChild());
+				var kv = describeKV(prop);
 				if (kv != null)
 					group.add(kv);
 			}
 		return group.props().isEmpty() ? null : group;
 	}
 
-	static PropInfo describeKV(int separatorOffset, PsiElement firstChild) {
+	static PropInfo describeKV(PsiElement prop) {
+		var separatorOffset = findSeparatorOffset(prop, ":");
 		if (separatorOffset < 0)
 			return null;
-
+		
+		var firstChild = prop.getFirstChild();
 		var keyBuilder = new StringBuilder();
 		var child = firstChild;
 		while (child != null && !":".equals(child.getText())) {

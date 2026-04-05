@@ -22,7 +22,7 @@ public class TsInterfaceFinder extends AlignmentFinder {
 	private AlignmentGroup buildGroup(PsiElement tsInterface) {
 		var group = new AlignmentGroup();
 		for (var prop : tsInterface.getChildren()) {
-			var kv = JsObjectLiteralFinder.describeKV(findSeparatorOffset(prop, ":"), prop.getFirstChild());
+			var kv = JsObjectLiteralFinder.describeKV(prop);
 			if (kv != null)
 				group.add(kv);
 		}
