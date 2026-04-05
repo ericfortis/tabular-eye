@@ -23,13 +23,13 @@ public class TsInterfaceFinder extends AlignmentFinder {
 	private AlignmentGroup buildGroup(PsiElement tsInterface) {
 		var group = new AlignmentGroup();
 
-		for (var member : tsInterface.getChildren()) {
-			int colonOffset = findSeparatorOffset(member, ":");
+		for (var prop : tsInterface.getChildren()) {
+			int colonOffset = findSeparatorOffset(prop, ":");
 			if (colonOffset < 0)
 				continue;
 
 			var keyBuilder = new StringBuilder();
-			var child = member.getFirstChild();
+			var child = prop.getFirstChild();
 			while (child != null && !":".equals(child.getText())) {
 				keyBuilder.append(child.getText());
 				child = child.getNextSibling();
@@ -37,7 +37,7 @@ public class TsInterfaceFinder extends AlignmentFinder {
 
 			var keyText = keyBuilder.toString().trim();
 			if (!keyText.isEmpty()) {
-				int startOffset = Objects.requireNonNull(member.getFirstChild()).getTextRange().getStartOffset();
+				int startOffset = Objects.requireNonNull(prop.getFirstChild()).getTextRange().getStartOffset();
 				group.add(new PropInfo(keyText, startOffset, colonOffset));
 			}
 		}
