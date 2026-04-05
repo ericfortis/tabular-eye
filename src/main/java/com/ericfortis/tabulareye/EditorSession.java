@@ -36,7 +36,8 @@ class EditorSession implements Disposable {
 	private final Spacers spacers;
 	private final Disposable disposable;
 	private final Alarm alarm;
-	private final int DELAY = 40;
+	private final int DEFAULT_DELAY = 40;
+	private final int DOCUMENT_DELAY = 300;
 
 	EditorSession(Editor ed, Project p, List<AlignmentFinder> finders) {
 		this.editor = ed;
@@ -49,13 +50,15 @@ class EditorSession implements Disposable {
 		ed.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
 			public void documentChanged(@NotNull DocumentEvent ev) {
-				refresh(p);
+				System.out.println("EVVV DocumentListener.documentChanged fired");
+				refresh(p, DOCUMENT_DELAY);
 			}
 		}, disposable);
 
 		p.getMessageBus().connect(disposable).subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {
 			@Override
 			public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
+				System.out.println("EVVV FileEditorManagerListener.fileOpened fired");
 				refresh(p);
 			}
 
@@ -63,6 +66,7 @@ class EditorSession implements Disposable {
 			@Override
 			public void selectionChanged(@NotNull com.intellij.openapi.fileEditor.FileEditorManagerEvent event) {
 				if (event.getNewFile() == null) return;
+				System.out.println("EVVV FileEditorManagerListener.selectionChanged fired");
 				ReadAction.runBlocking(() -> {
 					var psiFile = PsiDocumentManager.getInstance(p).getPsiFile(ed.getDocument());
 					if (psiFile != null && psiFile.getVirtualFile() != null && event.getNewFile().equals(psiFile.getVirtualFile()))
@@ -73,15 +77,20 @@ class EditorSession implements Disposable {
 
 		// Handles font size / color-scheme changes; invalidates the cached FontMetrics
 		p.getMessageBus().connect(disposable).subscribe(EditorColorsManager.TOPIC, (EditorColorsListener) scheme -> {
+			System.out.println("EVVV EditorColorsListener fired");
 			spacers.invalidateFontMetricsCache();
 			refresh(p);
 		});
 	}
 
 	void refresh(Project p) {
+		refresh(p, DEFAULT_DELAY);
+	}
+
+	void refresh(Project p, int delay) {
 		if (p.isDisposed()) return;
 		alarm.cancelAllRequests();
-		alarm.addRequest(() -> doRefresh(p), DELAY);
+		alarm.addRequest(() -> doRefresh(p), delay);
 	}
 
 	private void doRefresh(Project p) {
