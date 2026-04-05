@@ -8,6 +8,7 @@
   <depends optional="true" config-file="tabular-eye-js.xml">JavaScript</depends>
   <depends optional="true" config-file="tabular-eye-css.xml">com.intellij.css</depends>
   <depends optional="true" config-file="tabular-eye-yaml.xml">org.jetbrains.plugins.yaml</depends>
+  <depends optional="true" config-file="tabular-eye-json.xml">com.intellij.modules.json</depends>
 
   <extensionPoints>
     <extensionPoint name="alignmentFinder" interface="com.ericfortis.tabulareye.finders.AlignmentFinder"

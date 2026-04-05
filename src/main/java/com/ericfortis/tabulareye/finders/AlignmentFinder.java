@@ -15,6 +15,7 @@ import java.util.List;
 public abstract class AlignmentFinder {
 	protected abstract List<String> getExtensions();
 
+	public static final List<String> JSON_EXT = List.of("json");
 	public static final List<String> JS_EXT = List.of("js", "jsx", "ts", "tsx");
 	public static final List<String> TS_EXT = List.of("ts", "tsx");
 	public static final List<String> CSS_EXT = List.of("css");
