@@ -32,16 +32,19 @@ public class JsObjectLiteralFinderTest extends BasePlatformTestCase {
 			 }
 			 """);
 		assertEquals(2, blocks.size());
-		
+
 		var b0 = blocks.getFirst();
 		var b1 = blocks.getLast();
 		assertEquals(2, b0.size());
 		assertEquals(2, b1.size());
-		
+
 		assertEquals("a", b0.get(0).key());
 		assertEquals("b", b0.get(1).key());
 		assertEquals("c", b1.get(0).key());
 		assertEquals("d", b1.get(1).key());
+
+		assertEquals(18, b0.get(0).keyStartOffset());
+		assertEquals(19, b0.get(0).separatorOffset());
 	}
 
 	public void testIgnoresShorthandProps() {
