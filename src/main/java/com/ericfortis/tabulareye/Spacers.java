@@ -70,7 +70,7 @@ public class Spacers {
 	private void renderGroup(AlignmentBlock block) {
 		var props = block.props();
 
-		// measure left-side tokens
+		// measure left-side tokens (keys)
 		int[] widths = new int[props.size()];
 		int maxWidth = 0;
 		for (int i = 0; i < props.size(); i++) {
