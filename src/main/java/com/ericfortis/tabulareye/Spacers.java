@@ -90,10 +90,8 @@ public class Spacers {
 			var prop = props.get(i);
 			var fm = getFontMetrics(prop.keyStartOffset());
 			if (fm != null) {
-				int w = fm.stringWidth(prop.key()); // supports proportional fonts
-				widths[i] = w;
-				if (w > maxWidth)
-					maxWidth = w;
+				widths[i] = fm.stringWidth(prop.key()); // supports proportional fonts
+				maxWidth = Math.max(maxWidth, widths[i]);
 			}
 		}
 
