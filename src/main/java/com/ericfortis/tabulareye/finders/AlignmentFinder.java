@@ -18,6 +18,7 @@ public abstract class AlignmentFinder {
 	public static final List<String> JS_EXT = List.of("js", "jsx", "ts", "tsx");
 	public static final List<String> TS_EXT = List.of("ts", "tsx");
 	public static final List<String> CSS_EXT = List.of("css");
+	public static final List<String> YML_EXT = List.of("yml", "yaml");
 
 	public final boolean isApplicable(@NotNull PsiFile file) {
 		return getExtensions().contains(file.getVirtualFile().getExtension());
@@ -54,7 +55,7 @@ public abstract class AlignmentFinder {
 		public int getEndOffset() {
 			return props.isEmpty()
 				 ? -1
-				 : props.getLast().colonOffset();
+				 : props.getLast().separatorOffset();
 		}
 
 		public void add(PropInfo p) {
@@ -70,6 +71,6 @@ public abstract class AlignmentFinder {
 		}
 	}
 
-	public record PropInfo(String keyText, int keyStartOffset, int colonOffset) {
+	public record PropInfo(String keyText, int keyStartOffset, int separatorOffset) {
 	}
 }

@@ -89,7 +89,7 @@ public class Spacers {
 		for (int i = 0; i < props.size(); i++) {
 			int spacerWidth = maxWidth - widths[i];
 			if (spacerWidth > 0) { // skips longest
-				int placeAt = props.get(i).colonOffset() + 1;
+				int placeAt = props.get(i).separatorOffset() + 1;
 				var inlay = model.addInlineElement(placeAt, true, new Spacer(spacerWidth));
 				if (inlay != null)
 					activeInlays.add(inlay);

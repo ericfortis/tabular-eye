@@ -12,7 +12,7 @@ import java.util.List;
 public class YamlListFinder extends AlignmentFinder {
 	@Override
 	protected List<String> getExtensions() {
-		return List.of("yml", "yaml");
+		return YML_EXT;
 	}
 
 	@Override
