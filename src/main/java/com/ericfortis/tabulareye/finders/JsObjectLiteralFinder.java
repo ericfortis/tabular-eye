@@ -2,6 +2,7 @@ package com.ericfortis.tabulareye.finders;
 
 import com.intellij.lang.javascript.psi.JSObjectLiteralExpression;
 import com.intellij.openapi.editor.Document;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,29 +22,32 @@ public class JsObjectLiteralFinder extends AlignmentFinder {
 
 	private AlignmentGroup buildGroup(JSObjectLiteralExpression obj) {
 		var group = new AlignmentGroup();
-
-		for (var prop : obj.getProperties()) {
-			if (prop == null || prop.isShorthanded())
-				continue;
-
-			int colonOffset = findSeparatorOffset(prop, ":");
-			if (colonOffset < 0)
-				continue;
-
-			var keyBuilder = new StringBuilder();
-			var child = prop.getFirstChild();
-			while (child != null && !":".equals(child.getText())) {
-				keyBuilder.append(child.getText());
-				child = child.getNextSibling();
+		for (var prop : obj.getProperties())
+			if (prop != null && !prop.isShorthanded()) {
+				var kv = describeKV(findSeparatorOffset(prop, ":"), prop.getFirstChild());
+				if (kv != null)
+					group.add(kv);
 			}
+		return group.props().isEmpty() ? null : group;
+	}
 
-			var keyText = keyBuilder.toString().trim();
-			if (!keyText.isEmpty()) {
-				int startOffset = Objects.requireNonNull(prop.getFirstChild()).getTextRange().getStartOffset();
-				group.add(new PropInfo(keyText, startOffset, colonOffset));
-			}
+	static PropInfo describeKV(int separatorOffset, PsiElement firstChild) {
+		if (separatorOffset < 0)
+			return null;
+
+		var keyBuilder = new StringBuilder();
+		var child = firstChild;
+		while (child != null && !":".equals(child.getText())) {
+			keyBuilder.append(child.getText());
+			child = child.getNextSibling();
 		}
 
-		return group.props().isEmpty() ? null : group;
+		var keyText = keyBuilder.toString().trim();
+		if (!keyText.isEmpty()) {
+			int startOffset = Objects.requireNonNull(firstChild).getTextRange().getStartOffset();
+			return new PropInfo(keyText, startOffset, separatorOffset);
+		}
+
+		return null;
 	}
 }
