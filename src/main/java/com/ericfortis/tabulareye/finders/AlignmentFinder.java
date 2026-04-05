@@ -16,22 +16,23 @@ public abstract class AlignmentFinder {
 	public abstract boolean isApplicable(@NotNull PsiFile file);
 
 	public static boolean isJs(@NotNull PsiFile file) {
-		var type = file.getFileType();
-		return type instanceof com.intellij.lang.javascript.JavaScriptFileType
-			 || type instanceof com.intellij.lang.javascript.TypeScriptFileType
-			 || type instanceof com.intellij.lang.javascript.TypeScriptJSXFileType
-			 || type instanceof com.intellij.lang.javascript.JSXFileType;
+		var ext = file.getVirtualFile().getExtension();
+		return "js".equals(ext) || "jsx".equals(ext) || "tsx".equals(ext) || "ts".equals(ext);
 	}
 
 	public static boolean isTs(@NotNull PsiFile file) {
-		var type = file.getFileType();
-		return type instanceof com.intellij.lang.javascript.TypeScriptFileType
-			 || type instanceof com.intellij.lang.javascript.TypeScriptJSXFileType;
+		var ext = file.getVirtualFile().getExtension();
+		return "tsx".equals(ext) || "ts".equals(ext);
 	}
 
 	public static boolean isCss(@NotNull PsiFile file) {
-		var type = file.getFileType();
-		return type instanceof com.intellij.psi.css.CssFileType;
+		var ext = file.getVirtualFile().getExtension();
+		return "css".equals(ext);
+	}
+
+	public static boolean isYml(@NotNull PsiFile file) {
+		var ext = file.getVirtualFile().getExtension();
+		return "yml".equals(ext) || "yaml".equals(ext);
 	}
 
 	static boolean isMultiline(PsiElement elem, Document doc) {
