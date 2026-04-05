@@ -48,33 +48,29 @@ class EditorSession implements Disposable {
 			}
 		}, disposable);
 
-		p.getMessageBus()
-			 .connect(disposable)
-			 .subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {
-				 @Override
-				 public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
-					 refresh(p);
-				 }
+		p.getMessageBus().connect(disposable).subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {
+			@Override
+			public void fileOpened(@NotNull FileEditorManager source, @NotNull VirtualFile file) {
+				refresh(p);
+			}
 
-				 // Handles returning to an already-open tab
-				 @Override
-				 public void selectionChanged(@NotNull com.intellij.openapi.fileEditor.FileEditorManagerEvent event) {
-					 if (event.getNewFile() == null) return;
-					 ReadAction.runBlocking(() -> {
-						 var psiFile = PsiDocumentManager.getInstance(p).getPsiFile(ed.getDocument());
-						 if (psiFile != null && event.getNewFile().equals(psiFile.getVirtualFile()))
-							 refresh(p);
-					 });
-				 }
-			 });
+			// Handles returning to an already-open tab
+			@Override
+			public void selectionChanged(@NotNull com.intellij.openapi.fileEditor.FileEditorManagerEvent event) {
+				if (event.getNewFile() == null) return;
+				ReadAction.runBlocking(() -> {
+					var psiFile = PsiDocumentManager.getInstance(p).getPsiFile(ed.getDocument());
+					if (psiFile != null && event.getNewFile().equals(psiFile.getVirtualFile()))
+						refresh(p);
+				});
+			}
+		});
 
 		// Handles font size / color-scheme changes; invalidates the cached FontMetrics
-		p.getMessageBus()
-			 .connect(disposable)
-			 .subscribe(EditorColorsManager.TOPIC, (EditorColorsListener) scheme -> {
-				 spacers.invalidateFontMetricsCache();
-				 refresh(p);
-			 });
+		p.getMessageBus().connect(disposable).subscribe(EditorColorsManager.TOPIC, (EditorColorsListener) scheme -> {
+			spacers.invalidateFontMetricsCache();
+			refresh(p);
+		});
 
 		ed.getScrollingModel().addVisibleAreaListener(e -> refresh(p), disposable);
 	}
@@ -85,9 +81,12 @@ class EditorSession implements Disposable {
 		var psiDocManager = PsiDocumentManager.getInstance(p);
 
 		psiDocManager.performForCommittedDocument(doc, () -> ReadAction.runBlocking(() -> {
-			if (editor.isDisposed()) return;
+			if (editor.isDisposed())
+				return;
+
 			var psiFile = psiDocManager.getPsiFile(doc);
-			if (psiFile == null) return;
+			if (psiFile == null)
+				return;
 
 			List<AlignmentGroup> allGroups = new ArrayList<>();
 			for (var finder : finders) {
