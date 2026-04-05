@@ -88,16 +88,16 @@ class EditorSession implements Disposable {
 			if (psiFile == null)
 				return;
 
-			List<AlignmentBlock> allGroups = new ArrayList<>();
+			List<AlignmentBlock> allBlocks = new ArrayList<>();
 			for (var finder : finders) {
-				var g = finder.findBlocks(psiFile, doc);
-				if (!g.isEmpty())
-					allGroups.addAll(g);
+				var blocks = finder.findBlocks(psiFile, doc);
+				if (!blocks.isEmpty())
+					allBlocks.addAll(blocks);
 			}
 
 			ApplicationManager.getApplication().invokeLater(() -> {
 				if (!editor.isDisposed())
-					spacers.refresh(allGroups);
+					spacers.refresh(allBlocks);
 			}, ModalityState.any());
 		}));
 	}

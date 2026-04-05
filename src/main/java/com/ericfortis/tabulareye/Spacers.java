@@ -53,8 +53,8 @@ public class Spacers {
 			ReadAction.runBlocking(() -> {
 				if (editor.isDisposed())
 					return;
+				
 				clearAll();
-
 				var visibleArea = editor.getScrollingModel().getVisibleArea();
 				int startVisualLine = editor.xyToLogicalPosition(new Point(0, visibleArea.y)).line;
 				int endVisualLine = editor.xyToLogicalPosition(new Point(0, visibleArea.y + visibleArea.height)).line;
