@@ -13,8 +13,8 @@ import java.util.Objects;
 public class JsObjectLiteralFinder extends AlignmentFinder {
 
 	@Override
-	public boolean isApplicable(@NotNull PsiFile file) {
-		return isJs(file);
+	protected List<String> getExtensions() {
+		return JS_EXT;
 	}
 
 	@Override

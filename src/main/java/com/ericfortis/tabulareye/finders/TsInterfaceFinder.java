@@ -14,8 +14,8 @@ import java.util.Objects;
 public class TsInterfaceFinder extends AlignmentFinder {
 
 	@Override
-	public boolean isApplicable(@NotNull PsiFile file) {
-		return isTs(file);
+	protected List<String> getExtensions() {
+		return TS_EXT;
 	}
 
 	@Override

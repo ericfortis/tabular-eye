@@ -13,26 +13,19 @@ import java.util.List;
  * Visitor for finding the column spacing needed for tabularizing.
  */
 public abstract class AlignmentFinder {
-	public abstract boolean isApplicable(@NotNull PsiFile file);
+	protected abstract List<String> getExtensions();
 
-	public static boolean isJs(@NotNull PsiFile file) {
-		var ext = file.getVirtualFile().getExtension();
-		return "js".equals(ext) || "jsx".equals(ext) || "tsx".equals(ext) || "ts".equals(ext);
-	}
+	public final List<String> JS_EXT = List.of("js", "jsx", "ts", "tsx");
+	public final List<String> TS_EXT = List.of("ts", "tsx");
+	public final List<String> CSS_EXT = List.of("css");
+	public final List<String> YML_EXT = List.of("yml", "yaml");
 
-	public static boolean isTs(@NotNull PsiFile file) {
+	public boolean isApplicable(@NotNull PsiFile file) {
 		var ext = file.getVirtualFile().getExtension();
-		return "tsx".equals(ext) || "ts".equals(ext);
-	}
-
-	public static boolean isCss(@NotNull PsiFile file) {
-		var ext = file.getVirtualFile().getExtension();
-		return "css".equals(ext);
-	}
-
-	public static boolean isYml(@NotNull PsiFile file) {
-		var ext = file.getVirtualFile().getExtension();
-		return "yml".equals(ext) || "yaml".equals(ext);
+		for (var e : getExtensions())
+			if (e.equals(ext))
+				return true;
+		return false;
 	}
 
 	static boolean isMultiline(PsiElement elem, Document doc) {

@@ -13,10 +13,9 @@ import java.util.List;
  * Only aligns the second column
  */
 public class Js2dArrayFinder extends AlignmentFinder {
-
 	@Override
-	public boolean isApplicable(@NotNull PsiFile file) {
-		return isJs(file);
+	protected List<String> getExtensions() {
+		return JS_EXT;
 	}
 
 	@Override

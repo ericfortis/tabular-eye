@@ -12,10 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CssPropertyFinder extends AlignmentFinder {
-
 	@Override
-	public boolean isApplicable(@NotNull PsiFile file) {
-		return isCss(file);
+	protected List<String> getExtensions() {
+		return CSS_EXT;
 	}
 
 	@Override
