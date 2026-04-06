@@ -19,7 +19,7 @@ public class YamlListDetector extends AlignmentDetector {
 	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
 		List<AlignmentBlock> blocks = new ArrayList<>();
 
-		for (var el : PsiTreeUtil.collectElementsOfType(file, YAMLSequence.class)) {
+		for (var el : PsiTreeUtil.collectElementsOfType(file, YAMLSequence.class))
 			for (var item : el.getItems()) {
 				var hyphen = item.getFirstChild();
 				if (hyphen == null || !"-".equals(hyphen.getText()))
@@ -40,7 +40,6 @@ public class YamlListDetector extends AlignmentDetector {
 				block.add(new PropInfo(" ", -1, -1));
 				blocks.add(block);
 			}
-		}
 
 		return blocks;
 	}

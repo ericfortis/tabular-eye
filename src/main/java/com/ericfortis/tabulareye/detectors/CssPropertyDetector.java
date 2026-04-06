@@ -21,15 +21,15 @@ public class CssPropertyDetector extends AlignmentDetector {
 	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
 		List<AlignmentBlock> groups = new ArrayList<>();
 
-		for (var el : PsiTreeUtil.findChildrenOfType(file, CssBlock.class)) {
+		for (var el : PsiTreeUtil.findChildrenOfType(file, CssBlock.class))
 			if (isMultiline(el, doc)) {
 				var block = new AlignmentBlock();
 				for (var child = el.getFirstChild(); child != null; child = child.getNextSibling())
 					if (child instanceof CssDeclaration decl) {
 						int colonOffset = findSeparatorOffset(decl, ":");
 						if (colonOffset > 0) {
-							int firstOffset = decl.getFirstChild() != null 
-								 ? decl.getFirstChild().getTextRange().getStartOffset() 
+							int firstOffset = decl.getFirstChild() != null
+								 ? decl.getFirstChild().getTextRange().getStartOffset()
 								 : colonOffset;
 							block.add(new PropInfo(getPropertyName(decl), firstOffset, colonOffset));
 						}
@@ -37,7 +37,6 @@ public class CssPropertyDetector extends AlignmentDetector {
 				if (block.isValid())
 					groups.add(block);
 			}
-		}
 
 		return groups;
 	}
