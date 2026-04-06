@@ -29,7 +29,6 @@ public class TabularEye implements EditorFactoryListener {
 	@Override
 	public void editorCreated(@NotNull EditorFactoryEvent event) {
 		var editor = event.getEditor();
-		
 		if (editor.getEditorKind() != EditorKind.MAIN_EDITOR)
 			return;
 		
@@ -64,7 +63,7 @@ public class TabularEye implements EditorFactoryListener {
 			return null;
 
 		var psiFile = PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
-		if (psiFile == null || psiFile.getVirtualFile() == null)
+		if (psiFile == null)
 			return null;
 
 		var detectors = EP_NAME.getExtensionList().stream().filter(f -> f.isApplicable(psiFile)).toList();
