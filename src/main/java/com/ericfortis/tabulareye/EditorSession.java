@@ -1,12 +1,10 @@
 package com.ericfortis.tabulareye;
 
 import com.ericfortis.tabulareye.detectors.AlignmentDetector;
-import com.ericfortis.tabulareye.detectors.AlignmentDetector.AlignmentBlock;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.application.ReadAction;
-import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.colors.EditorColorsListener;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
@@ -17,12 +15,10 @@ import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiFile;
 import com.intellij.util.Alarm;
 import com.intellij.util.concurrency.AppExecutorUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -104,7 +100,7 @@ class EditorSession implements Disposable {
 					 if (p.isDisposed() || editor.isDisposed())
 						 return null;
 
-					 return calcAlignments(psiFile, doc);
+					 return spacers.calcAlignments(detectors, psiFile, doc);
 				 })
 				 .finishOnUiThread(ModalityState.any(), allBlocks -> {
 					 if (allBlocks != null && !p.isDisposed() && !editor.isDisposed())
@@ -113,22 +109,5 @@ class EditorSession implements Disposable {
 				 .expireWith(this)
 				 .submit(AppExecutorUtil.getAppExecutorService());
 		}, ModalityState.any());
-	}
-
-	private List<AlignmentBlock> calcAlignments(PsiFile psiFile, Document doc) {
-		List<AlignmentBlock> allBlocks = new ArrayList<>();
-		for (var d : detectors) {
-			var blocks = d.findBlocks(psiFile, doc);
-			for (var b : blocks)
-				for (var prop : b.props()) {
-					var fm = spacers.getFontMetrics(prop.keyOffset());
-					if (fm != null)
-						prop.setKeyWidth(fm.stringWidth(prop.key()));
-				}
-			
-			if (!blocks.isEmpty())
-				allBlocks.addAll(blocks);
-		}
-		return allBlocks;
 	}
 }

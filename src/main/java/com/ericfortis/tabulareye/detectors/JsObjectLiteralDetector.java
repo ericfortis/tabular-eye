@@ -35,7 +35,7 @@ public class JsObjectLiteralDetector extends AlignmentDetector {
 		var separatorOffset = findSeparatorOffset(prop, ":");
 		if (separatorOffset < 0)
 			return null;
-		
+
 		var keyBuilder = new StringBuilder();
 		var firstChild = prop.getFirstChild();
 		var child = firstChild;
