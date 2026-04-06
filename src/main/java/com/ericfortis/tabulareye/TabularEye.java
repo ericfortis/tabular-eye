@@ -14,6 +14,7 @@ import com.intellij.util.concurrency.AppExecutorUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -23,6 +24,8 @@ public class TabularEye implements EditorFactoryListener {
 	private static final ExtensionPointName<AlignmentDetector> EP_NAME =
 		 ExtensionPointName.create("com.ericfortis.tabulareye.alignmentDetector");
 
+	private List<AlignmentDetector> extensionList;
+
 	private final Map<Editor, EditorSession> sessions = new HashMap<>();
 
 
@@ -31,6 +34,9 @@ public class TabularEye implements EditorFactoryListener {
 		var editor = event.getEditor();
 		if (editor.getEditorKind() != EditorKind.MAIN_EDITOR)
 			return;
+
+		if (extensionList == null)
+			extensionList = EP_NAME.getExtensionList();
 
 		var project = editor.getProject();
 		if (project == null)
@@ -62,7 +68,7 @@ public class TabularEye implements EditorFactoryListener {
 		if (psiFile == null)
 			return null;
 
-		var detectors = EP_NAME.getExtensionList().stream().filter(f -> f.isApplicable(psiFile)).toList();
+		var detectors = extensionList.stream().filter(f -> f.isApplicable(psiFile)).toList();
 		if (detectors.isEmpty())
 			return null;
 
