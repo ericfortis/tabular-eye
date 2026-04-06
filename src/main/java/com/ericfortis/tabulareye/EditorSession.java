@@ -60,7 +60,7 @@ class EditorSession implements Disposable {
 			spacers.invalidateFontMetricsCache();
 			refresh(p);
 		});
-		
+
 		// On content change (user edit)
 		ed.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
