@@ -47,16 +47,14 @@ public class Spacers {
 	public void refresh(List<AlignmentBlock> blocks) {
 		if (isRefreshing)
 			return;
-		
+
 		isRefreshing = true;
 		try {
 			ReadAction.runBlocking(() -> {
-				if (editor.isDisposed())
-					return;
-				
-				clearAll();
-				for (var b : blocks) {
-					renderGroup(b);
+				if (!editor.isDisposed()) {
+					clearAll();
+					for (var b : blocks)
+						renderGroup(b);
 				}
 			});
 		} finally {
@@ -70,7 +68,6 @@ public class Spacers {
 				Disposer.dispose(inlay);
 		activeInlays.clear();
 	}
-
 
 
 	private void renderGroup(AlignmentBlock block) {
