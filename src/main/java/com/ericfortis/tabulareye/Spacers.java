@@ -49,7 +49,6 @@ public class Spacers {
 	public void refresh(List<AlignmentBlock> blocks) {
 		if (isRefreshing || editor.isDisposed())
 			return;
-
 		isRefreshing = true;
 		try {
 			clearAll();
