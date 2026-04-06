@@ -81,6 +81,8 @@ public class Spacers {
 		return allBlocks;
 	}
 
+	// Handles proportional fonts. 
+	// TODO create a fast path for monospace fonts. With a cache of a 1-char width.
 	private void setKeyWidth(PropInfo prop) {
 		var fm = getFontMetrics(prop.keyOffset());
 		if (fm != null)
