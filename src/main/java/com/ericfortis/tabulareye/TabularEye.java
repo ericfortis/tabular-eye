@@ -39,11 +39,10 @@ public class TabularEye implements EditorFactoryListener {
 		if (project == null)
 			return;
 
-		PsiDocumentManager.getInstance(project).performForCommittedDocument(editor.getDocument(), () -> {
-			ReadAction.nonBlocking(() -> openSession(editor, project))
-				 .expireWhen(() -> project.isDisposed() || editor.isDisposed())
-				 .submit(AppExecutorUtil.getAppExecutorService());
-		});
+		PsiDocumentManager.getInstance(project).performForCommittedDocument(editor.getDocument(), () ->
+			 ReadAction.nonBlocking(() -> openSession(editor, project))
+					.expireWhen(() -> project.isDisposed() || editor.isDisposed())
+					.submit(AppExecutorUtil.getAppExecutorService()));
 	}
 
 	@Override
