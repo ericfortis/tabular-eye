@@ -6,10 +6,11 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.event.EditorFactoryEvent;
 import com.intellij.openapi.editor.event.EditorFactoryListener;
 import com.intellij.openapi.extensions.ExtensionPointName;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.psi.PsiDocumentManager;
-import org.jetbrains.annotations.NotNull;
 import com.intellij.util.concurrency.AppExecutorUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,8 +18,7 @@ import java.util.Map;
 
 public class TabularEye implements EditorFactoryListener {
 
-	// This way CSS and JS plugins (bundled) could be optional
-	// Although, not sure if they can be disabled, at least in WebStorm I can't.
+	// This way the bundled plugins we depend on could be optional
 	private static final ExtensionPointName<AlignmentFinder> EP_NAME =
 		 ExtensionPointName.create("com.ericfortis.tabulareye.alignmentFinder");
 
@@ -35,7 +35,7 @@ public class TabularEye implements EditorFactoryListener {
 		var document = editor.getDocument();
 		var psiDocManager = PsiDocumentManager.getInstance(project);
 		var psiFile = psiDocManager.getPsiFile(document);
-		// Check for virtual file to avoid editors not backed by real files (like terminal)
+		// Avoids editors not backed by real files (e.g., the Terminal)
 		if (psiFile == null || psiFile.getVirtualFile() == null || editor.isViewer())
 			return;
 
@@ -55,7 +55,7 @@ public class TabularEye implements EditorFactoryListener {
 	}
 
 
-	private EditorSession openSession(Editor editor, com.intellij.openapi.project.Project project) {
+	private EditorSession openSession(Editor editor, Project project) {
 		if (project.isDisposed() || editor.isDisposed() || sessions.get(editor) != null)
 			return null;
 
