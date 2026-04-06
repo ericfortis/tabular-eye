@@ -2,6 +2,7 @@ package com.ericfortis.tabulareye;
 
 import com.ericfortis.tabulareye.detectors.AlignmentDetector;
 import com.ericfortis.tabulareye.detectors.AlignmentDetector.AlignmentBlock;
+import com.ericfortis.tabulareye.detectors.AlignmentDetector.PropInfo;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorCustomElementRenderer;
@@ -71,16 +72,19 @@ public class Spacers {
 		for (var d : detectors) {
 			var blocks = d.findBlocks(psiFile, doc);
 			for (var b : blocks)
-				for (var prop : b.props()) {
-					var fm = getFontMetrics(prop.keyOffset());
-					if (fm != null)
-						prop.setKeyWidth(fm.stringWidth(prop.key()));
-				}
+				for (var prop : b.props())
+					setKeyWidth(prop);
 
 			if (!blocks.isEmpty())
 				allBlocks.addAll(blocks);
 		}
 		return allBlocks;
+	}
+
+	private void setKeyWidth(PropInfo prop) {
+		var fm = getFontMetrics(prop.keyOffset());
+		if (fm != null)
+			prop.setKeyWidth(fm.stringWidth(prop.key()));
 	}
 
 	private void render(AlignmentBlock block) {
