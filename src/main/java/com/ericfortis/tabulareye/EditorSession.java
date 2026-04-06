@@ -15,7 +15,6 @@ import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Disposer;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.util.Alarm;
 import com.intellij.util.concurrency.AppExecutorUtil;
@@ -29,7 +28,6 @@ class EditorSession implements Disposable {
 	private final Editor editor;
 	private final List<AlignmentFinder> finders;
 	private final Spacers spacers;
-	private final Disposable disposable;
 	private final Alarm alarm;
 	private static final int DEFAULT_DELAY = 40;
 	private static final int DOCUMENT_DELAY = 300;
@@ -39,12 +37,11 @@ class EditorSession implements Disposable {
 		this.finders = finders;
 		this.spacers = new Spacers(ed);
 		this.alarm = new Alarm(Alarm.ThreadToUse.POOLED_THREAD, this);
-		disposable = Disposer.newDisposable("tabulareye-" + ed.hashCode());
 
 
 		// On opening file
 		// On returning to an already-open tab
-		p.getMessageBus().connect(disposable).subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {
+		p.getMessageBus().connect(this).subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {
 			@Override
 			public void selectionChanged(@NotNull FileEditorManagerEvent event) {
 				if (event.getNewFile() != null
@@ -56,7 +53,7 @@ class EditorSession implements Disposable {
 		});
 
 		// On font-size / color-scheme change
-		p.getMessageBus().connect(disposable).subscribe(EditorColorsManager.TOPIC, (EditorColorsListener) scheme -> {
+		p.getMessageBus().connect(this).subscribe(EditorColorsManager.TOPIC, (EditorColorsListener) scheme -> {
 			spacers.invalidateFontMetricsCache();
 			refresh(p);
 		});
@@ -67,13 +64,12 @@ class EditorSession implements Disposable {
 			public void documentChanged(@NotNull DocumentEvent ev) {
 				refresh(p, DOCUMENT_DELAY);
 			}
-		}, disposable);
+		}, this);
 	}
 
 
 	@Override
 	public void dispose() {
-		Disposer.dispose(disposable);
 		spacers.clearAll();
 	}
 
