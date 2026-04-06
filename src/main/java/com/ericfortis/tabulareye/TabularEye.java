@@ -55,7 +55,7 @@ public class TabularEye implements EditorFactoryListener {
 
 
 	private EditorSession openSession(Editor editor, Project project) {
-		if (project.isDisposed() || editor.isDisposed() || sessions.get(editor) != null)
+		if (sessions.get(editor) != null)
 			return null;
 
 		var psiFile = PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
