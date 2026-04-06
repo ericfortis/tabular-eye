@@ -126,7 +126,6 @@ class EditorSession implements Disposable {
 						 spacers.refresh(allBlocks);
 				 })
 				 .expireWith(this)
-				 .expireWith(p)
 				 .submit(AppExecutorUtil.getAppExecutorService());
 		}, ModalityState.any());
 	}
