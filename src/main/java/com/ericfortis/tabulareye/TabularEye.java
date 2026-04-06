@@ -63,8 +63,7 @@ public class TabularEye implements EditorFactoryListener {
 		if (psiFile == null || psiFile.getVirtualFile() == null)
 			return null;
 
-		var extensionList = EP_NAME.getExtensionList();
-		var applicable = extensionList.stream().filter(f -> f.isApplicable(psiFile)).toList();
+		var applicable = EP_NAME.getExtensionList().stream().filter(f -> f.isApplicable(psiFile)).toList();
 		if (applicable.isEmpty())
 			return null;
 
