@@ -3,6 +3,7 @@ package com.ericfortis.tabulareye;
 import com.ericfortis.tabulareye.detectors.AlignmentDetector;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.EditorKind;
 import com.intellij.openapi.editor.event.EditorFactoryEvent;
 import com.intellij.openapi.editor.event.EditorFactoryListener;
 import com.intellij.openapi.extensions.ExtensionPointName;
@@ -28,6 +29,10 @@ public class TabularEye implements EditorFactoryListener {
 	@Override
 	public void editorCreated(@NotNull EditorFactoryEvent event) {
 		var editor = event.getEditor();
+		
+		if (editor.getEditorKind() != EditorKind.MAIN_EDITOR)
+			return;
+		
 		var project = editor.getProject();
 		if (project == null)
 			return;
@@ -35,8 +40,7 @@ public class TabularEye implements EditorFactoryListener {
 		var document = editor.getDocument();
 		var psiDocManager = PsiDocumentManager.getInstance(project);
 		var psiFile = psiDocManager.getPsiFile(document);
-		// Avoids editors not backed by real files (e.g., the Terminal)
-		if (psiFile == null || psiFile.getVirtualFile() == null || editor.isViewer())
+		if (psiFile == null)
 			return;
 
 		psiDocManager.performForCommittedDocument(document, () -> {
