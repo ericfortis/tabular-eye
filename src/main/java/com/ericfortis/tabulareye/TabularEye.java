@@ -9,6 +9,7 @@ import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.psi.PsiDocumentManager;
 import org.jetbrains.annotations.NotNull;
+import com.intellij.util.concurrency.AppExecutorUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class TabularEye implements EditorFactoryListener {
 			if (!project.isDisposed() && !editor.isDisposed())
 				ReadAction.nonBlocking(() -> openSession(editor, project))
 					 .expireWith(project)
-					 .submit(com.intellij.util.concurrency.AppExecutorUtil.getAppExecutorService());
+					 .submit(AppExecutorUtil.getAppExecutorService());
 		});
 	}
 
