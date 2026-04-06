@@ -11,24 +11,21 @@ import com.intellij.openapi.editor.colors.EditorColorsListener;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.event.DocumentEvent;
 import com.intellij.openapi.editor.event.DocumentListener;
+import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
 import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.util.Alarm;
+import com.intellij.util.concurrency.AppExecutorUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Owns all per-editor state for TabularEye: the applicable finders,
- * the spacer renderer, and the event subscriptions that drive refreshes.
- * Disposing this object cleans up everything associated with the editor.
- */
-class EditorSession implements Disposable {
 
+class EditorSession implements Disposable {
 	private final Editor editor;
 	private final List<AlignmentFinder> finders;
 	private final Spacers spacers;
@@ -42,20 +39,14 @@ class EditorSession implements Disposable {
 		this.finders = finders;
 		this.spacers = new Spacers(ed);
 		this.alarm = new Alarm(Alarm.ThreadToUse.POOLED_THREAD, this);
-
 		disposable = Disposer.newDisposable("tabulareye-" + ed.hashCode());
 
-		ed.getDocument().addDocumentListener(new DocumentListener() {
-			@Override
-			public void documentChanged(@NotNull DocumentEvent ev) {
-				refresh(p, DOCUMENT_DELAY);
-			}
-		}, disposable);
 
+		// On opening file
+		// On returning to an already-open tab
 		p.getMessageBus().connect(disposable).subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {
-			// Handles returning to an already-open tab. Also, fires when opening a new file
 			@Override
-			public void selectionChanged(@NotNull com.intellij.openapi.fileEditor.FileEditorManagerEvent event) {
+			public void selectionChanged(@NotNull FileEditorManagerEvent event) {
 				if (event.getNewFile() != null
 					 && event.getNewEditor() instanceof TextEditor textEditor
 					 && textEditor.getEditor().equals(editor)
@@ -64,29 +55,49 @@ class EditorSession implements Disposable {
 			}
 		});
 
-		// Handles font size / color-scheme changes; invalidates the cached FontMetrics
+
+		// On content change (user edit)
+		ed.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void documentChanged(@NotNull DocumentEvent ev) {
+				refresh(p, DOCUMENT_DELAY);
+			}
+		}, disposable);
+
+
+		// On font-size / color-scheme change
 		p.getMessageBus().connect(disposable).subscribe(EditorColorsManager.TOPIC, (EditorColorsListener) scheme -> {
 			spacers.invalidateFontMetricsCache();
 			refresh(p);
 		});
 	}
 
+	@Override
+	public void dispose() {
+		Disposer.dispose(disposable);
+		spacers.clearAll();
+	}
+
+
 	void refresh(Project p) {
 		refresh(p, DEFAULT_DELAY);
 	}
 
 	void refresh(Project p, int delay) {
-		if (p.isDisposed()) return;
+		if (p.isDisposed())
+			return;
 		alarm.cancelAllRequests();
 		alarm.addRequest(() -> doRefresh(p), delay);
 	}
 
 	private void doRefresh(Project p) {
-		if (p.isDisposed() || editor.isDisposed()) return;
-		var doc = editor.getDocument();
+		if (p.isDisposed() || editor.isDisposed())
+			return;
 
+		var doc = editor.getDocument();
 		ApplicationManager.getApplication().invokeLater(() -> {
-			if (p.isDisposed() || editor.isDisposed()) return;
+			if (p.isDisposed() || editor.isDisposed())
+				return;
 			var psiDocManager = PsiDocumentManager.getInstance(p);
 
 			ReadAction.nonBlocking(() -> {
@@ -101,7 +112,8 @@ class EditorSession implements Disposable {
 
 					 List<AlignmentBlock> allBlocks = new ArrayList<>();
 					 for (var finder : finders) {
-						 if (p.isDisposed() || editor.isDisposed()) return null;
+						 if (p.isDisposed() || editor.isDisposed()) 
+							 return null;
 						 var blocks = finder.findBlocks(psiFile, doc);
 						 if (!blocks.isEmpty())
 							 allBlocks.addAll(blocks);
@@ -114,13 +126,7 @@ class EditorSession implements Disposable {
 				 })
 				 .expireWith(this)
 				 .expireWith(p)
-				 .submit(com.intellij.util.concurrency.AppExecutorUtil.getAppExecutorService());
+				 .submit(AppExecutorUtil.getAppExecutorService());
 		}, ModalityState.any());
-	}
-
-	@Override
-	public void dispose() {
-		Disposer.dispose(disposable);
-		spacers.clearAll();
 	}
 }
