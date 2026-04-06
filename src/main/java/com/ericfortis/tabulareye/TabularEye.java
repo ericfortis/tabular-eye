@@ -31,7 +31,7 @@ public class TabularEye implements EditorFactoryListener {
 		var editor = event.getEditor();
 		if (editor.getEditorKind() != EditorKind.MAIN_EDITOR)
 			return;
-		
+
 		var project = editor.getProject();
 		if (project == null)
 			return;
@@ -43,10 +43,9 @@ public class TabularEye implements EditorFactoryListener {
 			return;
 
 		psiDocManager.performForCommittedDocument(doc, () -> {
-			if (!project.isDisposed() && !editor.isDisposed())
-				ReadAction.nonBlocking(() -> openSession(editor, project))
-					 .expireWhen(() -> project.isDisposed() || editor.isDisposed())
-					 .submit(AppExecutorUtil.getAppExecutorService());
+			ReadAction.nonBlocking(() -> openSession(editor, project))
+				 .expireWhen(() -> project.isDisposed() || editor.isDisposed())
+				 .submit(AppExecutorUtil.getAppExecutorService());
 		});
 	}
 
