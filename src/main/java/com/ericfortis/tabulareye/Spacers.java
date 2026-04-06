@@ -51,7 +51,7 @@ public class Spacers {
 		try {
 			clearAll();
 			for (var b : blocks)
-				renderGroup(b);
+				render(b);
 		} finally {
 			isRefreshing = false;
 		}
@@ -66,10 +66,9 @@ public class Spacers {
 	}
 
 
-	private void renderGroup(AlignmentBlock block) {
+	private void render(AlignmentBlock block) {
 		var props = block.props();
 
-		// Find maxWidth using pre-calculated widths
 		int maxWidth = 0;
 		for (var p : props)
 			maxWidth = Math.max(maxWidth, p.keyWidth());
