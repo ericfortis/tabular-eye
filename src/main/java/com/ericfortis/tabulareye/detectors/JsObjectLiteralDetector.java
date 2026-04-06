@@ -1,4 +1,4 @@
-package com.ericfortis.tabulareye.finders;
+package com.ericfortis.tabulareye.detectors;
 
 import com.intellij.lang.javascript.psi.JSObjectLiteralExpression;
 import com.intellij.openapi.editor.Document;
@@ -9,8 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Objects;
 
-public class JsObjectLiteralFinder extends AlignmentFinder {
-	JsObjectLiteralFinder() {
+public class JsObjectLiteralDetector extends AlignmentDetector {
+	JsObjectLiteralDetector() {
 		super(JS_EXT);
 	}
 

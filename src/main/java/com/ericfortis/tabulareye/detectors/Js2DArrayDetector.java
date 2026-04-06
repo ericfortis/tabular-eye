@@ -1,4 +1,4 @@
-package com.ericfortis.tabulareye.finders;
+package com.ericfortis.tabulareye.detectors;
 
 import com.intellij.lang.javascript.psi.JSArrayLiteralExpression;
 import com.intellij.openapi.editor.Document;
@@ -12,8 +12,8 @@ import java.util.List;
 /**
  * Only aligns the second column
  */
-public class Js2dArrayFinder extends AlignmentFinder {
-	Js2dArrayFinder() {
+public class Js2DArrayDetector extends AlignmentDetector {
+	Js2DArrayDetector() {
 		super(JS_EXT);
 	}
 

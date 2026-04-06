@@ -1,4 +1,4 @@
-package com.ericfortis.tabulareye.finders;
+package com.ericfortis.tabulareye.detectors;
 
 import com.intellij.lang.javascript.psi.ecma6.impl.TypeScriptObjectTypeImpl;
 import com.intellij.openapi.editor.Document;
@@ -8,8 +8,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class TsInterfaceFinder extends AlignmentFinder {
-	TsInterfaceFinder() {
+public class TsInterfaceDetector extends AlignmentDetector {
+	TsInterfaceDetector() {
 		super(TS_EXT);
 	}
 
@@ -22,7 +22,7 @@ public class TsInterfaceFinder extends AlignmentFinder {
 	private AlignmentBlock buildBlock(PsiElement tsInterface) {
 		var block = new AlignmentBlock();
 		for (var prop : tsInterface.getChildren()) {
-			var kv = JsObjectLiteralFinder.describeKV(prop);
+			var kv = JsObjectLiteralDetector.describeKV(prop);
 			if (kv != null)
 				block.add(kv);
 		}

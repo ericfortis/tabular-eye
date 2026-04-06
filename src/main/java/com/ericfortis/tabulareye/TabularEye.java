@@ -1,6 +1,6 @@
 package com.ericfortis.tabulareye;
 
-import com.ericfortis.tabulareye.finders.AlignmentFinder;
+import com.ericfortis.tabulareye.detectors.AlignmentDetector;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.event.EditorFactoryEvent;
@@ -19,8 +19,8 @@ import java.util.Map;
 public class TabularEye implements EditorFactoryListener {
 
 	// This way the bundled plugins we depend on could be optional
-	private static final ExtensionPointName<AlignmentFinder> EP_NAME =
-		 ExtensionPointName.create("com.ericfortis.tabulareye.alignmentFinder");
+	private static final ExtensionPointName<AlignmentDetector> EP_NAME =
+		 ExtensionPointName.create("com.ericfortis.tabulareye.alignmentDetector");
 
 	private final Map<Editor, EditorSession> sessions = new HashMap<>();
 

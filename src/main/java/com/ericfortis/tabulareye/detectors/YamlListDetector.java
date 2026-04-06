@@ -1,4 +1,4 @@
-package com.ericfortis.tabulareye.finders;
+package com.ericfortis.tabulareye.detectors;
 
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiFile;
@@ -9,8 +9,8 @@ import org.jetbrains.yaml.psi.YAMLSequence;
 import java.util.ArrayList;
 import java.util.List;
 
-public class YamlListFinder extends AlignmentFinder {
-	YamlListFinder() {
+public class YamlListDetector extends AlignmentDetector {
+	YamlListDetector() {
 		super(YML_EXT);
 	}
 

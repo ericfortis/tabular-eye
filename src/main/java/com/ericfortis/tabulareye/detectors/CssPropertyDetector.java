@@ -1,4 +1,4 @@
-package com.ericfortis.tabulareye.finders;
+package com.ericfortis.tabulareye.detectors;
 
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiElement;
@@ -11,8 +11,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CssPropertyFinder extends AlignmentFinder {
-	CssPropertyFinder() {
+public class CssPropertyDetector extends AlignmentDetector {
+	CssPropertyDetector() {
 		super(CSS_EXT);
 	}
 

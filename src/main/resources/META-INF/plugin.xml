@@ -11,7 +11,7 @@
   <depends optional="true" config-file="tabular-eye-json.xml">com.intellij.modules.json</depends>
 
   <extensionPoints>
-    <extensionPoint name="alignmentFinder" interface="com.ericfortis.tabulareye.finders.AlignmentFinder"
+    <extensionPoint name="alignmentDetector" interface="com.ericfortis.tabulareye.detectors.AlignmentDetector"
                     dynamic="true"/>
   </extensionPoints>
 

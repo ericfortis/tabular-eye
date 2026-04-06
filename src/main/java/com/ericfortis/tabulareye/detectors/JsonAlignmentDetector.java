@@ -1,4 +1,4 @@
-package com.ericfortis.tabulareye.finders;
+package com.ericfortis.tabulareye.detectors;
 
 import com.intellij.json.psi.JsonObject;
 import com.intellij.openapi.editor.Document;
@@ -8,8 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Objects;
 
-public class JsonAlignmentFinder extends AlignmentFinder {
-	JsonAlignmentFinder() {
+public class JsonAlignmentDetector extends AlignmentDetector {
+	JsonAlignmentDetector() {
 		super(JSON_EXT);
 	}
 

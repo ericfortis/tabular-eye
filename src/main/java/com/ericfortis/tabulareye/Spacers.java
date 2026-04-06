@@ -1,6 +1,6 @@
 package com.ericfortis.tabulareye;
 
-import com.ericfortis.tabulareye.finders.AlignmentFinder.AlignmentBlock;
+import com.ericfortis.tabulareye.detectors.AlignmentDetector.AlignmentBlock;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorCustomElementRenderer;

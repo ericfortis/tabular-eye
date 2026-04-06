@@ -1,7 +1,7 @@
 package com.ericfortis.tabulareye;
 
-import com.ericfortis.tabulareye.finders.AlignmentFinder;
-import com.ericfortis.tabulareye.finders.AlignmentFinder.AlignmentBlock;
+import com.ericfortis.tabulareye.detectors.AlignmentDetector;
+import com.ericfortis.tabulareye.detectors.AlignmentDetector.AlignmentBlock;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
@@ -26,15 +26,15 @@ import java.util.List;
 
 class EditorSession implements Disposable {
 	private final Editor editor;
-	private final List<AlignmentFinder> finders;
+	private final List<AlignmentDetector> detectors;
 	private final Spacers spacers;
 	private final Alarm alarm;
 	private static final int DEFAULT_DELAY = 40;
 	private static final int DOCUMENT_DELAY = 300;
 
-	EditorSession(Editor ed, Project p, List<AlignmentFinder> finders) {
+	EditorSession(Editor ed, Project p, List<AlignmentDetector> detectors) {
 		this.editor = ed;
-		this.finders = finders;
+		this.detectors = detectors;
 		this.spacers = new Spacers(ed);
 		this.alarm = new Alarm(Alarm.ThreadToUse.POOLED_THREAD, this);
 
@@ -106,10 +106,10 @@ class EditorSession implements Disposable {
 					 psiDocManager.commitDocument(doc);
 
 					 List<AlignmentBlock> allBlocks = new ArrayList<>();
-					 for (var finder : finders) {
+					 for (var d : detectors) {
 						 if (p.isDisposed() || editor.isDisposed())
 							 return null;
-						 var blocks = finder.findBlocks(psiFile, doc);
+						 var blocks = d.findBlocks(psiFile, doc);
 						 if (!blocks.isEmpty())
 							 allBlocks.addAll(blocks);
 					 }

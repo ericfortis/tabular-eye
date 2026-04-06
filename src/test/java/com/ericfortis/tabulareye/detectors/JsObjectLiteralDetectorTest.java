@@ -1,23 +1,23 @@
-package com.ericfortis.tabulareye.finders;
+package com.ericfortis.tabulareye.detectors;
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
-public class JsObjectLiteralFinderTest extends BasePlatformTestCase {
-	private JsObjectLiteralFinder finder;
+public class JsObjectLiteralDetectorTest extends BasePlatformTestCase {
+	private JsObjectLiteralDetector detector;
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		finder = new JsObjectLiteralFinder();
+		detector = new JsObjectLiteralDetector();
 	}
 
-	private @NonNull List<AlignmentFinder.AlignmentBlock> getBlocks(String content) {
+	private @NonNull List<AlignmentDetector.AlignmentBlock> getBlocks(String content) {
 		var file = myFixture.configureByText("test.js", content);
 		var doc = myFixture.getDocument(file);
-		return finder.findBlocks(file, doc);
+		return detector.findBlocks(file, doc);
 	}
 
 	public void testMultipleBlocks() {

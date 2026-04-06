@@ -1,4 +1,4 @@
-package com.ericfortis.tabulareye.finders;
+package com.ericfortis.tabulareye.detectors;
 
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiFile;
@@ -9,8 +9,8 @@ import java.util.List;
 
 // TODO maybe we can improve this by excluding the keylength of a nested obj
 
-public class YamlObjectFinder extends AlignmentFinder {
-	YamlObjectFinder() {
+public class YamlObjectDetector extends AlignmentDetector {
+	YamlObjectDetector() {
 		super(YML_EXT);
 	}
 

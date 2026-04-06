@@ -1,4 +1,4 @@
-package com.ericfortis.tabulareye.finders;
+package com.ericfortis.tabulareye.detectors;
 
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiElement;
@@ -14,10 +14,10 @@ import java.util.function.Function;
 /**
  * Visitor for finding the column spacing needed for tabularizing.
  */
-public abstract class AlignmentFinder {
+public abstract class AlignmentDetector {
 	final List<String> extensions;
 
-	AlignmentFinder(List<String> extensions) {
+	AlignmentDetector(List<String> extensions) {
 		this.extensions = extensions;
 	}
 
