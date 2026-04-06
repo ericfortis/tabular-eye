@@ -31,8 +31,8 @@ class EditorSession implements Disposable {
 	private final Spacers spacers;
 	private final Disposable disposable;
 	private final Alarm alarm;
-	private final int DEFAULT_DELAY = 40;
-	private final int DOCUMENT_DELAY = 300;
+	private static final int DEFAULT_DELAY = 40;
+	private static final int DOCUMENT_DELAY = 300;
 
 	EditorSession(Editor ed, Project p, List<AlignmentFinder> finders) {
 		this.editor = ed;
