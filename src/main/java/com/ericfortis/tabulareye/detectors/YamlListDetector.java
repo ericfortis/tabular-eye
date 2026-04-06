@@ -9,8 +9,21 @@ import org.jetbrains.yaml.psi.YAMLSequence;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO ignore when using monospace fonts (it's not needed)
+// TODO ignore when using monospace fonts 
 
+/**
+ * This is only needed for proportional fonts. It basically makes the initial
+ * hyphen char the same width as the space char, so lists of objects align.
+ * <p>
+ * Consider the example below, if the space char is much larger than the hyphen,
+ * without this alignment the `with` prop would look more indented than `uses`.
+ * <p>
+ * steps:
+ * - uses: actions/checkout@v6
+ * - uses: actions/setup-node@v6
+ * with:
+ * node-version: 24
+ */
 public class YamlListDetector extends AlignmentDetector {
 	YamlListDetector() {
 		super(YML_EXT);
