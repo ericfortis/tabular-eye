@@ -38,9 +38,6 @@ public class TabularEye implements EditorFactoryListener {
 
 		var doc = editor.getDocument();
 		var psiDocManager = PsiDocumentManager.getInstance(project);
-		var psiFile = psiDocManager.getPsiFile(doc);
-		if (psiFile == null)
-			return;
 
 		psiDocManager.performForCommittedDocument(doc, () -> {
 			ReadAction.nonBlocking(() -> openSession(editor, project))
