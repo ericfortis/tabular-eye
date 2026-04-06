@@ -35,9 +35,6 @@ public class TabularEye implements EditorFactoryListener {
 		if (editor.getEditorKind() != EditorKind.MAIN_EDITOR)
 			return;
 
-		if (allDetectors == null)
-			allDetectors = EPN.getExtensionList();
-
 		var project = editor.getProject();
 		if (project == null)
 			return;
@@ -67,6 +64,9 @@ public class TabularEye implements EditorFactoryListener {
 		var psiFile = PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
 		if (psiFile == null)
 			return null;
+
+		if (allDetectors == null)
+			allDetectors = EPN.getExtensionList();
 
 		var detectors = allDetectors.stream().filter(f -> f.isApplicable(psiFile)).toList();
 		if (detectors.isEmpty())
