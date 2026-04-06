@@ -9,6 +9,8 @@ import org.jetbrains.yaml.psi.YAMLSequence;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO if it's a monospace font, this is not needed
+
 public class YamlListDetector extends AlignmentDetector {
 	YamlListDetector() {
 		super(YML_EXT);
