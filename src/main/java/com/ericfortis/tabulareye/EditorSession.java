@@ -21,7 +21,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.Alarm;
 import com.intellij.util.concurrency.AppExecutorUtil;
 import org.jetbrains.annotations.NotNull;
-import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +40,7 @@ class EditorSession implements Disposable {
 		this.spacers = new Spacers(ed);
 		this.alarm = new Alarm(Alarm.ThreadToUse.POOLED_THREAD, this);
 
-		// On opening file
-		// On returning to an already-open tab
+		// On opening file, or On returning to an already-open tab
 		p.getMessageBus().connect(this).subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {
 			@Override
 			public void selectionChanged(@NotNull FileEditorManagerEvent event) {
@@ -53,7 +51,7 @@ class EditorSession implements Disposable {
 			}
 		});
 
-		// On font-size / color-scheme change
+		// On font-size or color-scheme change
 		p.getMessageBus().connect(this).subscribe(EditorColorsManager.TOPIC, (EditorColorsListener) scheme -> {
 			spacers.invalidateFontMetricsCache();
 			refresh(p, ON_CHANGE_DELAY);
@@ -67,7 +65,6 @@ class EditorSession implements Disposable {
 			}
 		}, this);
 	}
-
 
 	@Override
 	public void dispose() {
@@ -106,6 +103,7 @@ class EditorSession implements Disposable {
 					 psiDocManager.commitDocument(doc);
 					 if (p.isDisposed() || editor.isDisposed())
 						 return null;
+
 					 return calcAlignments(psiFile, doc);
 				 })
 				 .finishOnUiThread(ModalityState.any(), allBlocks -> {
@@ -121,13 +119,13 @@ class EditorSession implements Disposable {
 		List<AlignmentBlock> allBlocks = new ArrayList<>();
 		for (var d : detectors) {
 			var blocks = d.findBlocks(psiFile, doc);
-			for (var b : blocks) {
+			for (var b : blocks)
 				for (var prop : b.props()) {
 					var fm = spacers.getFontMetrics(prop.keyOffset());
 					if (fm != null)
 						prop.setKeyWidth(fm.stringWidth(prop.key()));
 				}
-			}
+			
 			if (!blocks.isEmpty())
 				allBlocks.addAll(blocks);
 		}
