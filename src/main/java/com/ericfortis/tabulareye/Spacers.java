@@ -73,7 +73,7 @@ public class Spacers {
 	private void renderGroup(AlignmentBlock block) {
 		var props = block.props();
 
-		// measure left-side tokens (keys)
+		// Measure left-side tokens (keys)
 		int[] widths = new int[props.size()];
 		int maxWidth = 0;
 		for (int i = 0; i < props.size(); i++) {
@@ -85,7 +85,7 @@ public class Spacers {
 			}
 		}
 
-		// insert spacers
+		// Insert spacers
 		var model = editor.getInlayModel();
 		for (int i = 0; i < props.size(); i++) {
 			int spacerWidth = maxWidth - widths[i];
