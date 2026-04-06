@@ -55,7 +55,12 @@ class EditorSession implements Disposable {
 			}
 		});
 
-
+		// On font-size / color-scheme change
+		p.getMessageBus().connect(disposable).subscribe(EditorColorsManager.TOPIC, (EditorColorsListener) scheme -> {
+			spacers.invalidateFontMetricsCache();
+			refresh(p);
+		});
+		
 		// On content change (user edit)
 		ed.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
@@ -63,13 +68,6 @@ class EditorSession implements Disposable {
 				refresh(p, DOCUMENT_DELAY);
 			}
 		}, disposable);
-
-
-		// On font-size / color-scheme change
-		p.getMessageBus().connect(disposable).subscribe(EditorColorsManager.TOPIC, (EditorColorsListener) scheme -> {
-			spacers.invalidateFontMetricsCache();
-			refresh(p);
-		});
 	}
 
 
