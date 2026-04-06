@@ -99,6 +99,36 @@ public abstract class AlignmentDetector {
 		}
 	}
 
-	public record PropInfo(String key, int keyOffset, int separatorOffset) {
+	public static class PropInfo {
+		private final String key;
+		private final int keyOffset;
+		private final int separatorOffset;
+		private int keyWidth;
+
+		public PropInfo(String key, int keyOffset, int separatorOffset) {
+			this.key = key;
+			this.keyOffset = keyOffset;
+			this.separatorOffset = separatorOffset;
+		}
+
+		public String key() {
+			return key;
+		}
+
+		public int keyOffset() {
+			return keyOffset;
+		}
+
+		public int separatorOffset() {
+			return separatorOffset;
+		}
+
+		public int keyWidth() {
+			return keyWidth;
+		}
+
+		public void setKeyWidth(int width) {
+			this.keyWidth = width;
+		}
 	}
 }

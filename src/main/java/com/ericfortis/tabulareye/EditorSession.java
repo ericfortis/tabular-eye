@@ -109,6 +109,13 @@ class EditorSession implements Disposable {
 						 if (p.isDisposed() || editor.isDisposed())
 							 return null;
 						 var blocks = d.findBlocks(psiFile, doc);
+						 for (var b : blocks) {
+							 for (var prop : b.props()) {
+								 var fm = spacers.getFontMetrics(prop.keyOffset());
+								 if (fm != null)
+									 prop.setKeyWidth(fm.stringWidth(prop.key()));
+							 }
+						 }
 						 if (!blocks.isEmpty())
 							 allBlocks.addAll(blocks);
 					 }

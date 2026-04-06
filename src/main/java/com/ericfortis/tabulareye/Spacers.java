@@ -1,7 +1,6 @@
 package com.ericfortis.tabulareye;
 
 import com.ericfortis.tabulareye.detectors.AlignmentDetector.AlignmentBlock;
-import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorCustomElementRenderer;
 import com.intellij.openapi.editor.Inlay;
@@ -45,22 +44,19 @@ public class Spacers {
 	}
 
 	public void refresh(List<AlignmentBlock> blocks) {
-		if (isRefreshing)
+		if (isRefreshing || editor.isDisposed())
 			return;
 
 		isRefreshing = true;
 		try {
-			ReadAction.runBlocking(() -> {
-				if (!editor.isDisposed()) {
-					clearAll();
-					for (var b : blocks)
-						renderGroup(b);
-				}
-			});
+			clearAll();
+			for (var b : blocks)
+				renderGroup(b);
 		} finally {
 			isRefreshing = false;
 		}
 	}
+
 
 	public void clearAll() {
 		for (var inlay : activeInlays)
@@ -73,24 +69,17 @@ public class Spacers {
 	private void renderGroup(AlignmentBlock block) {
 		var props = block.props();
 
-		// Measure left-side tokens (keys)
-		int[] widths = new int[props.size()];
+		// Find maxWidth using pre-calculated widths
 		int maxWidth = 0;
-		for (int i = 0; i < props.size(); i++) {
-			var p = props.get(i);
-			var fm = getFontMetrics(p.keyOffset());
-			if (fm != null) {
-				widths[i] = fm.stringWidth(p.key()); // supports proportional fonts
-				maxWidth = Math.max(maxWidth, widths[i]);
-			}
-		}
+		for (var p : props)
+			maxWidth = Math.max(maxWidth, p.keyWidth());
 
 		// Insert spacers
 		var model = editor.getInlayModel();
-		for (int i = 0; i < props.size(); i++) {
-			int spacerWidth = maxWidth - widths[i];
+		for (var p : props) {
+			int spacerWidth = maxWidth - p.keyWidth();
 			if (spacerWidth > 0) { // skips longest
-				int placeAt = props.get(i).separatorOffset() + 1;
+				int placeAt = p.separatorOffset() + 1;
 				var inlay = model.addInlineElement(placeAt, true, new Spacer(spacerWidth));
 				if (inlay != null)
 					activeInlays.add(inlay);
@@ -102,7 +91,7 @@ public class Spacers {
 		metricsCache.clear();
 	}
 
-	private FontMetrics getFontMetrics(int offset) {
+	public FontMetrics getFontMetrics(int offset) {
 		if (editor.isDisposed())
 			return null;
 
