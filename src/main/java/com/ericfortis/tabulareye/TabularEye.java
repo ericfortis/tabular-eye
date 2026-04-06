@@ -21,10 +21,10 @@ import java.util.Map;
 public class TabularEye implements EditorFactoryListener {
 
 	// This way the bundled plugins we depend on could be optional
-	private static final ExtensionPointName<AlignmentDetector> EP_NAME =
+	private static final ExtensionPointName<AlignmentDetector> EPN =
 		 ExtensionPointName.create("com.ericfortis.tabulareye.alignmentDetector");
 
-	private List<AlignmentDetector> extensionList;
+	private List<AlignmentDetector> allDetectors;
 
 	private final Map<Editor, EditorSession> sessions = new HashMap<>();
 
@@ -35,8 +35,8 @@ public class TabularEye implements EditorFactoryListener {
 		if (editor.getEditorKind() != EditorKind.MAIN_EDITOR)
 			return;
 
-		if (extensionList == null)
-			extensionList = EP_NAME.getExtensionList();
+		if (allDetectors == null)
+			allDetectors = EPN.getExtensionList();
 
 		var project = editor.getProject();
 		if (project == null)
@@ -68,7 +68,7 @@ public class TabularEye implements EditorFactoryListener {
 		if (psiFile == null)
 			return null;
 
-		var detectors = extensionList.stream().filter(f -> f.isApplicable(psiFile)).toList();
+		var detectors = allDetectors.stream().filter(f -> f.isApplicable(psiFile)).toList();
 		if (detectors.isEmpty())
 			return null;
 
