@@ -39,7 +39,9 @@ public abstract class AlignmentDetector {
 		int endOffset = elem.getTextRange().getEndOffset();
 		int docLength = doc.getTextLength();
 
-		if (startOffset < 0 || startOffset > docLength || endOffset < 0 || endOffset > docLength)
+		if (startOffset < 0 || endOffset < 0 
+			 || startOffset > docLength 
+			 || endOffset > docLength)
 			return false;
 
 		int startLine = doc.getLineNumber(startOffset);
@@ -72,13 +74,12 @@ public abstract class AlignmentDetector {
 		 @NotNull Function<T, AlignmentBlock> builder
 	) {
 		List<AlignmentBlock> blocks = new ArrayList<>();
-		for (var el : PsiTreeUtil.collectElementsOfType(file, clazz)) {
+		for (var el : PsiTreeUtil.collectElementsOfType(file, clazz))
 			if (isMultiline(el, doc)) {
 				var block = builder.apply(el);
 				if (block != null && block.isValid())
 					blocks.add(block);
 			}
-		}
 		return blocks;
 	}
 
@@ -89,7 +90,7 @@ public abstract class AlignmentDetector {
 		public PropInfo get(int index) {
 			return props.get(index);
 		}
-		
+
 		public int size() {
 			return props.size();
 		}
