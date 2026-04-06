@@ -77,10 +77,10 @@ public class Spacers {
 		int[] widths = new int[props.size()];
 		int maxWidth = 0;
 		for (int i = 0; i < props.size(); i++) {
-			var prop = props.get(i);
-			var fm = getFontMetrics(prop.keyOffset());
+			var p = props.get(i);
+			var fm = getFontMetrics(p.keyOffset());
 			if (fm != null) {
-				widths[i] = fm.stringWidth(prop.key()); // supports proportional fonts
+				widths[i] = fm.stringWidth(p.key()); // supports proportional fonts
 				maxWidth = Math.max(maxWidth, widths[i]);
 			}
 		}
