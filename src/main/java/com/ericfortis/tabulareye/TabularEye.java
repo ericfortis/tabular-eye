@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-
 public class TabularEye implements EditorFactoryListener {
 
 	// This way CSS and JS plugins (bundled) could be optional
@@ -29,19 +28,21 @@ public class TabularEye implements EditorFactoryListener {
 	public void editorCreated(@NotNull EditorFactoryEvent event) {
 		var editor = event.getEditor();
 		var project = editor.getProject();
-		if (project == null) return;
+		if (project == null)
+			return;
 
 		var document = editor.getDocument();
 		var psiDocManager = PsiDocumentManager.getInstance(project);
 		var psiFile = psiDocManager.getPsiFile(document);
 		// Check for virtual file to avoid editors not backed by real files (like terminal)
-		if (psiFile == null || psiFile.getVirtualFile() == null || editor.isViewer()) return;
+		if (psiFile == null || psiFile.getVirtualFile() == null || editor.isViewer())
+			return;
 
 		psiDocManager.performForCommittedDocument(document, () -> {
-			if (project.isDisposed() || editor.isDisposed()) return;
-			ReadAction.nonBlocking(() -> openSession(editor, project))
-				 .expireWith(project)
-				 .submit(com.intellij.util.concurrency.AppExecutorUtil.getAppExecutorService());
+			if (!project.isDisposed() && !editor.isDisposed())
+				ReadAction.nonBlocking(() -> openSession(editor, project))
+					 .expireWith(project)
+					 .submit(com.intellij.util.concurrency.AppExecutorUtil.getAppExecutorService());
 		});
 	}
 
@@ -58,7 +59,8 @@ public class TabularEye implements EditorFactoryListener {
 			return null;
 
 		var psiFile = PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
-		if (psiFile == null || psiFile.getVirtualFile() == null) return null;
+		if (psiFile == null || psiFile.getVirtualFile() == null)
+			return null;
 
 		var extensionList = EP_NAME.getExtensionList();
 		var applicable = extensionList.stream().filter(f -> f.isApplicable(psiFile)).toList();
