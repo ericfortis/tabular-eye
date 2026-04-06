@@ -69,9 +69,6 @@ public class TabularEye implements EditorFactoryListener {
 
 		var session = new EditorSession(editor, project, applicable);
 		sessions.put(editor, session);
-
-		// Trigger an initial render for files that are open on startup
-		session.refresh(project);
 		return session;
 	}
 }
