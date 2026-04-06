@@ -29,7 +29,7 @@ class EditorSession implements Disposable {
 	private final List<AlignmentDetector> detectors;
 	private final Spacers spacers;
 	private final Alarm alarm;
-	private static final int DEFAULT_DELAY = 40;
+	private static final int DEFAULT_DELAY = 0;
 	private static final int DOCUMENT_DELAY = 300;
 
 	EditorSession(Editor ed, Project p, List<AlignmentDetector> detectors) {
@@ -46,8 +46,7 @@ class EditorSession implements Disposable {
 			public void selectionChanged(@NotNull FileEditorManagerEvent event) {
 				if (event.getNewFile() != null
 					 && event.getNewEditor() instanceof TextEditor te
-					 && te.getEditor().equals(editor)
-				)
+					 && te.getEditor().equals(editor))
 					refresh(p);
 			}
 		});
