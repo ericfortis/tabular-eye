@@ -30,7 +30,6 @@ public class Js2DArrayDetector extends AlignmentDetector {
 		return blocks;
 	}
 
-
 	private static boolean is2dArray(JSArrayLiteralExpression array) {
 		for (var el : array.getExpressions())
 			if (el instanceof JSArrayLiteralExpression inner)
