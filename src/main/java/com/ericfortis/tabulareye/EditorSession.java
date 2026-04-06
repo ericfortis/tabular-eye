@@ -48,8 +48,8 @@ class EditorSession implements Disposable {
 			@Override
 			public void selectionChanged(@NotNull FileEditorManagerEvent event) {
 				if (event.getNewFile() != null
-					 && event.getNewEditor() instanceof TextEditor textEditor
-					 && textEditor.getEditor().equals(editor)
+					 && event.getNewEditor() instanceof TextEditor te
+					 && te.getEditor().equals(editor)
 				)
 					refresh(p);
 			}
@@ -71,6 +71,7 @@ class EditorSession implements Disposable {
 			refresh(p);
 		});
 	}
+
 
 	@Override
 	public void dispose() {
@@ -98,8 +99,8 @@ class EditorSession implements Disposable {
 		ApplicationManager.getApplication().invokeLater(() -> {
 			if (p.isDisposed() || editor.isDisposed())
 				return;
-			var psiDocManager = PsiDocumentManager.getInstance(p);
 
+			var psiDocManager = PsiDocumentManager.getInstance(p);
 			ReadAction.nonBlocking(() -> {
 					 if (p.isDisposed() || editor.isDisposed())
 						 return null;
@@ -112,7 +113,7 @@ class EditorSession implements Disposable {
 
 					 List<AlignmentBlock> allBlocks = new ArrayList<>();
 					 for (var finder : finders) {
-						 if (p.isDisposed() || editor.isDisposed()) 
+						 if (p.isDisposed() || editor.isDisposed())
 							 return null;
 						 var blocks = finder.findBlocks(psiFile, doc);
 						 if (!blocks.isEmpty())
