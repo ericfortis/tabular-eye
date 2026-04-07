@@ -21,8 +21,9 @@ public class PyDataClassFieldDetector extends AlignmentDetector {
 		List<AlignmentBlock> blocks = new ArrayList<>();
 		for (var pyClass : PsiTreeUtil.collectElementsOfType(file, PyClass.class)) {
 			if (isDataClass(pyClass) && isMultiline(pyClass, doc)) {
+				System.out.println("is data class");
 				var block = buildBlock(pyClass);
-				if (block != null && block.isValid())
+				if (block.isValid())
 					blocks.add(block);
 			}
 		}
@@ -41,10 +42,13 @@ public class PyDataClassFieldDetector extends AlignmentDetector {
 	}
 
 	private AlignmentBlock buildBlock(PyClass pyClass) {
+		System.out.println("buildBlock");
 		var block = new AlignmentBlock();
-		// We're looking for class-level attributes, usually PyTargetExpression
+		
+		// FIXME Statement is never printed when debugging
 		for (var statement : pyClass.getStatementList().getStatements()) {
 			if (statement instanceof PyTargetExpression target) {
+				System.out.println("Statement");
 				var kv = describeTarget(target);
 				if (kv != null)
 					block.add(kv);
