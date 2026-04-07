@@ -40,7 +40,8 @@ public class Spacers {
 
 	// This is mainly because we want to handle non-monospace fonts.
 	// i.e., we could later implement an optimized path for mono (I don't use mono, so…)
-	private final FontMetrics[] fontMetricsCache = new FontMetrics[4];
+	private final FontMetrics[] fontMetricsCache = new FontMetrics[Font.BOLD | Font.ITALIC + 1];
+
 
 	public Spacers(Editor editor) {
 		this.editor = editor;
