@@ -2,5 +2,6 @@
   <extensions defaultExtensionNs="com.ericfortis.tabulareye">
     <alignmentDetector implementation="com.ericfortis.tabulareye.detectors.PyDataClassFieldDetector"/>
     <alignmentDetector implementation="com.ericfortis.tabulareye.detectors.PyDictionaryLiteralDetector"/>
+    <alignmentDetector implementation="com.ericfortis.tabulareye.detectors.PyKeywordArgsDetector"/>
   </extensions>
 </idea-plugin>

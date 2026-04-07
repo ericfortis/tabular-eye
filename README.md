@@ -3,8 +3,6 @@
 ## TODO
 - User Settings? disable/enable
 - Nginx?
-- Python keyword args
-- Python dictionary literals
 
 <!-- Plugin description -->
 Tabular Eye
