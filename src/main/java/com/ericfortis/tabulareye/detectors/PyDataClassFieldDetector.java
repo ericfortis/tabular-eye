@@ -36,13 +36,11 @@ public class PyDataClassFieldDetector extends AlignmentDetector {
 	}
 
 	private boolean isDataClass(PyClass pyClass) {
-		var decoratorList = pyClass.getDecoratorList();
-		if (decoratorList == null) return false;
-		for (var decorator : decoratorList.getDecorators()) {
-			String name = decorator.getName();
-			if ("dataclass".equals(name) || (name != null && name.endsWith(".dataclass")))
-				return true;
-		}
+		var dl = pyClass.getDecoratorList();
+		if (dl != null)
+			for (var d : dl.getDecorators())
+				if ("dataclass".equals(d.getName()))
+					return true;
 		return false;
 	}
 
