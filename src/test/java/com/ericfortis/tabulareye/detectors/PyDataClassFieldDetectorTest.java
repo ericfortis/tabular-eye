@@ -52,10 +52,27 @@ public class PyDataClassFieldDetectorTest extends BasePlatformTestCase {
 
 		var block = blocks.getFirst();
 		assertEquals(3, block.size());
-
 		assertEquals("name", block.get(0).key());
 		assertEquals("age", block.get(1).key());
 		assertEquals("email", block.get(2).key());
+	}
+
+	public void testIgnoresNonFields() {
+		var blocks = getBlocks("""
+			 from dataclasses import dataclass
+			 
+			 @dataclass
+			 class User:
+			 		\"""Documentation\"""
+			     name: str
+			     age: int
+			 """);
+		assertEquals(1, blocks.size());
+
+		var block = blocks.getFirst();
+		assertEquals(2, block.size());
+		assertEquals("name", block.get(0).key());
+		assertEquals("age", block.get(1).key());
 	}
 
 	public void testMultipleDataClasses() {
