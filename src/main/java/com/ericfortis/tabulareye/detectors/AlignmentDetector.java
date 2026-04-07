@@ -26,6 +26,7 @@ public abstract class AlignmentDetector {
 	static final List<String> CSS_EXT = List.of("css");
 	static final List<String> YML_EXT = List.of("yml", "yaml");
 	static final List<String> JSON_EXT = List.of("json");
+	static final List<String> PY_EXT = List.of("py");
 
 	public final boolean isApplicable(@NotNull PsiFile file) {
 		var vFile = file.getVirtualFile();
