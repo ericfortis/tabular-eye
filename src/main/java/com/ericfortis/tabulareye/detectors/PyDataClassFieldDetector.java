@@ -3,8 +3,8 @@ package com.ericfortis.tabulareye.detectors;
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.jetbrains.python.PyTypeDeclarationStatementImpl;
 import com.jetbrains.python.psi.PyClass;
-import com.jetbrains.python.psi.PyTargetExpression;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -21,7 +21,6 @@ public class PyDataClassFieldDetector extends AlignmentDetector {
 		List<AlignmentBlock> blocks = new ArrayList<>();
 		for (var pyClass : PsiTreeUtil.collectElementsOfType(file, PyClass.class)) {
 			if (isDataClass(pyClass) && isMultiline(pyClass, doc)) {
-				System.out.println("is data class");
 				var block = buildBlock(pyClass);
 				if (block.isValid())
 					blocks.add(block);
@@ -42,13 +41,9 @@ public class PyDataClassFieldDetector extends AlignmentDetector {
 	}
 
 	private AlignmentBlock buildBlock(PyClass pyClass) {
-		System.out.println("buildBlock");
 		var block = new AlignmentBlock();
-		
-		// FIXME Statement is never printed when debugging
 		for (var statement : pyClass.getStatementList().getStatements()) {
-			if (statement instanceof PyTargetExpression target) {
-				System.out.println("Statement");
+			if (statement instanceof PyTypeDeclarationStatementImpl target) {
 				var kv = describeTarget(target);
 				if (kv != null)
 					block.add(kv);
@@ -57,15 +52,9 @@ public class PyDataClassFieldDetector extends AlignmentDetector {
 		return block;
 	}
 
-	private PropInfo describeTarget(PyTargetExpression target) {
-		// Dataclass fields can have:
-		// name: type
-		// name: type = default
-		// We want to align on ":" or "="? 
-		// Usually Tabular Eye aligns on the first separator.
-		// For dataclasses, ":" is the first separator in name: type.
-
+	private PropInfo describeTarget(PyTypeDeclarationStatementImpl target) {
 		var separatorOffset = findSeparatorOffset(target, ":");
+		System.out.println("describeTarget:::" + separatorOffset + "::::" + target.getText());
 		if (separatorOffset < 0)
 			return null;
 

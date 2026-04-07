@@ -17,6 +17,7 @@ public class PyDataClassFieldDetectorTest extends BasePlatformTestCase {
 	private @NonNull List<AlignmentDetector.AlignmentBlock> getBlocks(String content) {
 		var file = myFixture.configureByText("test.py", content);
 		var doc = myFixture.getDocument(file);
+		
 		var blocks = detector.findBlocks(file, doc);
 		System.out.println("[DEBUG_LOG] Content:\n" + content);
 		System.out.println("[DEBUG_LOG] Found blocks: " + blocks.size());
