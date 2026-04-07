@@ -14,9 +14,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class Spacers {
 	/**
@@ -41,7 +40,7 @@ public class Spacers {
 
 	// This is mainly because we want to handle non-monospace fonts.
 	// i.e., we could later implement an optimized path for mono (I don't use mono, so…)
-	private final Map<Integer, FontMetrics> fontMetricsCache = new HashMap<>();
+	private final FontMetrics[] fontMetricsCache = new FontMetrics[4];
 
 	public Spacers(Editor editor) {
 		this.editor = editor;
@@ -110,17 +109,23 @@ public class Spacers {
 	}
 
 	public void invalidateFontMetricsCache() {
-		fontMetricsCache.clear();
+		Arrays.fill(fontMetricsCache, null);
 	}
 
 	public FontMetrics getFontMetrics(int offset) {
 		var iterator = editor.getHighlighter().createIterator(offset);
 		int fontStyleBitmask = iterator.getTextAttributes().getFontType();
-		
-		return fontMetricsCache.computeIfAbsent(fontStyleBitmask, style -> {
-			var type = EditorFontType.forJavaStyle(style);
+
+		if (fontStyleBitmask < 0 || fontStyleBitmask >= fontMetricsCache.length)
+			return null;
+
+		var fm = fontMetricsCache[fontStyleBitmask];
+		if (fm == null) {
+			var type = EditorFontType.forJavaStyle(fontStyleBitmask);
 			var font = editor.getColorsScheme().getFont(type);
-			return editor.getContentComponent().getFontMetrics(font);
-		});
+			fm = editor.getContentComponent().getFontMetrics(font);
+			fontMetricsCache[fontStyleBitmask] = fm;
+		}
+		return fm;
 	}
 }
