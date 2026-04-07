@@ -19,6 +19,7 @@ public class PyKeywordArgsDetector extends AlignmentDetector {
 		return findBlocks(file, doc, PyCallExpression.class, this::buildBlock);
 	}
 
+	// TODO it would be nice to add some more width to these spacers
 	private AlignmentBlock buildBlock(PyCallExpression call) {
 		var block = new AlignmentBlock();
 		var args = call.getArguments();
@@ -27,9 +28,8 @@ public class PyKeywordArgsDetector extends AlignmentDetector {
 				var key = kw.getKeyword();
 				var separatorOffset = findSeparatorOffset(kw, "=");
 				if (key != null && separatorOffset >= 0) {
-					var keyText = key;
 					int startOffset = kw.getTextRange().getStartOffset();
-					block.add(new PropInfo(keyText, startOffset, separatorOffset));
+					block.add(new PropInfo(key, startOffset, separatorOffset));
 				}
 			}
 		}
