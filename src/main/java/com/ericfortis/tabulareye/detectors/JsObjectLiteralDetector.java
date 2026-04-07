@@ -24,12 +24,9 @@ public class JsObjectLiteralDetector extends AlignmentDetector {
 		var block = new AlignmentBlock();
 		for (var prop : obj.getProperties())
 			if (prop != null && !prop.isShorthanded()) {
-				var text = prop.getName();
-				if (text != null) {
-					var offset = prop.getTextOffset();
-					var separatorOffset = text.length() + offset;
-					block.add(new PropInfo(text, offset, separatorOffset));
-				}
+				var kv = describeKV(prop);
+				if (kv != null)
+					block.add(kv);
 			}
 		return block;
 	}
