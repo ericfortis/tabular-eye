@@ -89,7 +89,6 @@ public class Spacers {
 			 .createIterator(prop.keyOffset())
 			 .getTextAttributes()
 			 .getFontType();
-
 		prop.setKeyWidth(getFontMetrics(fontStyleBitmask).stringWidth(prop.key()));
 	}
 
