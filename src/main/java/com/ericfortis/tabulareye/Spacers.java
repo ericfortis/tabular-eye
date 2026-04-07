@@ -85,8 +85,7 @@ public class Spacers {
 	// TODO create a fast path for monospace fonts. With a cache of a 1-char width.
 	private void setKeyWidth(PropInfo prop) {
 		var fm = getFontMetrics(prop.keyOffset());
-		if (fm != null)
-			prop.setKeyWidth(fm.stringWidth(prop.key()));
+		prop.setKeyWidth(fm.stringWidth(prop.key()));
 	}
 
 	private void render(AlignmentBlock block) {
@@ -116,9 +115,6 @@ public class Spacers {
 	public FontMetrics getFontMetrics(int offset) {
 		var iterator = editor.getHighlighter().createIterator(offset);
 		int fontStyleBitmask = iterator.getTextAttributes().getFontType();
-
-		if (fontStyleBitmask < 0 || fontStyleBitmask >= fontMetricsCache.length)
-			return null;
 
 		var fm = fontMetricsCache[fontStyleBitmask];
 		if (fm == null) {
