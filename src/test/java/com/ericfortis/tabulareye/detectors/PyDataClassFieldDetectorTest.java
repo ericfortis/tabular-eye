@@ -17,7 +17,18 @@ public class PyDataClassFieldDetectorTest extends BasePlatformTestCase {
 	private @NonNull List<AlignmentDetector.AlignmentBlock> getBlocks(String content) {
 		var file = myFixture.configureByText("test.py", content);
 		var doc = myFixture.getDocument(file);
-		return detector.findBlocks(file, doc);
+		var blocks = detector.findBlocks(file, doc);
+		System.out.println("[DEBUG_LOG] Content:\n" + content);
+		System.out.println("[DEBUG_LOG] Found blocks: " + blocks.size());
+		for (int i = 0; i < blocks.size(); i++) {
+			var block = blocks.get(i);
+			System.out.println("[DEBUG_LOG] Block " + i + " size: " + block.size());
+			for (int j = 0; j < block.size(); j++) {
+				var prop = block.get(j);
+				System.out.println("[DEBUG_LOG]   Prop " + j + ": key=" + prop.key() + ", keyOffset=" + prop.keyOffset() + ", separatorOffset=" + prop.separatorOffset());
+			}
+		}
+		return blocks;
 	}
 
 	public void testFileTypeResolution() {

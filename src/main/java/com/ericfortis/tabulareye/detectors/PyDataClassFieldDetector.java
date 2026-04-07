@@ -1,6 +1,7 @@
 package com.ericfortis.tabulareye.detectors;
 
 import com.intellij.openapi.editor.Document;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.python.psi.PyClass;
@@ -19,12 +20,13 @@ public class PyDataClassFieldDetector extends AlignmentDetector {
 	@NotNull
 	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
 		List<AlignmentBlock> blocks = new ArrayList<>();
-		for (var pyClass : PsiTreeUtil.collectElementsOfType(file, PyClass.class))
+		for (var pyClass : PsiTreeUtil.collectElementsOfType(file, PyClass.class)) {
 			if (isDataClass(pyClass) && isMultiline(pyClass, doc)) {
 				var block = buildBlock(pyClass);
-				if (block.isValid())
+				if (block != null && block.isValid())
 					blocks.add(block);
 			}
+		}
 		return blocks;
 	}
 
@@ -41,20 +43,26 @@ public class PyDataClassFieldDetector extends AlignmentDetector {
 
 	private AlignmentBlock buildBlock(PyClass pyClass) {
 		var block = new AlignmentBlock();
-		for (var statement : pyClass.getStatementList().getStatements())
-			for (var target : PsiTreeUtil.findChildrenOfType(statement, PyTargetExpression.class)) {
+		// We're looking for class-level attributes, usually PyTargetExpression
+		for (var statement : pyClass.getStatementList().getStatements()) {
+			if (statement instanceof PyTargetExpression target) {
 				var kv = describeTarget(target);
 				if (kv != null)
 					block.add(kv);
 			}
+		}
 		return block;
 	}
 
 	private PropInfo describeTarget(PyTargetExpression target) {
-		var separatorOffset = findSeparatorOffset(target, ":");
-		if (separatorOffset < 0) 
-			separatorOffset = findSeparatorOffset(target.getParent(), ":");
+		// Dataclass fields can have:
+		// name: type
+		// name: type = default
+		// We want to align on ":" or "="? 
+		// Usually Tabular Eye aligns on the first separator.
+		// For dataclasses, ":" is the first separator in name: type.
 
+		var separatorOffset = findSeparatorOffset(target, ":");
 		if (separatorOffset < 0)
 			return null;
 
