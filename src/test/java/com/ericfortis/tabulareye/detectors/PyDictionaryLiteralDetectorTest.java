@@ -17,7 +17,6 @@ public class PyDictionaryLiteralDetectorTest extends BasePlatformTestCase {
 	private @NonNull List<AlignmentDetector.AlignmentBlock> getBlocks(String content) {
 		var file = myFixture.configureByText("test.py", content);
 		var doc = myFixture.getDocument(file);
-		
 		return detector.findBlocks(file, doc);
 	}
 
@@ -50,15 +49,16 @@ public class PyDictionaryLiteralDetectorTest extends BasePlatformTestCase {
 			 """);
 		assertEquals(2, blocks.size());
 
-		// Inner dict first usually in collectElementsOfType if it's bottom-up, or outer first if top-down
-		// AlignmentDetector uses PsiTreeUtil.collectElementsOfType which is usually bottom-up or depends on implementation.
-		// Let's check sizes.
-		
-		var innerBlock = blocks.stream().filter(b -> b.size() == 2).findFirst().orElseThrow();
-		var outerBlock = blocks.stream().filter(b -> b.size() == 2 && b != innerBlock).findFirst(); // Might also be 2
+		var innerBlock = blocks.stream().filter(b -> b.get(0).key().equals("\"id\"")).findFirst().orElseThrow();
+		var outerBlock = blocks.stream().filter(b -> b.get(0).key().equals("\"user\"")).findFirst().orElseThrow();
 
-		// For now just check we have 2 blocks
-		assertEquals(2, blocks.size());
+		assertEquals(2, innerBlock.size());
+		assertEquals("\"id\"", innerBlock.get(0).key());
+		assertEquals("\"name\"", innerBlock.get(1).key());
+
+		assertEquals(2, outerBlock.size());
+		assertEquals("\"user\"", outerBlock.get(0).key());
+		assertEquals("\"active\"", outerBlock.get(1).key());
 	}
 
 	public void testIgnoresSingleLineDictionary() {
