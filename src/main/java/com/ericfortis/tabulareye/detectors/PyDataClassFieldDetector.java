@@ -1,10 +1,13 @@
 package com.ericfortis.tabulareye.detectors;
 
 import com.intellij.openapi.editor.Document;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.jetbrains.python.psi.PyAssignmentStatement;
 import com.jetbrains.python.psi.PyClass;
-import com.jetbrains.python.psi.impl.PyElementImpl;
+import com.jetbrains.python.psi.PyTargetExpression;
+import com.jetbrains.python.psi.PyTypeDeclarationStatement;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -20,10 +23,13 @@ public class PyDataClassFieldDetector extends AlignmentDetector {
 	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
 		List<AlignmentBlock> blocks = new ArrayList<>();
 		for (var pyClass : PsiTreeUtil.collectElementsOfType(file, PyClass.class)) {
-			if (isDataClass(pyClass) && isMultiline(pyClass, doc)) {
-				var block = buildBlock(pyClass);
-				if (block.isValid())
-					blocks.add(block);
+			if (isDataClass(pyClass)) {
+				var statementList = pyClass.getStatementList();
+				if (isMultiline(statementList, doc)) {
+					var block = buildBlock(pyClass);
+					if (block.isValid())
+						blocks.add(block);
+				}
 			}
 		}
 		return blocks;
@@ -43,8 +49,26 @@ public class PyDataClassFieldDetector extends AlignmentDetector {
 	private AlignmentBlock buildBlock(PyClass pyClass) {
 		var block = new AlignmentBlock();
 		for (var statement : pyClass.getStatementList().getStatements()) {
-			if (statement instanceof PyElementImpl target) {
-				var kv = describeTarget(target);
+			PyTargetExpression target = null;
+			PsiElement annotation = null;
+
+			if (statement instanceof PyTargetExpression t)
+				target = t;
+			else if (statement instanceof PyTypeDeclarationStatement typeDecl) {
+				if (typeDecl.getTarget() instanceof PyTargetExpression t) {
+					target = t;
+					annotation = typeDecl.getAnnotation();
+				}
+			} else if (statement instanceof PyAssignmentStatement assignment) {
+				var targets = assignment.getTargets();
+				if (targets.length == 1 && targets[0] instanceof PyTargetExpression t) {
+					target = t;
+					annotation = t.getAnnotation();
+				}
+			}
+
+			if (target != null) {
+				var kv = describeTarget(target, annotation);
 				if (kv != null)
 					block.add(kv);
 			}
@@ -52,18 +76,26 @@ public class PyDataClassFieldDetector extends AlignmentDetector {
 		return block;
 	}
 
-	private PropInfo describeTarget(PyElementImpl target) {
-		var key = target.getFirstChild().getText();
+	private PropInfo describeTarget(PyTargetExpression target, PsiElement annotation) {
+		int separatorOffset = -1;
+		if (annotation != null)
+			separatorOffset = findSeparatorOffset(annotation, ":");
+		if (separatorOffset < 0)
+			separatorOffset = findSeparatorOffset(target, ":");
+		if (separatorOffset < 0) { // Try to find colon in the statement children if it's not in target/annotation
+			var parent = target.getParent();
+			if (parent != null)
+				separatorOffset = findSeparatorOffset(parent, ":");
+		}
 
-		String text = target.getText();
-		int colonIdx = text.indexOf(':');
-		if (colonIdx < 0)
+		if (separatorOffset < 0)
 			return null;
 
+		var key = target.getName();
 		if (key == null || key.isEmpty())
 			return null;
 
 		int startOffset = target.getTextRange().getStartOffset();
-		return new PropInfo(key, startOffset, startOffset + colonIdx);
+		return new PropInfo(key, startOffset, separatorOffset);
 	}
 }
