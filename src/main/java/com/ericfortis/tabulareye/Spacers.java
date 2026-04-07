@@ -84,7 +84,8 @@ public class Spacers {
 	// Handles proportional fonts. 
 	// TODO create a fast path for monospace fonts. With a cache of a 1-char width.
 	private void setKeyWidth(PropInfo prop) {
-		var fm = getFontMetrics(prop.keyOffset());
+		int fontStyleBitmask = editor.getHighlighter().createIterator(prop.keyOffset()).getTextAttributes().getFontType();
+		var fm = getFontMetrics(fontStyleBitmask);
 		prop.setKeyWidth(fm.stringWidth(prop.key()));
 	}
 
@@ -112,10 +113,7 @@ public class Spacers {
 		Arrays.fill(fontMetricsCache, null);
 	}
 
-	public FontMetrics getFontMetrics(int offset) {
-		var iterator = editor.getHighlighter().createIterator(offset);
-		int fontStyleBitmask = iterator.getTextAttributes().getFontType();
-
+	public FontMetrics getFontMetrics(int fontStyleBitmask) {
 		var fm = fontMetricsCache[fontStyleBitmask];
 		if (fm == null) {
 			var type = EditorFontType.forJavaStyle(fontStyleBitmask);
