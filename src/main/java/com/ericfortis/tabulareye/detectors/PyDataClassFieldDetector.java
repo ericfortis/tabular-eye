@@ -3,7 +3,6 @@ package com.ericfortis.tabulareye.detectors;
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.jetbrains.python.PyTypeDeclarationStatementImpl;
 import com.jetbrains.python.psi.PyClass;
 import com.jetbrains.python.psi.impl.PyElementImpl;
 import org.jetbrains.annotations.NotNull;
