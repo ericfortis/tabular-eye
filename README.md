@@ -1,10 +1,11 @@
 # Tabular Eye
 
 ## TODO
-1. Maybe we should wait a bit. currently, this is acting before the syntax highlight
-   so computed, and when using proportional fonts, we need the syntax (e.g., is it bold?)
-2. if the virtual-rendering (just the visible scope) is causing jank (sync)?
-3. User Settings? disable/enable
+- User Settings? disable/enable
+- Nginx?
+- Python dataclass fields
+- Python keyword args
+- Python dictionary literals
 
 <!-- Plugin description -->
 Tabular Eye
