@@ -21,11 +21,11 @@ public class PyDictionaryLiteralDetector extends AlignmentDetector {
 
 	private AlignmentBlock buildBlock(PyDictLiteralExpression dict) {
 		var block = new AlignmentBlock();
-		for (var element : dict.getElements()) {
+		for (var element : dict.getElements())
 			if (element instanceof PyKeyValueExpression kv) {
 				var key = kv.getKey();
 				var separatorOffset = findSeparatorOffset(kv, ":");
-				if (key != null && separatorOffset >= 0) {
+				if (separatorOffset >= 0) {
 					var keyText = key.getText().trim();
 					if (!keyText.isEmpty()) {
 						int startOffset = key.getTextRange().getStartOffset();
@@ -33,7 +33,6 @@ public class PyDictionaryLiteralDetector extends AlignmentDetector {
 					}
 				}
 			}
-		}
 		return block;
 	}
 }
