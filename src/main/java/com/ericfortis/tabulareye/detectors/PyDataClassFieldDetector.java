@@ -5,6 +5,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.python.PyTypeDeclarationStatementImpl;
 import com.jetbrains.python.psi.PyClass;
+import com.jetbrains.python.psi.impl.PyElementImpl;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class PyDataClassFieldDetector extends AlignmentDetector {
 	private AlignmentBlock buildBlock(PyClass pyClass) {
 		var block = new AlignmentBlock();
 		for (var statement : pyClass.getStatementList().getStatements()) {
-			if (statement instanceof PyTypeDeclarationStatementImpl target) {
+			if (statement instanceof PyElementImpl target) {
 				var kv = describeTarget(target);
 				if (kv != null)
 					block.add(kv);
@@ -52,7 +53,7 @@ public class PyDataClassFieldDetector extends AlignmentDetector {
 		return block;
 	}
 
-	private PropInfo describeTarget(PyTypeDeclarationStatementImpl target) {
+	private PropInfo describeTarget(PyElementImpl target) {
 		var key = target.getFirstChild().getText();
 
 		String text = target.getText();
