@@ -17,7 +17,6 @@ public class PyDataClassFieldDetectorTest extends BasePlatformTestCase {
 	private @NonNull List<AlignmentDetector.AlignmentBlock> getBlocks(String content) {
 		var file = myFixture.configureByText("test.py", content);
 		var doc = myFixture.getDocument(file);
-		
 		return detector.findBlocks(file, doc);
 	}
 
@@ -39,11 +38,11 @@ public class PyDataClassFieldDetectorTest extends BasePlatformTestCase {
 			 """);
 		assertEquals(1, blocks.size());
 
-		var block = blocks.getFirst();
-		assertEquals(3, block.size());
-		assertEquals("name", block.get(0).key());
-		assertEquals("age", block.get(1).key());
-		assertEquals("email", block.get(2).key());
+		var b = blocks.getFirst();
+		assertEquals(3, b.size());
+		assertEquals("name", b.get(0).key());
+		assertEquals("age", b.get(1).key());
+		assertEquals("email", b.get(2).key());
 	}
 
 	public void testIgnoresNonFields() {
@@ -58,10 +57,10 @@ public class PyDataClassFieldDetectorTest extends BasePlatformTestCase {
 			 """);
 		assertEquals(1, blocks.size());
 
-		var block = blocks.getFirst();
-		assertEquals(2, block.size());
-		assertEquals("name", block.get(0).key());
-		assertEquals("age", block.get(1).key());
+		var b = blocks.getFirst();
+		assertEquals(2, b.size());
+		assertEquals("name", b.get(0).key());
+		assertEquals("age", b.get(1).key());
 	}
 
 	public void testMultipleDataClasses() {
