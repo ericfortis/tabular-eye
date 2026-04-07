@@ -23,7 +23,7 @@ public class JsObjectLiteralDetectorTest extends BasePlatformTestCase {
 	public void testMultipleBlocks() {
 		var blocks = getBlocks("""
 			 const block0 = {
-			  a: 1,
+			  'a': 1,
 			  b: 2
 			 }
 			 const block1 = {
@@ -38,14 +38,20 @@ public class JsObjectLiteralDetectorTest extends BasePlatformTestCase {
 		assertEquals(2, b0.size());
 		assertEquals(2, b1.size());
 
-		assertEquals("a", b0.get(0).key());
+		assertEquals("'a'", b0.get(0).key());
 		assertEquals("b", b0.get(1).key());
 		assertEquals("c", b1.get(0).key());
 		assertEquals("d", b1.get(1).key());
 
+		// a, which is in quotes
 		assertEquals(18, b0.get(0).keyOffset());
-		assertEquals(19, b0.get(0).separatorOffset());
+		assertEquals(18 + 2 + 1, b0.get(0).separatorOffset());
+
+		// b
+		assertEquals(27, b0.get(1).keyOffset());
+		assertEquals(27 + 1, b0.get(1).separatorOffset());
 	}
+
 
 	public void testIgnoresShorthandProps() {
 		var blocks = getBlocks("""
