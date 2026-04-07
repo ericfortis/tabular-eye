@@ -53,16 +53,17 @@ public class PyDataClassFieldDetector extends AlignmentDetector {
 	}
 
 	private PropInfo describeTarget(PyTypeDeclarationStatementImpl target) {
-		var separatorOffset = findSeparatorOffset(target, ":");
-		System.out.println("describeTarget:::" + separatorOffset + "::::" + target.getText());
-		if (separatorOffset < 0)
+		var key = target.getFirstChild().getText();
+
+		String text = target.getText();
+		int colonIdx = text.indexOf(':');
+		if (colonIdx < 0)
 			return null;
 
-		String key = target.getName();
 		if (key == null || key.isEmpty())
 			return null;
 
 		int startOffset = target.getTextRange().getStartOffset();
-		return new PropInfo(key, startOffset, separatorOffset);
+		return new PropInfo(key, startOffset, startOffset + colonIdx);
 	}
 }
