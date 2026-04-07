@@ -114,9 +114,6 @@ public class Spacers {
 	}
 
 	public FontMetrics getFontMetrics(int offset) {
-		if (editor.isDisposed())
-			return null;
-
 		var iterator = editor.getHighlighter().createIterator(offset);
 		int fontStyleBitmask = iterator.getTextAttributes().getFontType();
 		
