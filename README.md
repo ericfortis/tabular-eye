@@ -3,7 +3,6 @@
 ## TODO
 - User Settings? disable/enable
 - Nginx?
-- Python dataclass fields
 - Python keyword args
 - Python dictionary literals
 
