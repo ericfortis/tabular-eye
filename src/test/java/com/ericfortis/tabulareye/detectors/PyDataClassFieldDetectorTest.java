@@ -20,16 +20,22 @@ public class PyDataClassFieldDetectorTest extends BasePlatformTestCase {
 		return detector.findBlocks(file, doc);
 	}
 
+	public void testFileTypeResolution() {
+		myFixture.configureByText("test.py", "print('hello')");
+		assertEquals("Python", myFixture.getFile().getFileType().getName()); 
+		assertEquals("Python", myFixture.getFile().getLanguage().getID());
+	}
+
 	public void testBasicDataClass() {
 		var blocks = getBlocks("""
-			from dataclasses import dataclass
-			
-			@dataclass
-			class User:
-			    name: str
-			    age: int
-			    email: str = "default@example.com"
-			""");
+			 from dataclasses import dataclass
+			 
+			 @dataclass
+			 class User:
+			     name: str
+			     age: int
+			     email: str = "default@example.com"
+			 """);
 		assertEquals(1, blocks.size());
 
 		var block = blocks.getFirst();
@@ -42,18 +48,18 @@ public class PyDataClassFieldDetectorTest extends BasePlatformTestCase {
 
 	public void testMultipleDataClasses() {
 		var blocks = getBlocks("""
-			from dataclasses import dataclass
-			
-			@dataclass
-			class Point:
-			    x: float
-			    y: float
-			
-			@dataclass
-			class Size:
-			    width: int
-			    height: int
-			""");
+			 from dataclasses import dataclass
+			 
+			 @dataclass
+			 class Point:
+			     x: float
+			     y: float
+			 
+			 @dataclass
+			 class Size:
+			     width: int
+			     height: int
+			 """);
 		assertEquals(2, blocks.size());
 
 		var b0 = blocks.get(0);
@@ -70,39 +76,39 @@ public class PyDataClassFieldDetectorTest extends BasePlatformTestCase {
 
 	public void testIgnoresNonDataClass() {
 		var blocks = getBlocks("""
-			class Normal:
-			    x: int
-			    y: int
-			""");
+			 class Normal:
+			     x: int
+			     y: int
+			 """);
 		assertTrue(blocks.isEmpty());
 	}
 
 	public void testIgnoresSingleLineDataClass() {
 		var blocks = getBlocks("""
-			@dataclass
-			class Point: x: int; y: int
-			""");
+			 @dataclass
+			 class Point: x: int; y: int
+			 """);
 		assertTrue(blocks.isEmpty());
 	}
 
 	public void testIgnoresSingleFieldDataClass() {
 		var blocks = getBlocks("""
-			@dataclass
-			class Single:
-			    prop: str
-			""");
+			 @dataclass
+			 class Single:
+			     prop: str
+			 """);
 		assertTrue(blocks.isEmpty());
 	}
 
 	public void testQualifiedDecorator() {
 		var blocks = getBlocks("""
-			import dataclasses
-			
-			@dataclasses.dataclass
-			class User:
-			    name: str
-			    age: int
-			""");
+			 import dataclasses
+			 
+			 @dataclasses.dataclass
+			 class User:
+			     name: str
+			     age: int
+			 """);
 		assertEquals(1, blocks.size());
 		assertEquals(2, blocks.getFirst().size());
 	}
