@@ -22,16 +22,12 @@ public class PyDataClassFieldDetector extends AlignmentDetector {
 	@NotNull
 	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
 		List<AlignmentBlock> blocks = new ArrayList<>();
-		for (var pyClass : PsiTreeUtil.collectElementsOfType(file, PyClass.class)) {
-			if (isDataClass(pyClass)) {
-				var statementList = pyClass.getStatementList();
-				if (isMultiline(statementList, doc)) {
-					var block = buildBlock(pyClass);
-					if (block.isValid())
-						blocks.add(block);
-				}
+		for (var pyClass : PsiTreeUtil.collectElementsOfType(file, PyClass.class))
+			if (isDataClass(pyClass) && isMultiline(pyClass.getStatementList(), doc)) {
+				var block = buildBlock(pyClass);
+				if (block.isValid())
+					blocks.add(block);
 			}
-		}
 		return blocks;
 	}
 
