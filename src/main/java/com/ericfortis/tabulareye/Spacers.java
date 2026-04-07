@@ -118,9 +118,9 @@ public class Spacers {
 			return null;
 
 		var iterator = editor.getHighlighter().createIterator(offset);
-		int fontStyle = iterator.getTextAttributes().getFontType();
-
-		return metricsCache.computeIfAbsent(fontStyle, style -> {
+		int fontStyleBitmask = iterator.getTextAttributes().getFontType();
+		
+		return metricsCache.computeIfAbsent(fontStyleBitmask, style -> {
 			var type = EditorFontType.forJavaStyle(style);
 			var font = editor.getColorsScheme().getFont(type);
 			return editor.getContentComponent().getFontMetrics(font);
