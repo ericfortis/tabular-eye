@@ -41,7 +41,7 @@ public class Spacers {
 
 	// This is mainly because we want to handle non-monospace fonts.
 	// i.e., we could later implement an optimized path for mono (I don't use mono, so…)
-	private final Map<Integer, FontMetrics> metricsCache = new HashMap<>();
+	private final Map<Integer, FontMetrics> fontMetricsCache = new HashMap<>();
 
 	public Spacers(Editor editor) {
 		this.editor = editor;
@@ -110,7 +110,7 @@ public class Spacers {
 	}
 
 	public void invalidateFontMetricsCache() {
-		metricsCache.clear();
+		fontMetricsCache.clear();
 	}
 
 	public FontMetrics getFontMetrics(int offset) {
@@ -120,7 +120,7 @@ public class Spacers {
 		var iterator = editor.getHighlighter().createIterator(offset);
 		int fontStyleBitmask = iterator.getTextAttributes().getFontType();
 		
-		return metricsCache.computeIfAbsent(fontStyleBitmask, style -> {
+		return fontMetricsCache.computeIfAbsent(fontStyleBitmask, style -> {
 			var type = EditorFontType.forJavaStyle(style);
 			var font = editor.getColorsScheme().getFont(type);
 			return editor.getContentComponent().getFontMetrics(font);
