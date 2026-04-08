@@ -84,34 +84,23 @@ class EditorSession implements Disposable {
 
 		var doc = editor.getDocument();
 		ApplicationManager.getApplication().invokeLater(() -> {
-			if (p.isDisposed() || editor.isDisposed())
-				return;
-
 			var psiDocManager = PsiDocumentManager.getInstance(p);
 			psiDocManager.performWhenAllCommitted(() -> {
-				if (p.isDisposed() || editor.isDisposed())
-					return;
-
 				ReadAction.nonBlocking(() -> {
 						 if (p.isDisposed() || editor.isDisposed())
 							 return null;
-
 						 var psiFile = psiDocManager.getPsiFile(doc);
 						 if (psiFile == null)
 							 return null;
-
-						 if (p.isDisposed() || editor.isDisposed())
-							 return null;
-
 						 return spacers.calcAlignments(detectors, psiFile, doc);
 					 })
-					 .finishOnUiThread(ModalityState.any(), allBlocks -> {
+					 .finishOnUiThread(ModalityState.defaultModalityState(), allBlocks -> {
 						 if (allBlocks != null && !p.isDisposed() && !editor.isDisposed())
 							 spacers.refresh(allBlocks);
 					 })
 					 .expireWith(this)
 					 .submit(AppExecutorUtil.getAppExecutorService());
 			});
-		}, ModalityState.any());
+		}, ModalityState.defaultModalityState());
 	}
 }
