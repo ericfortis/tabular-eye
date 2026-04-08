@@ -29,10 +29,10 @@ public class YamlListDetectorTest extends BasePlatformTestCase {
 			 """);
 		assertEquals(3, blocks.size());
 
-		for (var block : blocks) {
-			assertEquals(2, block.size());
-			assertEquals("-", block.get(0).key());
-			assertEquals(" ", block.get(1).key());
+		for (var b : blocks) {
+			assertEquals(2, b.size());
+			assertEquals("-", b.get(0).key());
+			assertEquals(" ", b.get(1).key());
 		}
 	}
 

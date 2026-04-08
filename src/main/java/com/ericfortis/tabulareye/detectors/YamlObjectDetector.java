@@ -22,12 +22,12 @@ public class YamlObjectDetector extends AlignmentDetector {
 
 	private AlignmentBlock buildBlock(YAMLMapping mapping) {
 		var block = new AlignmentBlock();
-		for (var keyValue : mapping.getKeyValues()) {
-			var key = keyValue.getKey();
+		for (var kv : mapping.getKeyValues()) {
+			var key = kv.getKey();
 			if (key == null)
 				continue;
 
-			int colonOffset = findSeparatorOffset(keyValue, ":");
+			int colonOffset = findSeparatorOffset(kv, ":");
 			if (colonOffset < 0)
 				continue;
 
