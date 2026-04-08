@@ -27,7 +27,6 @@ class EditorSession implements Disposable {
 	private final List<AlignmentDetector> detectors;
 	private final Spacers spacers;
 	private final Alarm alarm;
-	private static final int ON_OPEN_DELAY = 0;
 	private static final int ON_CHANGE_DELAY = 300;
 
 	EditorSession(Editor ed, Project p, List<AlignmentDetector> detectors) {
@@ -68,7 +67,7 @@ class EditorSession implements Disposable {
 	}
 
 	void refresh(Project p) {
-		refresh(p, ON_OPEN_DELAY);
+		refresh(p, 0);
 	}
 
 	void refresh(Project p, int delay) {
