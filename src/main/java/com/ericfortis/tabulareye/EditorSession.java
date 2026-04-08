@@ -88,26 +88,30 @@ class EditorSession implements Disposable {
 				return;
 
 			var psiDocManager = PsiDocumentManager.getInstance(p);
-			ReadAction.nonBlocking(() -> {
-					 if (p.isDisposed() || editor.isDisposed())
-						 return null;
+			psiDocManager.performWhenAllCommitted(() -> {
+				if (p.isDisposed() || editor.isDisposed())
+					return;
 
-					 var psiFile = psiDocManager.getPsiFile(doc);
-					 if (psiFile == null)
-						 return null;
+				ReadAction.nonBlocking(() -> {
+						 if (p.isDisposed() || editor.isDisposed())
+							 return null;
 
-					 psiDocManager.commitDocument(doc);
-					 if (p.isDisposed() || editor.isDisposed())
-						 return null;
+						 var psiFile = psiDocManager.getPsiFile(doc);
+						 if (psiFile == null)
+							 return null;
 
-					 return spacers.calcAlignments(detectors, psiFile, doc);
-				 })
-				 .finishOnUiThread(ModalityState.any(), allBlocks -> {
-					 if (allBlocks != null && !p.isDisposed() && !editor.isDisposed())
-						 spacers.refresh(allBlocks);
-				 })
-				 .expireWith(this)
-				 .submit(AppExecutorUtil.getAppExecutorService());
+						 if (p.isDisposed() || editor.isDisposed())
+							 return null;
+
+						 return spacers.calcAlignments(detectors, psiFile, doc);
+					 })
+					 .finishOnUiThread(ModalityState.any(), allBlocks -> {
+						 if (allBlocks != null && !p.isDisposed() && !editor.isDisposed())
+							 spacers.refresh(allBlocks);
+					 })
+					 .expireWith(this)
+					 .submit(AppExecutorUtil.getAppExecutorService());
+			});
 		}, ModalityState.any());
 	}
 }
