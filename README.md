@@ -1,11 +1,17 @@
 # Tabular Eye
 
-## TODO
-- User Settings? disable/enable
-- Nginx?
-
 <!-- Plugin description -->
-Tabular Eye
+Renders certain code blocks in two columns without adding whitespace and supports proportional fonts.
+
+- JS/TS/JSON object literals 
+- JS/TS 2D arrays
+- TS interfaces
+- CSS properties
+- Python dataclasses
+- Python dictionary literals
+- Python keyword args
+- YAML objects
+- YAML lists (for non-monospace fonts)
 
 <!-- Plugin description end -->
 
