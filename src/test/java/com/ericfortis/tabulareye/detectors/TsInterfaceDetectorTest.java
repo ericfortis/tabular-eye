@@ -25,6 +25,7 @@ public class TsInterfaceDetectorTest extends BasePlatformTestCase {
 			 interface User {
 			  age: number;
 			  name: string;
+			  /** JSDocComments are ignored */
 			  email: string;
 			 }
 			 """);

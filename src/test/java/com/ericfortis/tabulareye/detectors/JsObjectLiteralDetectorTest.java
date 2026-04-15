@@ -28,6 +28,7 @@ public class JsObjectLiteralDetectorTest extends BasePlatformTestCase {
 			 }
 			 const block1 = {
 			  c: 3,
+			  /** JSDocComments are ignored */
 			  d: 4
 			 }
 			 """);

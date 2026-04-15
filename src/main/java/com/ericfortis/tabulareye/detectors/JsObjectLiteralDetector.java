@@ -1,13 +1,13 @@
 package com.ericfortis.tabulareye.detectors;
 
 import com.intellij.lang.javascript.psi.JSObjectLiteralExpression;
+import com.intellij.lang.javascript.psi.jsdoc.JSDocComment;
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Objects;
 
 public class JsObjectLiteralDetector extends AlignmentDetector {
 	JsObjectLiteralDetector() {
@@ -30,14 +30,21 @@ public class JsObjectLiteralDetector extends AlignmentDetector {
 			}
 		return block;
 	}
-
+	
 	static PropInfo describeKV(PsiElement prop) {
 		var separatorOffset = findSeparatorOffset(prop, ":");
 		if (separatorOffset < 0)
 			return null;
 
-		var keyBuilder = new StringBuilder();
 		var firstChild = prop.getFirstChild();
+		while (firstChild != null && (firstChild instanceof JSDocComment || firstChild.getText().trim().isEmpty())) {
+			firstChild = firstChild.getNextSibling();
+		}
+
+		if (firstChild == null)
+			return null;
+
+		var keyBuilder = new StringBuilder();
 		var child = firstChild;
 		while (child != null && !":".equals(child.getText())) {
 			keyBuilder.append(child.getText());
@@ -46,7 +53,7 @@ public class JsObjectLiteralDetector extends AlignmentDetector {
 
 		var keyText = keyBuilder.toString().trim();
 		if (!keyText.isEmpty()) {
-			int startOffset = Objects.requireNonNull(firstChild).getTextRange().getStartOffset();
+			int startOffset = firstChild.getTextRange().getStartOffset();
 			return new PropInfo(keyText, startOffset, separatorOffset);
 		}
 

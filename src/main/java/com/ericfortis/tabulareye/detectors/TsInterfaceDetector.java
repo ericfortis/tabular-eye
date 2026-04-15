@@ -1,6 +1,7 @@
 package com.ericfortis.tabulareye.detectors;
 
 import com.intellij.lang.javascript.psi.ecma6.impl.TypeScriptObjectTypeImpl;
+import com.intellij.lang.javascript.psi.jsdoc.JSDocComment;
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -22,6 +23,9 @@ public class TsInterfaceDetector extends AlignmentDetector {
 	private AlignmentBlock buildBlock(PsiElement tsInterface) {
 		var block = new AlignmentBlock();
 		for (var prop : tsInterface.getChildren()) {
+			if (prop instanceof JSDocComment)
+				continue;
+
 			var kv = JsObjectLiteralDetector.describeKV(prop);
 			if (kv != null)
 				block.add(kv);
