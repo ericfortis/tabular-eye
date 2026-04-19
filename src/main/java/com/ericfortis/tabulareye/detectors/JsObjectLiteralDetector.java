@@ -34,15 +34,14 @@ public class JsObjectLiteralDetector extends AlignmentDetector {
 
 	@Nullable
 	static PropInfo describeKV(JSProperty prop) {
-		PsiElement keyElement = prop.getNameIdentifier();
+		var keyElement = prop.getIdentifyingElement();
 		if (keyElement == null)
 			return null;
 
 		PsiElement colonElement = null;
 		var child = keyElement.getNextSibling();
 		while (child != null) {
-			var node = child.getNode();
-			if (node != null && "JS:COLON".equals(node.getElementType().toString())) {
+			if (":".equals(child.getText())) {
 				colonElement = child;
 				break;
 			}
