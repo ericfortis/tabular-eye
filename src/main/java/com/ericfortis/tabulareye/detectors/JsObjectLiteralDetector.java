@@ -1,6 +1,7 @@
 package com.ericfortis.tabulareye.detectors;
 
 import com.intellij.lang.javascript.psi.JSObjectLiteralExpression;
+import com.intellij.lang.javascript.psi.JSProperty;
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -36,16 +37,15 @@ public class JsObjectLiteralDetector extends AlignmentDetector {
 		PsiElement keyElement = null;
 		PsiElement colonElement = null;
 
+		if (prop instanceof JSProperty jsProp) 
+			keyElement = jsProp.getNameIdentifier();
+
 		var child = prop.getFirstChild();
 		while (child != null) {
 			var node = child.getNode();
-			if (node != null) {
-				var typeName = node.getElementType().toString();
-				if ("JS:IDENTIFIER".equals(typeName) || "JS:STRING_LITERAL".equals(typeName)) {
-					keyElement = child;
-				} else if ("JS:COLON".equals(typeName)) {
-					colonElement = child;
-				}
+			if (node != null && "JS:COLON".equals(node.getElementType().toString())) {
+				colonElement = child;
+				break;
 			}
 			child = child.getNextSibling();
 		}
