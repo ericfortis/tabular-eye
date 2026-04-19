@@ -34,27 +34,27 @@ public class JsObjectLiteralDetector extends AlignmentDetector {
 
 	@Nullable
 	static PropInfo describeKV(JSProperty prop) {
-		var keyElement = prop.getIdentifyingElement();
-		if (keyElement == null)
+		var keyElem = prop.getIdentifyingElement();
+		if (keyElem == null)
 			return null;
 
-		PsiElement colonElement = null;
-		var child = keyElement.getNextSibling();
+		PsiElement colonElem = null;
+		var child = keyElem.getNextSibling();
 		while (child != null) {
 			if (":".equals(child.getText())) {
-				colonElement = child;
+				colonElem = child;
 				break;
 			}
 			child = child.getNextSibling();
 		}
 
-		if (colonElement == null)
+		if (colonElem == null)
 			return null;
 
 		return new PropInfo(
-			 keyElement.getText(),
-			 keyElement.getTextRange().getStartOffset(),
-			 colonElement.getTextRange().getStartOffset()
+			 keyElem.getText(),
+			 keyElem.getTextRange().getStartOffset(),
+			 colonElem.getTextRange().getStartOffset()
 		);
 	}
 }
