@@ -1,11 +1,11 @@
 package com.ericfortis.tabulareye.detectors;
 
 import com.intellij.lang.javascript.psi.JSObjectLiteralExpression;
-import com.intellij.lang.javascript.psi.jsdoc.JSDocComment;
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -30,33 +30,33 @@ public class JsObjectLiteralDetector extends AlignmentDetector {
 			}
 		return block;
 	}
-	
+
+	@Nullable
 	static PropInfo describeKV(PsiElement prop) {
-		var separatorOffset = findSeparatorOffset(prop, ":");
-		if (separatorOffset < 0)
-			return null;
+		PsiElement keyElement = null;
+		PsiElement colonElement = null;
 
-		var firstChild = prop.getFirstChild();
-		while (firstChild != null && (firstChild instanceof JSDocComment || firstChild.getText().trim().isEmpty())) {
-			firstChild = firstChild.getNextSibling();
-		}
-
-		if (firstChild == null)
-			return null;
-
-		var keyBuilder = new StringBuilder();
-		var child = firstChild;
-		while (child != null && !":".equals(child.getText())) {
-			keyBuilder.append(child.getText());
+		var child = prop.getFirstChild();
+		while (child != null) {
+			var node = child.getNode();
+			if (node != null) {
+				var typeName = node.getElementType().toString();
+				if ("JS:IDENTIFIER".equals(typeName) || "JS:STRING_LITERAL".equals(typeName)) {
+					keyElement = child;
+				} else if ("JS:COLON".equals(typeName)) {
+					colonElement = child;
+				}
+			}
 			child = child.getNextSibling();
 		}
 
-		var keyText = keyBuilder.toString().trim();
-		if (!keyText.isEmpty()) {
-			int startOffset = firstChild.getTextRange().getStartOffset();
-			return new PropInfo(keyText, startOffset, separatorOffset);
-		}
+		if (keyElement == null || colonElement == null)
+			return null;
 
-		return null;
+		return new PropInfo(
+			 keyElement.getText(),
+			 keyElement.getTextRange().getStartOffset(),
+			 colonElement.getTextRange().getStartOffset()
+		);
 	}
 }
