@@ -29,7 +29,8 @@ public class JsObjectLiteralDetectorTest extends BasePlatformTestCase {
 			 const block1 = {
 			  c: 3,
 			  /** JSDocComments are ignored */
-			  d: 4
+			  d: 4,
+			  [5]: 5
 			 }
 			 """);
 		assertEquals(2, blocks.size());
@@ -37,12 +38,13 @@ public class JsObjectLiteralDetectorTest extends BasePlatformTestCase {
 		var b0 = blocks.getFirst();
 		var b1 = blocks.getLast();
 		assertEquals(2, b0.size());
-		assertEquals(2, b1.size());
+		assertEquals(3, b1.size());
 
 		assertEquals("'a'", b0.get(0).key());
 		assertEquals("b", b0.get(1).key());
 		assertEquals("c", b1.get(0).key());
 		assertEquals("d", b1.get(1).key());
+		assertEquals("[5]", b1.get(2).key());
 
 		// a, which is in quotes
 		assertEquals(18, b0.get(0).keyOffset());
