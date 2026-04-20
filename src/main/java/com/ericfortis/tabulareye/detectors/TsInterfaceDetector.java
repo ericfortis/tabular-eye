@@ -26,19 +26,19 @@ public class TsInterfaceDetector extends AlignmentDetector {
 	private AlignmentBlock buildBlock(TypeScriptObjectType tsInterface) {
 		var block = new AlignmentBlock();
 		for (var prop : tsInterface.getTypeMembers()) {
-			var kv = describeKV(prop);
-			if (kv != null)
-				block.add(kv);
+			if (prop instanceof TypeScriptPropertySignature) {
+				var kv = describeKV((TypeScriptPropertySignature) prop);
+				if (kv != null)
+					block.add(kv);
+			}
 		}
 		return block;
 	}
 
 	@Nullable
-	static PropInfo describeKV(TypeScriptTypeMember prop) {
-		if (!(prop instanceof TypeScriptPropertySignature))
-			return null;
+	static PropInfo describeKV(TypeScriptPropertySignature prop) {
+		var keyElem = prop.getIdentifyingElement();
 
-		var keyElem = ((TypeScriptPropertySignature) prop).getIdentifyingElement();
 		if (keyElem == null)
 			return null;
 

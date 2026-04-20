@@ -35,6 +35,7 @@ public class JsObjectLiteralDetector extends AlignmentDetector {
 	@Nullable
 	static PropInfo describeKV(JSProperty prop) {
 		var keyElem = prop.getIdentifyingElement();
+		
 		if (keyElem == null)
 			return null;
 
