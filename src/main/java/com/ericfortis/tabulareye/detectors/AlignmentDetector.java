@@ -5,11 +5,12 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.function.Function;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * Visitor for finding the column spacing needed for tabularizing.
@@ -49,6 +50,32 @@ public abstract class AlignmentDetector {
 			child = child.getNextSibling();
 		}
 		return -1;
+	}
+
+	@Nullable
+	static <T> PropInfo describeKV(T prop, Function<T, PsiElement> keyExtractor) {
+		var keyElem = keyExtractor.apply(prop);
+		if (keyElem == null)
+			return null;
+
+		PsiElement colonElem = null;
+		var child = keyElem.getNextSibling();
+		while (child != null) {
+			if (":".equals(child.getText())) {
+				colonElem = child;
+				break;
+			}
+			child = child.getNextSibling();
+		}
+
+		if (colonElem == null)
+			return null;
+
+		return new PropInfo(
+				keyElem.getText(),
+				keyElem.getTextRange().getStartOffset(),
+				colonElem.getTextRange().getStartOffset()
+		);
 	}
 
 
