@@ -1,0 +1,7 @@
+<idea-plugin>
+  <extensions defaultExtensionNs="com.ericfortis.tabulareye">
+    <alignmentDetector implementation="com.ericfortis.tabulareye.detectors.JsObjectLiteralDetector"/>
+    <alignmentDetector implementation="com.ericfortis.tabulareye.detectors.Js2DArrayDetector"/>
+    <alignmentDetector implementation="com.ericfortis.tabulareye.detectors.TsInterfaceDetector"/>
+  </extensions>
+</idea-plugin>

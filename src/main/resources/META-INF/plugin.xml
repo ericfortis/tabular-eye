@@ -1,0 +1,22 @@
+<idea-plugin>
+  <id>com.ericfortis.tabulareye</id>
+  <name>Tabular Eye</name>
+  <version>0.0.1</version>
+  <vendor>Eric Fortis</vendor>
+
+  <depends>com.intellij.modules.platform</depends>
+  <depends optional="true" config-file="tabular-eye-js.xml">JavaScript</depends>
+  <depends optional="true" config-file="tabular-eye-css.xml">com.intellij.css</depends>
+  <depends optional="true" config-file="tabular-eye-yaml.xml">org.jetbrains.plugins.yaml</depends>
+  <depends optional="true" config-file="tabular-eye-json.xml">com.intellij.modules.json</depends>
+  <depends optional="true" config-file="tabular-eye-python.xml">PythonCore</depends>
+
+  <extensionPoints>
+    <extensionPoint name="alignmentDetector" interface="com.ericfortis.tabulareye.detectors.AlignmentDetector"
+                    dynamic="true"/>
+  </extensionPoints>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <editorFactoryListener implementation="com.ericfortis.tabulareye.TabularEye"/>
+  </extensions>
+</idea-plugin>
