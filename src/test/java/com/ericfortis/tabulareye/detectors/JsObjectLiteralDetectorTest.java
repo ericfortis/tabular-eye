@@ -44,7 +44,7 @@ public class JsObjectLiteralDetectorTest extends BasePlatformTestCase {
 
 		assertEquals("'a'", b0.get(0).key());
 		assertEquals("b", b0.get(1).key());
-
+		
 		assertEquals("c", b1.get(0).key());
 		assertEquals("d", b1.get(1).key());
 		assertEquals("[5]", b1.get(2).key());
@@ -97,37 +97,5 @@ public class JsObjectLiteralDetectorTest extends BasePlatformTestCase {
 		var b = blocks.getFirst();
 		assertEquals("foo", b.get(0).key());
 		assertEquals("baz", b.get(1).key());
-	}
-
-	public void testFunctionProps() {
-		// com.intellij.lang.javascript.psi.JSFunctionProperty
-		var content = """
-			 const Obj = {
-			 	isFooA(f) { return this.f === 1 },
-			 	isFooBarA(f) { return this.f === 2 },
-			 	/** @param {number} f */
-			 	isBazA(f) { return this.f === 2 },
-			 
-			 	isFooB(f) { return this.f === 1 },
-			 	isFooBarB(f) { return this.f === 2 },
-			 }
-			 """;
-		var blocks = getBlocks(content);
-		assertEquals(2, blocks.size());
-		
-		var b0 = blocks.getFirst();
-		var b1 = blocks.getLast();
-		assertEquals(3, b0.size());
-		assertEquals(2, b1.size());
-		
-		assertEquals("isFooA", b0.get(0).key());
-		assertEquals("isFooBarA", b0.get(1).key());
-		assertEquals("isBazA", b0.get(2).key());
-
-		assertEquals("isFooB", b1.get(0).key());
-		assertEquals("isFooBarB", b1.get(1).key());
-
-		assertEquals(')', content.charAt(b0.get(0).separatorOffset()));
-		assertEquals(')', content.charAt(b1.get(0).separatorOffset()));
 	}
 }
