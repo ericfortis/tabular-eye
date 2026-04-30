@@ -15,6 +15,15 @@ Renders certain code blocks in two columns without adding whitespace and support
 
 <!-- Plugin description end -->
 
+## Demo
+
+### JS
+![js-tuples.png](docs/images/js-tuples.png)
+
+### CSS
+![css.png](docs/images/css.png)
+
+
 ## Credit
 - https://nick-gravgaard.com/elastic-tabstops/
 - JetBrains MPS decision tables
