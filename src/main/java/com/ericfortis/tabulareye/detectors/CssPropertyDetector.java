@@ -20,9 +20,10 @@ public class CssPropertyDetector extends AlignmentDetector {
 	@NotNull
 	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
 		List<AlignmentBlock> groups = new ArrayList<>();
+		boolean isHtml = isHtmlFile(file);
 
 		for (var el : PsiTreeUtil.findChildrenOfType(file, CssBlock.class))
-			if (isMultiline(el, doc)) {
+			if (isMultiline(el, doc) && (!isHtml || isInStyleTag(el))) {
 				var block = new AlignmentBlock();
 				for (var child = el.getFirstChild(); child != null; child = child.getNextSibling())
 					if (child instanceof CssDeclaration decl) {

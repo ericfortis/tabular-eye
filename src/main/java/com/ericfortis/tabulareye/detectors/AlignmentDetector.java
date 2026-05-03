@@ -4,6 +4,7 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.xml.XmlTag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,10 +23,10 @@ public abstract class AlignmentDetector {
 		this.extensions = extensions;
 	}
 
-	static final List<String> JS_EXT = List.of("js", "jsx", "ts", "tsx");
+	static final List<String> JS_EXT = List.of("js", "jsx", "ts", "tsx", "html");
 	static final List<String> TS_EXT = List.of("ts", "tsx");
 	static final List<String> PY_EXT = List.of("py");
-	static final List<String> CSS_EXT = List.of("css");
+	static final List<String> CSS_EXT = List.of("css", "html");
 	static final List<String> YML_EXT = List.of("yml", "yaml");
 	static final List<String> JSON_EXT = List.of("json");
 
@@ -50,6 +51,24 @@ public abstract class AlignmentDetector {
 			child = child.getNextSibling();
 		}
 		return -1;
+	}
+
+	static boolean isInHtmlTag(PsiElement elem, String tagName) {
+		var tag = PsiTreeUtil.getParentOfType(elem, XmlTag.class);
+		return tag != null && tagName.equalsIgnoreCase(tag.getName());
+	}
+
+	static boolean isInStyleTag(PsiElement elem) {
+		return isInHtmlTag(elem, "style");
+	}
+
+	static boolean isInScriptTag(PsiElement elem) {
+		return isInHtmlTag(elem, "script");
+	}
+
+	protected static boolean isHtmlFile(PsiFile file) {
+		var vFile = file.getVirtualFile();
+		return vFile != null && "html".equals(vFile.getExtension());
 	}
 
 	@Nullable
