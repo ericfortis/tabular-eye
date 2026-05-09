@@ -1,6 +1,6 @@
 # Tabular Eye
 
-https://plugins.jetbrains.com/plugin/31443-tabular-eye/edit
+https://plugins.jetbrains.com/plugin/31443-tabular-eye
 
 <!-- Plugin description -->
 Renders certain code blocks in two columns without adding whitespace and supports proportional fonts.
@@ -48,5 +48,5 @@ Plugin based on the [IntelliJ Platform Plugin Template][template].
 ```sh
 ./gradlew buildPlugin
 ```
-The resulting ZIP file will be located in:
+The resulting ZIP:
 `build/distributions/tabular-eye-1.0-SNAPSHOT.zip`
