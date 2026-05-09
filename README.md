@@ -1,5 +1,7 @@
 # Tabular Eye
 
+https://plugins.jetbrains.com/plugin/31443-tabular-eye/edit
+
 <!-- Plugin description -->
 Renders certain code blocks in two columns without adding whitespace and supports proportional fonts.
 
@@ -24,33 +26,10 @@ Renders certain code blocks in two columns without adding whitespace and support
 ![css.png](docs/images/css.png)
 
 
-## Credit
+## Credits
 - https://nick-gravgaard.com/elastic-tabstops/
 - JetBrains MPS decision tables
 - JetBrains CSV tabular rendering
-
-
-## Installation
-
-- Using the IDE built-in plugin system:
-
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "tw-eye-tmp"</kbd> >
-  <kbd>Install</kbd>
-
-- Using JetBrains Marketplace:
-
-  Go to [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/MARKETPLACE_ID) and install it by clicking
-  the <kbd>Install to ...</kbd> button in case your IDE is running.
-
-  You can also download the [latest release](https://plugins.jetbrains.com/plugin/MARKETPLACE_ID/versions) from
-  JetBrains Marketplace and install it manually using
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
-
-- Manually:
-
-  Download the [latest release](https://github.com/ericfortis/tw-eye-tmp/releases/latest) and install it manually using
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
-
 
 Plugin based on the [IntelliJ Platform Plugin Template][template].
 
@@ -60,26 +39,14 @@ Plugin based on the [IntelliJ Platform Plugin Template][template].
 
 ---
 
-## How to Build and Install
+## Development
 
-### 1. Build the Plugin
-This project uses Gradle. To compile the plugin and create an installable distribution, run:
-```bash
+```sh
+./gradlew runIde
+```
+
+```sh
 ./gradlew buildPlugin
 ```
 The resulting ZIP file will be located in:
 `build/distributions/tabular-eye-1.0-SNAPSHOT.zip`
-
-### 2. Install in your IDE
-To install the plugin in your personal IDE (not the sandbox):
-1. Open your IDE (WebStorm, IntelliJ IDEA, etc.).
-2. Go to **Settings** (or **Preferences** on macOS) > **Plugins**.
-3. Click the **cog icon** (⚙️) and select **Install Plugin from Disk...**.
-4. Navigate to the `build/distributions/` folder and select the ZIP file.
-5. Restart the IDE if prompted.
-
-## Development
-To run a development instance of the IDE with the plugin pre-installed:
-```bash
-./gradlew runIde
-```
