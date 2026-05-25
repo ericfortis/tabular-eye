@@ -3,5 +3,6 @@
     <alignmentDetector implementation="com.ericfortis.tabulareye.detectors.JsObjectLiteralDetector"/>
     <alignmentDetector implementation="com.ericfortis.tabulareye.detectors.Js2DArrayDetector"/>
     <alignmentDetector implementation="com.ericfortis.tabulareye.detectors.TsInterfaceDetector"/>
+    <alignmentDetector implementation="com.ericfortis.tabulareye.detectors.JsImportDetector"/>
   </extensions>
 </idea-plugin>
