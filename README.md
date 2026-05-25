@@ -7,6 +7,8 @@ Renders certain code blocks in two columns without adding whitespace and support
 
 - JS/TS/JSON object literals 
 - JS/TS 2D arrays
+- JS/TS imports
+- JS/TS single line if chains
 - TS interfaces
 - CSS properties
 - Python dataclasses
