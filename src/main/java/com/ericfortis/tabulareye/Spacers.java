@@ -83,9 +83,7 @@ public class Spacers {
 
 	// Handles proportional fonts. 
 	// TODO create a fast path for monospace fonts. With a cache of a 1-char width.
-	// Idea for optimizing proportional fonts (won't be perfect because we can't assume bold is always wider)
-	// at any rate, we could always measure against bold, which is for the most part wider in VerdanaCamel,
-	// but some chars are wider in normal (e.g. parentheses).
+	// TODO on proportional fonts, consider that the left-side content might have mixed normal and bold weights
 	private void setKeyWidth(PropInfo prop) {
 		int fontStyleBitmask = editor
 			 .getHighlighter()
