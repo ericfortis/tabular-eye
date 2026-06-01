@@ -1,5 +1,6 @@
 package com.ericfortis.tabulareye.detectors;
 
+import com.intellij.lang.javascript.psi.JSLoopStatement;
 import com.intellij.lang.javascript.psi.JSVarStatement;
 import com.intellij.lang.javascript.psi.JSVariable;
 import com.intellij.openapi.editor.Document;
@@ -72,22 +73,11 @@ public class JsVarsDetector extends AlignmentDetector {
 				continue;
 			if (isMultiline(stmt, doc))
 				continue;
-			if (isDestructuring(stmt))
+			if (stmt.getParent() instanceof JSLoopStatement)
 				continue;
 			vars.add(stmt);
 		}
 		return vars;
-	}
-
-	private static boolean isDestructuring(JSVarStatement stmt) {
-		var variable = PsiTreeUtil.findChildOfType(stmt, JSVariable.class);
-		if (variable == null)
-			return true;
-		var nameId = variable.getNameIdentifier();
-		if (nameId == null)
-			return true;
-		var name = nameId.getText();
-		return name.isEmpty() || name.startsWith("{") || name.startsWith("[");
 	}
 
 	private PropInfo buildProp(JSVarStatement stmt) {

@@ -140,4 +140,38 @@ public class JsVarsDetectorTest extends BasePlatformTestCase {
 			 """);
 		assertTrue(blocks.isEmpty());
 	}
+
+	public void testSkipsForLoopVar() {
+		var blocks = getBlocks("""
+			 const a = 1
+			 const b = 2
+			 for (let i = 0; i < 10; i++) {}
+			 """);
+		assertEquals(1, blocks.size());
+		assertEquals(2, blocks.get(0).size());
+	}
+
+	public void testSkipsForInLoopVar() {
+		var blocks = getBlocks("""
+			 const a = 1
+			 const b = 2
+			 for (const key in obj) {}
+			 """);
+		assertEquals(1, blocks.size());
+		assertEquals(2, blocks.get(0).size());
+	}
+
+	public void testForLoopVarDoesNotPolluteGroup() {
+		var blocks = getBlocks("""
+			 const clips = []
+			 for (let i = 0; i < arr.length; i++) {
+			   const item = arr[i]
+			   const result = process(item)
+			 }
+			 """);
+		assertEquals(1, blocks.size());
+		assertEquals(2, blocks.get(0).size());
+		assertEquals("const item ", blocks.get(0).get(0).key());
+		assertEquals("const result ", blocks.get(0).get(1).key());
+	}
 }
