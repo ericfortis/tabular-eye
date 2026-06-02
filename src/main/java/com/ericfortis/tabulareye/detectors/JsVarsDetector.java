@@ -20,54 +20,19 @@ public class JsVarsDetector extends AlignmentDetector {
 	@Override
 	@NotNull
 	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
-		List<AlignmentBlock> blocks = new ArrayList<>();
-		var statements = PsiTreeUtil.collectElementsOfType(file, JSVarStatement.class);
-		if (statements.isEmpty())
-			return blocks;
+		var vStatements = PsiTreeUtil.collectElementsOfType(file, JSVarStatement.class);
+		if (vStatements.isEmpty())
+			return new ArrayList<>();
 
-		var consts = findCandidates(statements, isHtmlFile(file), doc);
-		if (consts.isEmpty())
-			return blocks;
+		var candidates = findCandidates(vStatements, doc, isHtmlFile(file));
+		if (candidates.isEmpty())
+			return new ArrayList<>();
 
-		List<List<JSVarStatement>> groups = new ArrayList<>();
-		List<JSVarStatement> currentGroup = new ArrayList<>();
-		int prevEndLine = -2;
-
-		for (var stmt : consts) {
-			int startLine = doc.getLineNumber(stmt.getTextRange().getStartOffset());
-			if (currentGroup.isEmpty() || startLine == prevEndLine + 1)
-				currentGroup.add(stmt);
-			else {
-				if (currentGroup.size() > 1)
-					groups.add(currentGroup);
-				currentGroup = new ArrayList<>();
-				currentGroup.add(stmt);
-			}
-			prevEndLine = doc.getLineNumber(stmt.getTextRange().getEndOffset() - 1);
-		}
-		if (currentGroup.size() > 1)
-			groups.add(currentGroup);
-
-		for (var group : groups) {
-			var block = new AlignmentBlock();
-			for (var stmt : group) {
-				var prop = buildProp(stmt);
-				if (prop != null)
-					block.add(prop);
-			}
-			if (block.isValid())
-				blocks.add(block);
-		}
-
-		return blocks;
+		return alignmentBlocksFor(doc, candidates);
 	}
 
-	private static List<JSVarStatement> findCandidates(
-		 Collection<JSVarStatement> statements,
-		 boolean isHtml,
-		 Document doc
-	) {
-		List<JSVarStatement> vars = new ArrayList<>();
+	private static List<JSVarStatement> findCandidates(Collection<JSVarStatement> statements, Document doc, boolean isHtml) {
+		List<JSVarStatement> candidates = new ArrayList<>();
 		for (var stmt : statements) {
 			if (isHtml && !isInScriptTag(stmt))
 				continue;
@@ -75,22 +40,59 @@ public class JsVarsDetector extends AlignmentDetector {
 				continue;
 			if (stmt.getParent() instanceof JSLoopStatement)
 				continue;
-			vars.add(stmt);
+			candidates.add(stmt);
 		}
-		return vars;
+		return candidates;
+	}
+
+	private @NotNull List<AlignmentBlock> alignmentBlocksFor(@NotNull Document doc, List<JSVarStatement> candidates) {
+		var groups = groupContiguous(doc, candidates);
+		List<AlignmentBlock> blocks = new ArrayList<>();
+		for (var g : groups) {
+			var block = new AlignmentBlock();
+			for (var stmt : g) {
+				var prop = buildProp(stmt);
+				if (prop != null)
+					block.add(prop);
+			}
+			if (block.isValid())
+				blocks.add(block);
+		}
+		return blocks;
+	}
+
+	private static @NotNull List<List<JSVarStatement>> groupContiguous(@NotNull Document doc, List<JSVarStatement> candidates) {
+		List<List<JSVarStatement>> groups = new ArrayList<>();
+		List<JSVarStatement> currentGroup = new ArrayList<>();
+		int prevEndLine = -2;
+		for (var c : candidates) {
+			int startLine = doc.getLineNumber(c.getTextRange().getStartOffset());
+			if (currentGroup.isEmpty() || startLine == prevEndLine + 1)
+				currentGroup.add(c);
+			else {
+				if (currentGroup.size() > 1)
+					groups.add(currentGroup);
+				currentGroup = new ArrayList<>();
+				currentGroup.add(c);
+			}
+			prevEndLine = doc.getLineNumber(c.getTextRange().getEndOffset() - 1);
+		}
+		if (currentGroup.size() > 1)
+			groups.add(currentGroup);
+		return groups;
 	}
 
 	private PropInfo buildProp(JSVarStatement stmt) {
 		var variable = PsiTreeUtil.findChildOfType(stmt, JSVariable.class);
-		if (variable == null)
+		if (variable == null) // e.g., JsDestructuringElement
 			return null;
 
-		var separatorOffset = findSeparatorOffset(variable, "=");
-		if (separatorOffset < 0)
+		var sepOffset = findSeparatorOffset(variable, "=");
+		if (sepOffset == -1)
 			return null;
 
 		var keyStart = stmt.getTextRange().getStartOffset();
-		var key = stmt.getText().substring(0, separatorOffset - keyStart);
-		return new PropInfo(key, keyStart, separatorOffset);
+		var key = stmt.getText().substring(0, sepOffset - keyStart);
+		return new PropInfo(key, keyStart, sepOffset);
 	}
 }
