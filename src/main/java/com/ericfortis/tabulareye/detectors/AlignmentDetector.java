@@ -30,7 +30,7 @@ public abstract class AlignmentDetector {
 	static final List<String> YML_EXT = List.of("yml", "yaml");
 	static final List<String> JSON_EXT = List.of("json");
 
-	public final boolean isApplicable(@NotNull PsiFile file) {
+	public boolean isApplicable(@NotNull PsiFile file) {
 		var vFile = file.getVirtualFile();
 		if (vFile == null) return false;
 		var ext = vFile.getExtension();

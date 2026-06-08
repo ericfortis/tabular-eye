@@ -19,4 +19,8 @@
   <extensions defaultExtensionNs="com.intellij">
     <editorFactoryListener implementation="com.ericfortis.tabulareye.TabularEye"/>
   </extensions>
+
+  <extensions defaultExtensionNs="com.ericfortis.tabulareye">
+    <alignmentDetector implementation="com.ericfortis.tabulareye.detectors.NginxDetector"/>
+  </extensions>
 </idea-plugin>
