@@ -10,6 +10,7 @@
   <depends optional="true" config-file="tabular-eye-yaml.xml">org.jetbrains.plugins.yaml</depends>
   <depends optional="true" config-file="tabular-eye-json.xml">com.intellij.modules.json</depends>
   <depends optional="true" config-file="tabular-eye-python.xml">PythonCore</depends>
+  <depends optional="true" config-file="tabular-eye-sql.xml">com.intellij.database</depends>
 
   <extensionPoints>
     <extensionPoint name="alignmentDetector" interface="com.ericfortis.tabulareye.detectors.AlignmentDetector"

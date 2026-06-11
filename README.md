@@ -16,7 +16,8 @@ Renders certain code blocks in two columns without adding whitespace and support
 - Python keyword args
 - YAML objects
 - YAML lists (for non-monospace fonts)
-- Nginx
+- Nginx directives
+- SQL tables
 
 <!-- Plugin description end -->
 
