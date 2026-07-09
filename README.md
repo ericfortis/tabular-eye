@@ -18,6 +18,7 @@ Renders certain code blocks in two columns without adding whitespace and support
 - YAML lists (for non-monospace fonts)
 - Nginx directives
 - SQL tables
+- C and Go (for non-monospace fonts on already whitespace tabularized code)
 
 <!-- Plugin description end -->
 

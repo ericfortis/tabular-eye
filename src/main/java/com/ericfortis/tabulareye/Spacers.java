@@ -32,6 +32,14 @@ public class Spacers {
 		public int calcHeightInPixels(@NotNull Inlay inlay) {
 			return 1;
 		}
+
+		/* DEBUG COLOR
+		@Override
+		public void paint(@NotNull Inlay inlay, @NotNull Graphics g, @NotNull Rectangle targetRegion, @NotNull com.intellij.openapi.editor.markup.TextAttributes textAttributes) {
+			g.setColor(new Color(0, 90, 90, 60));
+			g.fillRect(targetRegion.x, targetRegion.y, targetRegion.width, targetRegion.height);
+		}
+		*/
 	}
 
 	private boolean isRefreshing = false;

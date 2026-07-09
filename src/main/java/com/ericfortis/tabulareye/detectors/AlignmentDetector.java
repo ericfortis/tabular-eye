@@ -30,6 +30,7 @@ public abstract class AlignmentDetector {
 	static final List<String> YML_EXT = List.of("yml", "yaml");
 	static final List<String> JSON_EXT = List.of("json");
 	static final List<String> SQL_EXT = List.of("sql");
+	static final List<String> C_LIKE_EXT = List.of("c", "h", "cpp", "cc", "cxx", "hpp", "hh", "hxx", "go");
 
 	public boolean isApplicable(@NotNull PsiFile file) {
 		var vFile = file.getVirtualFile();

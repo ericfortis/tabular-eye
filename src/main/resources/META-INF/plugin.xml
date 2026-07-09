@@ -23,5 +23,6 @@
 
   <extensions defaultExtensionNs="com.ericfortis.tabulareye">
     <alignmentDetector implementation="com.ericfortis.tabulareye.detectors.NginxDetector"/>
+    <alignmentDetector implementation="com.ericfortis.tabulareye.detectors.WhitespaceAlignmentDetector"/>
   </extensions>
 </idea-plugin>
