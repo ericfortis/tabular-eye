@@ -20,6 +20,10 @@ Renders certain code blocks in two columns without adding whitespace and support
 - SQL tables
 - C and Go (for non-monospace fonts on already whitespace tabularized code)
 
+
+Syntax Eye:
+There's another settings panel, which lets you add a configurable
+syntax highlight style (Faint Text) to a list of a words you can specify.
 <!-- Plugin description end -->
 
 ## Demo
