@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  * up to the last such run.
  * <p>
  * Note: this ignores that a line could already have multiple aligned
- * columns; only the last run of whitespace is considered.
+ * columns; only the first run of whitespace is considered.
  */
 public class WhitespaceAlignmentDetector extends AlignmentDetector {
 	private static final Pattern WHITESPACE_RUN = Pattern.compile("[ \t]{2,}");
@@ -61,8 +61,11 @@ public class WhitespaceAlignmentDetector extends AlignmentDetector {
 		int matchStart = -1;
 		int matchEnd = -1;
 		while (matcher.find()) {
-			matchStart = matcher.start();
-			matchEnd = matcher.end();
+			if (!line.substring(0, matcher.start()).stripLeading().isEmpty()) {
+				matchStart = matcher.start();
+				matchEnd = matcher.end();
+				break;
+			}
 		}
 
 		if (matchStart == -1)

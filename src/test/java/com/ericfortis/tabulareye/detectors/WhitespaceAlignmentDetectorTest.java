@@ -58,7 +58,7 @@ public class WhitespaceAlignmentDetectorTest extends BasePlatformTestCase {
 		var blocks = getBlocks("""
 			    u_char                       *p;
 			    size_t                        root;
-			    ngx_log_t                    *log;
+			    ngx_log_t                    *log;  /* comment  here */
 			 """);
 		assertEquals(1, blocks.size());
 

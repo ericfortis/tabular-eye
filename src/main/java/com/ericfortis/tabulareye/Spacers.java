@@ -18,126 +18,126 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Spacers {
-	/**
-	 * A fully transparent inlay that occupies exactly {@code widthPx} pixels.
-	 * Note: antialiasing (user setting) greyscale makes columns not align 100% perfectly.
-	 */
-	private record Spacer(int widthPx) implements EditorCustomElementRenderer {
-		@Override
-		public int calcWidthInPixels(@NotNull Inlay inlay) {
-			return widthPx;
-		}
+    /**
+     * A fully transparent inlay that occupies exactly {@code widthPx} pixels.
+     * Note: antialiasing (user setting) greyscale makes columns not align 100% perfectly.
+     */
+    private record Spacer(int widthPx) implements EditorCustomElementRenderer {
+        @Override
+        public int calcWidthInPixels(@NotNull Inlay inlay) {
+            return widthPx;
+        }
 
-		@Override
-		public int calcHeightInPixels(@NotNull Inlay inlay) {
-			return 1;
-		}
+        @Override
+        public int calcHeightInPixels(@NotNull Inlay inlay) {
+            return 1;
+        }
 
 		/* DEBUG COLOR
 		@Override
 		public void paint(@NotNull Inlay inlay, @NotNull Graphics g, @NotNull Rectangle targetRegion, @NotNull com.intellij.openapi.editor.markup.TextAttributes textAttributes) {
-			g.setColor(new Color(0, 90, 90, 60));
+			g.setColor(new Color(200, 0, 0, 60));
 			g.fillRect(targetRegion.x, targetRegion.y, targetRegion.width, targetRegion.height);
 		}
-		*/
-	}
+        */
+    }
 
-	private boolean isRefreshing = false;
-	private final Editor editor;
-	private final List<Inlay<Spacer>> activeInlays = new ArrayList<>();
+    private boolean isRefreshing = false;
+    private final Editor editor;
+    private final List<Inlay<Spacer>> activeInlays = new ArrayList<>();
 
-	// This is mainly because we want to handle non-monospace fonts.
-	// i.e., we could later implement an optimized path for mono (I don't use mono, so…)
-	private final FontMetrics[] fontMetricsCache = new FontMetrics[Font.BOLD | Font.ITALIC + 1];
+    // This is mainly because we want to handle non-monospace fonts.
+    // i.e., we could later implement an optimized path for mono (I don't use mono, so…)
+    private final FontMetrics[] fontMetricsCache = new FontMetrics[Font.BOLD | Font.ITALIC + 1];
 
 
-	public Spacers(Editor editor) {
-		this.editor = editor;
-	}
+    public Spacers(Editor editor) {
+        this.editor = editor;
+    }
 
-	public void refresh(List<AlignmentBlock> blocks) {
-		if (isRefreshing || editor.isDisposed())
-			return;
-		isRefreshing = true;
-		try {
-			clearAll();
-			for (var b : blocks)
-				render(b);
-		} finally {
-			isRefreshing = false;
-		}
-	}
+    public void refresh(List<AlignmentBlock> blocks) {
+        if (isRefreshing || editor.isDisposed())
+            return;
+        isRefreshing = true;
+        try {
+            clearAll();
+            for (var b : blocks)
+                render(b);
+        } finally {
+            isRefreshing = false;
+        }
+    }
 
-	public void clearAll() {
-		for (var inlay : activeInlays)
-			if (inlay.isValid())
-				Disposer.dispose(inlay);
-		activeInlays.clear();
-	}
+    public void clearAll() {
+        for (var inlay : activeInlays)
+            if (inlay.isValid())
+                Disposer.dispose(inlay);
+        activeInlays.clear();
+    }
 
-	public List<AlignmentBlock> calcAlignments(List<AlignmentDetector> detectors, PsiFile psiFile, Document doc) {
-		List<AlignmentBlock> allBlocks = new ArrayList<>();
-		for (var d : detectors) {
-			var blocks = d.findBlocks(psiFile, doc);
-			for (var b : blocks)
-				for (var prop : b.props())
-					setKeyWidth(prop);
+    public List<AlignmentBlock> calcAlignments(List<AlignmentDetector> detectors, PsiFile psiFile, Document doc) {
+        List<AlignmentBlock> allBlocks = new ArrayList<>();
+        for (var d : detectors) {
+            var blocks = d.findBlocks(psiFile, doc);
+            for (var b : blocks)
+                for (var prop : b.props())
+                    setKeyWidth(prop);
 
-			if (!blocks.isEmpty())
-				allBlocks.addAll(blocks);
-		}
-		return allBlocks;
-	}
+            if (!blocks.isEmpty())
+                allBlocks.addAll(blocks);
+        }
+        return allBlocks;
+    }
 
-	// Handles proportional fonts. 
-	// TODO create a fast path for monospace fonts. With a cache of a 1-char width.
-	// TODO on proportional fonts, consider that the left-side content might have mixed normal and bold weights
-	private void setKeyWidth(PropInfo prop) {
-		int fontStyleBitmask = editor
-			 .getHighlighter()
-			 .createIterator(prop.keyOffset())
-			 .getTextAttributes()
-			 .getFontType();
-		prop.setKeyWidth(getFontMetrics(fontStyleBitmask).stringWidth(prop.key()));
-	}
+    // Handles proportional fonts.
+    // TODO create a fast path for monospace fonts. With a cache of a 1-char width.
+    // TODO on proportional fonts, consider that the left-side content might have mixed normal and bold weights
+    private void setKeyWidth(PropInfo prop) {
+        int fontStyleBitmask = editor
+                .getHighlighter()
+                .createIterator(prop.keyOffset())
+                .getTextAttributes()
+                .getFontType();
+        prop.setKeyWidth(getFontMetrics(fontStyleBitmask).stringWidth(prop.key()));
+    }
 
-	private void render(AlignmentBlock block) {
-		var props = block.props();
+    private void render(AlignmentBlock block) {
+        var props = block.props();
 
-		int maxWidth = 0;
-		for (var p : props)
-			maxWidth = Math.max(maxWidth, p.keyWidth());
+        int maxWidth = 0;
+        for (var p : props)
+            maxWidth = Math.max(maxWidth, p.keyWidth());
 
-		// Insert spacers
-		var model = editor.getInlayModel();
-		for (var p : props) {
-			int spacerWidth = maxWidth - p.keyWidth();
-			if (spacerWidth > 0) { // skips longest
-				int placeAt = p.separatorOffset() + 1;
-				var inlay = model.addInlineElement(placeAt, true, new Spacer(spacerWidth));
-				if (inlay != null)
-					activeInlays.add(inlay);
-			}
-		}
-	}
+        // Insert spacers
+        var model = editor.getInlayModel();
+        for (var p : props) {
+            int spacerWidth = maxWidth - p.keyWidth();
+            if (spacerWidth > 0) { // skips longest
+                int placeAt = p.separatorOffset() + 1;
+                var inlay = model.addInlineElement(placeAt, true, new Spacer(spacerWidth));
+                if (inlay != null)
+                    activeInlays.add(inlay);
+            }
+        }
+    }
 
-	public void invalidateFontMetricsCache() {
-		Arrays.fill(fontMetricsCache, null);
-	}
+    public void invalidateFontMetricsCache() {
+        Arrays.fill(fontMetricsCache, null);
+    }
 
-	public FontMetrics getFontMetrics(int fontStyleBitmask) {
-		var fm = fontMetricsCache[fontStyleBitmask];
-		if (fm == null) {
-			var type = switch (fontStyleBitmask) {
-				case Font.BOLD -> EditorFontType.BOLD;
-				case Font.ITALIC -> EditorFontType.ITALIC;
-				case Font.BOLD | Font.ITALIC -> EditorFontType.BOLD_ITALIC;
-				default -> EditorFontType.PLAIN;
-			};
-			var font = editor.getColorsScheme().getFont(type);
-			fm = editor.getContentComponent().getFontMetrics(font);
-			fontMetricsCache[fontStyleBitmask] = fm;
-		}
-		return fm;
-	}
+    public FontMetrics getFontMetrics(int fontStyleBitmask) {
+        var fm = fontMetricsCache[fontStyleBitmask];
+        if (fm == null) {
+            var type = switch (fontStyleBitmask) {
+                case Font.BOLD -> EditorFontType.BOLD;
+                case Font.ITALIC -> EditorFontType.ITALIC;
+                case Font.BOLD | Font.ITALIC -> EditorFontType.BOLD_ITALIC;
+                default -> EditorFontType.PLAIN;
+            };
+            var font = editor.getColorsScheme().getFont(type);
+            fm = editor.getContentComponent().getFontMetrics(font);
+            fontMetricsCache[fontStyleBitmask] = fm;
+        }
+        return fm;
+    }
 }
