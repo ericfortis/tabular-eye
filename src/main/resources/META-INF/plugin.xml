@@ -24,6 +24,16 @@
         instance="com.ericfortis.tabulareye.DetectorSettingsConfigurable"
         displayName="Tabular Eye"/>
     <editorFactoryListener implementation="com.ericfortis.tabulareye.TabularEye"/>
+
+    <applicationService serviceImplementation="com.ericfortis.syntaxeye.SyntaxEyeSettings"/>
+    <applicationConfigurable
+        parentId="tools"
+        instance="com.ericfortis.syntaxeye.SyntaxEyeConfigurable"
+        displayName="Syntax Eye"/>
+    <editorFactoryListener implementation="com.ericfortis.syntaxeye.SyntaxEyeHighlighter"/>
+    <additionalTextAttributes scheme="Default" file="colorSchemes/SyntaxEyeDefault.xml"/>
+    <additionalTextAttributes scheme="Darcula" file="colorSchemes/SyntaxEyeDarcula.xml"/>
+    <colorSettingsPage implementation="com.ericfortis.syntaxeye.SyntaxEyeColorSettingsPage"/>
   </extensions>
 
   <extensions defaultExtensionNs="com.ericfortis.tabulareye">

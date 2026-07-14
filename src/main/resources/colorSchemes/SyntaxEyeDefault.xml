@@ -1,0 +1,9 @@
+<scheme name="Default">
+  <attributes>
+    <option name="SYNTAX_EYE_FAINT">
+      <value>
+        <option name="FOREGROUND" value="c0c0c0"/>
+      </value>
+    </option>
+  </attributes>
+</scheme>
