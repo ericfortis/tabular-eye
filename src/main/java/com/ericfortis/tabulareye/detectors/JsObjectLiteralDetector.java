@@ -16,6 +16,11 @@ public class JsObjectLiteralDetector extends AlignmentDetector {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "JS Object Literal";
+	}
+
+	@Override
 	@NotNull
 	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
 		List<AlignmentBlock> blocks = new ArrayList<>();

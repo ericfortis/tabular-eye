@@ -15,6 +15,11 @@ public class SqlDetector extends AlignmentDetector {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "SQL CREATE TABLE";
+	}
+
+	@Override
 	@NotNull
 	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
 		return findBlocks(file, doc, SqlTableDefinition.class, this::buildBlock);

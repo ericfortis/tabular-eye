@@ -14,6 +14,11 @@ public class JsonAlignmentDetector extends AlignmentDetector {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "JSON";
+	}
+
+	@Override
 	@NotNull
 	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
 		return findBlocks(file, doc, JsonObject.class, this::buildBlock);

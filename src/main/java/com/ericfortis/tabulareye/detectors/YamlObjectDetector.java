@@ -15,6 +15,11 @@ public class YamlObjectDetector extends AlignmentDetector {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "YAML Mapping";
+	}
+
+	@Override
 	@NotNull
 	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
 		return findBlocks(file, doc, YAMLMapping.class, this::buildBlock);

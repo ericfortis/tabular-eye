@@ -18,6 +18,11 @@ public class Js2DArrayDetector extends AlignmentDetector {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "JS 2D Array";
+	}
+
+	@Override
 	@NotNull
 	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
 		List<AlignmentBlock> blocks = new ArrayList<>();

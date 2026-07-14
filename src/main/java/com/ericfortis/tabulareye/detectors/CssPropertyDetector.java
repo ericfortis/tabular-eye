@@ -17,6 +17,11 @@ public class CssPropertyDetector extends AlignmentDetector {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "CSS Property";
+	}
+
+	@Override
 	@NotNull
 	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
 		List<AlignmentBlock> groups = new ArrayList<>();

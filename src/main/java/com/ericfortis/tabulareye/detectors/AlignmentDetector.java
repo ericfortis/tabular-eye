@@ -23,6 +23,12 @@ public abstract class AlignmentDetector {
 		this.extensions = extensions;
 	}
 
+	public abstract String getDisplayName();
+
+	public List<String> getExtensions() {
+		return extensions;
+	}
+
 	static final List<String> JS_EXT = List.of("js", "jsx", "ts", "tsx", "html");
 	static final List<String> TS_EXT = List.of("ts", "tsx");
 	static final List<String> PY_EXT = List.of("py");

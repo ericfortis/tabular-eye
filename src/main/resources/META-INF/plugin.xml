@@ -18,6 +18,11 @@
   </extensionPoints>
 
   <extensions defaultExtensionNs="com.intellij">
+    <applicationService serviceImplementation="com.ericfortis.tabulareye.DetectorSettings"/>
+    <applicationConfigurable
+        parentId="tools"
+        instance="com.ericfortis.tabulareye.DetectorSettingsConfigurable"
+        displayName="Tabular Eye"/>
     <editorFactoryListener implementation="com.ericfortis.tabulareye.TabularEye"/>
   </extensions>
 

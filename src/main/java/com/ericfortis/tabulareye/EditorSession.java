@@ -59,6 +59,8 @@ class EditorSession implements Disposable {
 				refresh(p, ON_CHANGE_DELAY);
 			}
 		}, this);
+
+		refresh(p);
 	}
 
 	@Override

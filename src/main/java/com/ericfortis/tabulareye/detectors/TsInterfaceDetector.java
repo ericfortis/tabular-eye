@@ -15,6 +15,11 @@ public class TsInterfaceDetector extends AlignmentDetector {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "TS Interface";
+	}
+
+	@Override
 	@NotNull
 	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
 		return findBlocks(file, doc, TypeScriptObjectTypeImpl.class, this::buildBlock);

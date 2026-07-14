@@ -14,6 +14,11 @@ public class PyKeywordArgsDetector extends AlignmentDetector {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "Python Keyword Args";
+	}
+
+	@Override
 	@NotNull
 	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
 		return findBlocks(file, doc, PyCallExpression.class, this::buildBlock);

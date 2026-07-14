@@ -18,6 +18,11 @@ public class JsVarsDetector extends AlignmentDetector {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "JS Variables";
+	}
+
+	@Override
 	@NotNull
 	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
 		var vStatements = PsiTreeUtil.collectElementsOfType(file, JSVarStatement.class);

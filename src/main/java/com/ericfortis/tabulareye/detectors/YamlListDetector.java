@@ -30,6 +30,11 @@ public class YamlListDetector extends AlignmentDetector {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "YAML Sequence";
+	}
+
+	@Override
 	@NotNull
 	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
 		List<AlignmentBlock> blocks = new ArrayList<>();

@@ -14,6 +14,11 @@ public class PyDictionaryLiteralDetector extends AlignmentDetector {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "Python Dictionary";
+	}
+
+	@Override
 	@NotNull
 	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
 		return findBlocks(file, doc, PyDictLiteralExpression.class, this::buildBlock);

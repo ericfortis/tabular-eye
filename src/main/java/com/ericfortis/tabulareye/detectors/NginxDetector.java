@@ -14,6 +14,11 @@ public class NginxDetector extends AlignmentDetector {
 	}
 
 	@Override
+	public String getDisplayName() {
+		return "Nginx Config";
+	}
+
+	@Override
 	public boolean isApplicable(@NotNull PsiFile file) {
 		var vFile = file.getVirtualFile();
 		return vFile != null && vFile.getName().endsWith("nginx.conf");
