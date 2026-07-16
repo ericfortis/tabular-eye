@@ -62,6 +62,9 @@ public class WhitespaceAlignmentDetector extends AlignmentDetector {
 		if (line.isBlank())
 			return null;
 
+		if (line.endsWith("\\"))
+			return null;
+
 		var matcher = WHITESPACE_RUN.matcher(line);
 		int matchStart = -1;
 		int matchEnd = -1;

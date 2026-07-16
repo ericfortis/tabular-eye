@@ -69,6 +69,20 @@ public class WhitespaceAlignmentDetectorTest extends BasePlatformTestCase {
 		assertEquals("ngx_log_t", block.get(2).key().strip());
 	}
 
+    public void testAlignmentBackslashesAreIgnored() {
+        var blocks = getBlocks("""
+                #define ngx_string(str)     { sizeof(str) - 1, (u_char *) str }
+                #define ngx_null_string     { 0, NULL }
+                #define ngx_str_set(str, text)                                               \\
+                    (str)->len = sizeof(text) - 1; (str)->data = (u_char *) text
+                """);
+        assertEquals(1, blocks.size());
+        var block = blocks.getFirst();
+        assertEquals(2, block.size());
+        assertEquals("#define ngx_string(str)", block.get(0).key().strip());
+        assertEquals("#define ngx_null_string", block.get(1).key().strip());
+    }
+
 	public void testEmptyLineSeparatesBlocks() {
 		var blocks = getBlocks("""
 			 #define A  1
