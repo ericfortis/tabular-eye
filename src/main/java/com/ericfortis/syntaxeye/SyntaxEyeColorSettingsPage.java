@@ -32,16 +32,15 @@ public class SyntaxEyeColorSettingsPage implements ColorSettingsPage {
     @Override
     public @NotNull String getDemoText() {
         return """
-                const value = 42;
-                // Faint words are dimmed
-                function hello() {
-                  return value;
-                }""";
+                const <faint>FOO_</faint>BAR = 0
+                const <faint>FOO_</faint>BAZ = 0
+                function <faint>FOO_</faint>FUNC () {}
+                """;
     }
 
     @Override
     public @Nullable Map<String, TextAttributesKey> getAdditionalHighlightingTagToDescriptorMap() {
-        return null;
+        return Map.of("faint", SyntaxEyeColors.FAINT_TEXT);
     }
 
     @Override

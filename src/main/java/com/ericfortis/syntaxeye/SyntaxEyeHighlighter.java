@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import static com.intellij.util.concurrency.AppExecutorUtil.*;
 
@@ -87,9 +88,9 @@ public class SyntaxEyeHighlighter implements EditorFactoryListener {
                 if (myEditor.isDisposed() || myProject.isDisposed())
                     return;
                 ReadAction.nonBlocking((java.util.concurrent.Callable<Void>) () -> {
-                    updateHighlights();
-                    return null;
-                })
+                            updateHighlights();
+                            return null;
+                        })
                         .expireWhen(() -> myEditor.isDisposed() || myProject.isDisposed())
                         .submit(getAppExecutorService());
             }, 300);
@@ -115,9 +116,7 @@ public class SyntaxEyeHighlighter implements EditorFactoryListener {
             for (var word : words) {
                 if (word.length() < 2)
                     continue;
-                var pattern = java.util.regex.Pattern.compile(
-                        java.util.regex.Pattern.quote(word)
-                );
+                var pattern = Pattern.compile(Pattern.quote(word));
                 var matcher = pattern.matcher(text);
                 while (matcher.find()) {
                     var h = myEditor.getMarkupModel().addRangeHighlighter(
