@@ -14,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Spacers {
@@ -45,10 +44,6 @@ public class Spacers {
     private boolean isRefreshing = false;
     private final Editor editor;
     private final List<Inlay<Spacer>> activeInlays = new ArrayList<>();
-
-    // This is mainly because we want to handle non-monospace fonts.
-    // i.e., we could later implement an optimized path for mono (I don't use mono, so…)
-    private final FontMetrics[] fontMetricsCache = new FontMetrics[Font.BOLD | Font.ITALIC + 1];
 
 
     public Spacers(Editor editor) {
@@ -89,16 +84,10 @@ public class Spacers {
         return allBlocks;
     }
 
-    // Handles proportional fonts.
-    // TODO create a fast path for monospace fonts. With a cache of a 1-char width.
-    // TODO on proportional fonts, consider that the left-side content might have mixed normal and bold weights
+    // Handles proportional fonts, and since bold is wider, always using it for measuring
+    // handles mixed plain and bold left sides.
     private void setKeyWidth(PropInfo prop) {
-        int fontStyleBitmask = editor
-                .getHighlighter()
-                .createIterator(prop.keyOffset())
-                .getTextAttributes()
-                .getFontType();
-        prop.setKeyWidth(getFontMetrics(fontStyleBitmask).stringWidth(prop.key()));
+        prop.setKeyWidth(getBoldFontMetrics().stringWidth(prop.key()));
     }
 
     private void render(AlignmentBlock block) {
@@ -121,23 +110,8 @@ public class Spacers {
         }
     }
 
-    public void invalidateFontMetricsCache() {
-        Arrays.fill(fontMetricsCache, null);
-    }
-
-    public FontMetrics getFontMetrics(int fontStyleBitmask) {
-        var fm = fontMetricsCache[fontStyleBitmask];
-        if (fm == null) {
-            var type = switch (fontStyleBitmask) {
-                case Font.BOLD -> EditorFontType.BOLD;
-                case Font.ITALIC -> EditorFontType.ITALIC;
-                case Font.BOLD | Font.ITALIC -> EditorFontType.BOLD_ITALIC;
-                default -> EditorFontType.PLAIN;
-            };
-            var font = editor.getColorsScheme().getFont(type);
-            fm = editor.getContentComponent().getFontMetrics(font);
-            fontMetricsCache[fontStyleBitmask] = fm;
-        }
-        return fm;
+    private FontMetrics getBoldFontMetrics() {
+        var font = editor.getColorsScheme().getFont(EditorFontType.BOLD);
+        return editor.getContentComponent().getFontMetrics(font);
     }
 }

@@ -48,7 +48,6 @@ class EditorSession implements Disposable {
 
 		// On font-size or color-scheme change
 		p.getMessageBus().connect(this).subscribe(EditorColorsManager.TOPIC, (EditorColorsListener) scheme -> {
-			spacers.invalidateFontMetricsCache();
 			refresh(p, ON_CHANGE_DELAY);
 		});
 
