@@ -42,7 +42,7 @@ class EditorSession implements Disposable {
             public void daemonFinished(@NotNull Collection<? extends FileEditor> fileEditors) {
                 for (var fe : fileEditors)
                     if (fe instanceof TextEditor te && te.getEditor().equals(editor)) {
-                        refresh(p, ON_CHANGE_DELAY);
+                        refresh(p);
                         break;
                     }
             }
