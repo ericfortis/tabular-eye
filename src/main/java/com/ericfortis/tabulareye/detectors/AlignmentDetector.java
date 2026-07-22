@@ -158,7 +158,6 @@ public abstract class AlignmentDetector {
 		private final String key;
 		private final int keyOffset;
 		private final int separatorOffset;
-		private int keyWidth;
 
 		public PropInfo(String key, int keyOffset, int separatorOffset) {
 			this.key = key;
@@ -176,14 +175,6 @@ public abstract class AlignmentDetector {
 
 		public int separatorOffset() {
 			return separatorOffset;
-		}
-
-		public int keyWidth() {
-			return keyWidth;
-		}
-
-		public void setKeyWidth(int width) {
-			this.keyWidth = width;
 		}
 	}
 }
