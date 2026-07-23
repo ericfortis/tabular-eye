@@ -36,20 +36,37 @@ public class WhitespaceAlignmentDetector extends AlignmentDetector {
         var current = new AlignmentBlock();
         var lineCount = doc.getLineCount();
         var text = doc.getText();
+        int blankLineCount = 0;
 
         for (int i = 0; i < lineCount; i++) {
             var start = doc.getLineStartOffset(i);
             var end = doc.getLineEndOffset(i);
             var line = text.substring(start, end);
 
+            if (line.isBlank()) {
+                if (current.size() > 0) {
+                    blankLineCount++;
+                    if (blankLineCount >= 2) {
+                        if (current.isValid())
+                            blocks.add(current);
+                        current = new AlignmentBlock();
+                        blankLineCount = 0;
+                    }
+                }
+                continue;
+            }
+
             var prop = describeLine(line, start);
             if (prop == null) {
                 if (current.isValid())
                     blocks.add(current);
                 current = new AlignmentBlock();
+                blankLineCount = 0;
                 continue;
             }
+
             current.add(prop);
+            blankLineCount = 0;
         }
 
         if (current.isValid())

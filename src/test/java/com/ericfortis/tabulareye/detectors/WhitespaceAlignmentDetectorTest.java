@@ -87,6 +87,7 @@ public class WhitespaceAlignmentDetectorTest extends BasePlatformTestCase {
 		var blocks = getBlocks("""
 			 #define A  1
 			 #define B  2
+			 
 
 			 #define C  3
 			 #define D  4
@@ -95,6 +96,18 @@ public class WhitespaceAlignmentDetectorTest extends BasePlatformTestCase {
 		assertEquals(2, blocks.get(0).size());
 		assertEquals(2, blocks.get(1).size());
 	}
+
+    public void testOneEmptyLineDoesNotSeparateBlocks() {
+        var blocks = getBlocks("""
+			 #define A  1
+			 #define B  2
+
+			 #define C  3
+			 #define D  4
+			 """);
+        assertEquals(1, blocks.size());
+        assertEquals(4, blocks.get(0).size());
+    }
 
 	public void testLineWithoutMultipleSpacesBreaksBlock() {
 		var blocks = getBlocks("""
