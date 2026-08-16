@@ -16,7 +16,7 @@ public class YamlObjectDetector extends AlignmentDetector {
 
 	@Override
 	public String getDisplayName() {
-		return "YAML Mapping";
+		return "YAML Objects";
 	}
 
 	@Override

@@ -47,10 +47,6 @@ public class DetectorSettings implements PersistentStateComponent<DetectorSettin
         myListeners.add(listener);
     }
 
-    public void removeListener(Runnable listener) {
-        myListeners.remove(listener);
-    }
-
     public void notifyListeners() {
         for (Runnable listener : myListeners)
             listener.run();
