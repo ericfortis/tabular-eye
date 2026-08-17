@@ -15,24 +15,21 @@ import java.util.List;
 // TODO ignore when using monospace fonts
 
 /**
- * For proportional fonts, pads the {@code -} list marker so it takes up the
- * same width as a space. Content following {@code - } then lines up with
- * content indented two spaces (e.g. a nested child prop of the list item).
+ * This detector is only needed on proportional fonts. Its goal is to add a spacer
+ * after list-marker hyphens, so the hyphen looks as wide as the space char. IOW,
+ * it assumes the space glyph is wider than the hyphen.
  * <p>
- * Each alignment row's key is its line prefix: the left whitespace plus the
- * {@code - } marker for list items, or just the left whitespace for their
- * direct child props. The spacer is inserted right before the content, so all
- * content starts end up at the same column.
- * <p>
- * Consider the example below, if the space glyph is much wider than the hyphen,
- * without this padding {@code foo} would sit further left than {@code prop0}:
- * <p>
- * steps:
- * - foo: 2
- * prop0:
- * baz: 1
- * - bar: 4
- * prop1: 5
+ * For example, without this padding, `bar` would be aligned further right than `foo`:
+ * <pre>
+ * - foo: 1
+ *   bar:
+ *     baz: 2
+ * </pre>
+ *
+ * The terminology for {@code PropInfo} uses `key`, which makes no sense on yaml
+ * lists, so think of `key` as the left-side (whatever goes before the spacer).
+ * The key is either: the indentation whitespace plus the hyphen marker, or just the
+ * indentation whitespace for their direct child props.
  */
 public class YamlListDetector extends AlignmentDetector {
   YamlListDetector() {
@@ -77,11 +74,16 @@ public class YamlListDetector extends AlignmentDetector {
     return blocks;
   }
 
-  /**
-   * Adds a row whose content starts at {@code contentStart}. The key is
-   * everything on the line before it (whitespace, plus {@code - } for list
-   * items), so the spacer gets inserted right before the content.
-   */
+  private static int findHyphenOffset(YAMLSequenceItem item) {
+    var child = item.getFirstChild();
+    while (child != null) {
+      if ("-".equals(child.getText()))
+        return child.getTextRange().getStartOffset();
+      child = child.getNextSibling();
+    }
+    return -1;
+  }
+
   private static void addProp(AlignmentBlock block, Document doc, CharSequence chars, int contentStart) {
     if (contentStart <= 0 || chars.charAt(contentStart - 1) != ' ')
       return;
@@ -91,15 +93,5 @@ public class YamlListDetector extends AlignmentDetector {
 
     var key = doc.getText(new TextRange(lineStart, contentStart));
     block.add(new PropInfo(key, lineStart, contentStart - 1));
-  }
-
-  private static int findHyphenOffset(YAMLSequenceItem item) {
-    var child = item.getFirstChild();
-    while (child != null) {
-      if ("-".equals(child.getText()))
-        return child.getTextRange().getStartOffset();
-      child = child.getNextSibling();
-    }
-    return -1;
   }
 }
