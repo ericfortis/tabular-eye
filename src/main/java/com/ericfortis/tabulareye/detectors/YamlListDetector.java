@@ -25,7 +25,7 @@ import java.util.List;
  *   bar:
  *     baz: 2
  * </pre>
- *
+ * <p>
  * The terminology for {@code PropInfo} uses `key`, which makes no sense on yaml
  * lists, so think of `key` as the left-side (whatever goes before the spacer).
  * The key is either: the indentation whitespace plus the hyphen marker, or just the

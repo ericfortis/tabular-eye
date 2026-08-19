@@ -12,45 +12,45 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CssPropertyDetector extends AlignmentDetector {
-	CssPropertyDetector() {
-		super(CSS_EXT);
-	}
+  CssPropertyDetector() {
+    super(CSS_EXT);
+  }
 
-	@Override
-	public String getDisplayName() {
-		return "CSS Property";
-	}
+  @Override
+  public String getDisplayName() {
+    return "CSS Property";
+  }
 
-	@Override
-	@NotNull
-	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
-		List<AlignmentBlock> groups = new ArrayList<>();
-		boolean isHtml = isHtmlFile(file);
+  @Override
+  @NotNull
+  public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
+    List<AlignmentBlock> groups = new ArrayList<>();
+    boolean isHtml = isHtmlFile(file);
 
-		for (var el : PsiTreeUtil.findChildrenOfType(file, CssBlock.class))
-			if (isMultiline(el, doc) && (!isHtml || isInStyleTag(el))) {
-				var block = new AlignmentBlock();
-				for (var child = el.getFirstChild(); child != null; child = child.getNextSibling())
-					if (child instanceof CssDeclaration decl) {
-						int colonOffset = findSeparatorOffset(decl, ":");
-						if (colonOffset > 0) {
-							int firstOffset = decl.getFirstChild() != null
-								 ? decl.getFirstChild().getTextRange().getStartOffset()
-								 : colonOffset;
-							block.add(new PropInfo(getPropertyName(decl), firstOffset, colonOffset));
-						}
-					}
-				if (block.isValid())
-					groups.add(block);
-			}
+    for (var el : PsiTreeUtil.findChildrenOfType(file, CssBlock.class))
+      if (isMultiline(el, doc) && (!isHtml || isInStyleTag(el))) {
+        var block = new AlignmentBlock();
+        for (var child = el.getFirstChild(); child != null; child = child.getNextSibling())
+          if (child instanceof CssDeclaration decl) {
+            int colonOffset = findSeparatorOffset(decl, ":");
+            if (colonOffset > 0) {
+              int firstOffset = decl.getFirstChild() != null
+                 ? decl.getFirstChild().getTextRange().getStartOffset()
+                 : colonOffset;
+              block.add(new PropInfo(getPropertyName(decl), firstOffset, colonOffset));
+            }
+          }
+        if (block.isValid())
+          groups.add(block);
+      }
 
-		return groups;
-	}
+    return groups;
+  }
 
-	private String getPropertyName(PsiElement decl) {
-		var firstChild = decl.getFirstChild();
-		return firstChild == null
-			 ? ""
-			 : firstChild.getText();
-	}
+  private String getPropertyName(PsiElement decl) {
+    var firstChild = decl.getFirstChild();
+    return firstChild == null
+       ? ""
+       : firstChild.getText();
+  }
 }

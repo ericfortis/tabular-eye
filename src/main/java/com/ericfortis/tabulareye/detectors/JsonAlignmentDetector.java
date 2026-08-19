@@ -9,34 +9,34 @@ import java.util.List;
 import java.util.Objects;
 
 public class JsonAlignmentDetector extends AlignmentDetector {
-	JsonAlignmentDetector() {
-		super(JSON_EXT);
-	}
+  JsonAlignmentDetector() {
+    super(JSON_EXT);
+  }
 
-	@Override
-	public String getDisplayName() {
-		return "JSON";
-	}
+  @Override
+  public String getDisplayName() {
+    return "JSON";
+  }
 
-	@Override
-	@NotNull
-	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
-		return findBlocks(file, doc, JsonObject.class, this::buildBlock);
-	}
+  @Override
+  @NotNull
+  public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
+    return findBlocks(file, doc, JsonObject.class, this::buildBlock);
+  }
 
-	private AlignmentBlock buildBlock(JsonObject obj) {
-		var block = new AlignmentBlock();
-		for (var prop : obj.getPropertyList()) {
-			int colonOffset = findSeparatorOffset(prop, ":");
-			if (colonOffset < 0)
-				continue;
+  private AlignmentBlock buildBlock(JsonObject obj) {
+    var block = new AlignmentBlock();
+    for (var prop : obj.getPropertyList()) {
+      int colonOffset = findSeparatorOffset(prop, ":");
+      if (colonOffset < 0)
+        continue;
 
-			var keyText = prop.getName();
-			if (!keyText.isEmpty()) {
-				int startOffset = Objects.requireNonNull(prop.getFirstChild()).getTextRange().getStartOffset();
-				block.add(new PropInfo(keyText, startOffset, colonOffset));
-			}
-		}
-		return block;
-	}
+      var keyText = prop.getName();
+      if (!keyText.isEmpty()) {
+        int startOffset = Objects.requireNonNull(prop.getFirstChild()).getTextRange().getStartOffset();
+        block.add(new PropInfo(keyText, startOffset, colonOffset));
+      }
+    }
+    return block;
+  }
 }

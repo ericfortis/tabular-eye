@@ -6,13 +6,13 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.markup.TextAttributes;
 
 public final class SyntaxEyeColors {
-    public static final TextAttributesKey FAINT_TEXT =
-            TextAttributesKey.createTextAttributesKey(
-                    "SYNTAX_EYE_FAINT",
-                    DefaultLanguageHighlighterColors.IDENTIFIER
-            );
+  public static final TextAttributesKey FAINT_TEXT =
+     TextAttributesKey.createTextAttributesKey(
+        "SYNTAX_EYE_FAINT",
+        DefaultLanguageHighlighterColors.IDENTIFIER
+     );
 
-    public static TextAttributes getFaintTextAttributes() {
-        return EditorColorsManager.getInstance().getGlobalScheme().getAttributes(FAINT_TEXT);
-    }
+  public static TextAttributes getFaintTextAttributes() {
+    return EditorColorsManager.getInstance().getGlobalScheme().getAttributes(FAINT_TEXT);
+  }
 }

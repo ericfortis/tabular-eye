@@ -21,80 +21,80 @@ import java.util.Map;
 
 public class TabularEye implements EditorFactoryListener {
 
-    // This way the bundled plugins we depend on could be optional
-    private static final ExtensionPointName<AlignmentDetector> EPN =
-            ExtensionPointName.create("com.ericfortis.tabulareye.alignmentDetector");
+  // This way the bundled plugins we depend on could be optional
+  private static final ExtensionPointName<AlignmentDetector> EPN =
+     ExtensionPointName.create("com.ericfortis.tabulareye.alignmentDetector");
 
-    private List<AlignmentDetector> allDetectors;
+  private List<AlignmentDetector> allDetectors;
 
-    private final Map<Editor, EditorSession> sessions = new HashMap<>();
+  private final Map<Editor, EditorSession> sessions = new HashMap<>();
 
-    public TabularEye() {
-        Runnable mySettingsListener = this::disposeAllSessions;
-        DetectorSettings.getInstance().addListener(mySettingsListener);
+  public TabularEye() {
+    Runnable mySettingsListener = this::disposeAllSessions;
+    DetectorSettings.getInstance().addListener(mySettingsListener);
+  }
+
+  private void disposeAllSessions() {
+    var snapshot = new HashMap<>(sessions);
+    sessions.clear();
+    for (var session : snapshot.values())
+      Disposer.dispose(session);
+
+    for (var editor : EditorFactory.getInstance().getAllEditors()) {
+      if (editor.getEditorKind() != EditorKind.MAIN_EDITOR)
+        continue;
+      var p = editor.getProject();
+      if (p != null && !p.isDisposed() && !editor.isDisposed())
+        ReadAction.nonBlocking(() -> openSession(editor, p))
+           .expireWhen(() -> p.isDisposed() || editor.isDisposed())
+           .submit(AppExecutorUtil.getAppExecutorService());
     }
-
-	private void disposeAllSessions() {
-		var snapshot = new HashMap<>(sessions);
-		sessions.clear();
-		for (var session : snapshot.values())
-			Disposer.dispose(session);
-
-		for (var editor : EditorFactory.getInstance().getAllEditors()) {
-			if (editor.getEditorKind() != EditorKind.MAIN_EDITOR)
-				continue;
-			var p = editor.getProject();
-			if (p != null && !p.isDisposed() && !editor.isDisposed())
-				ReadAction.nonBlocking(() -> openSession(editor, p))
-						.expireWhen(() -> p.isDisposed() || editor.isDisposed())
-						.submit(AppExecutorUtil.getAppExecutorService());
-		}
-	}
+  }
 
 
-    @Override
-    public void editorCreated(@NotNull EditorFactoryEvent event) {
-        var editor = event.getEditor();
-        if (editor.getEditorKind() != EditorKind.MAIN_EDITOR)
-            return;
+  @Override
+  public void editorCreated(@NotNull EditorFactoryEvent event) {
+    var editor = event.getEditor();
+    if (editor.getEditorKind() != EditorKind.MAIN_EDITOR)
+      return;
 
-        var p = editor.getProject();
-        if (p != null)
-            PsiDocumentManager.getInstance(p).performForCommittedDocument(editor.getDocument(), () ->
-                    ReadAction.nonBlocking(() -> openSession(editor, p))
-                            .expireWhen(() -> p.isDisposed() || editor.isDisposed())
-                            .submit(AppExecutorUtil.getAppExecutorService()));
-    }
+    var p = editor.getProject();
+    if (p != null)
+      PsiDocumentManager.getInstance(p).performForCommittedDocument(editor.getDocument(), () ->
+         ReadAction.nonBlocking(() -> openSession(editor, p))
+            .expireWhen(() -> p.isDisposed() || editor.isDisposed())
+            .submit(AppExecutorUtil.getAppExecutorService()));
+  }
 
-    @Override
-    public void editorReleased(@NotNull EditorFactoryEvent event) {
-        var session = sessions.remove(event.getEditor());
-        if (session != null)
-            Disposer.dispose(session);
-    }
+  @Override
+  public void editorReleased(@NotNull EditorFactoryEvent event) {
+    var session = sessions.remove(event.getEditor());
+    if (session != null)
+      Disposer.dispose(session);
+  }
 
 
-    private EditorSession openSession(Editor editor, Project project) {
-        if (sessions.get(editor) != null)
-            return null;
+  private EditorSession openSession(Editor editor, Project project) {
+    if (sessions.get(editor) != null)
+      return null;
 
-        var psiFile = PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
-        if (psiFile == null)
-            return null;
+    var psiFile = PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
+    if (psiFile == null)
+      return null;
 
-        if (allDetectors == null)
-            allDetectors = EPN.getExtensionList();
+    if (allDetectors == null)
+      allDetectors = EPN.getExtensionList();
 
-        DetectorSettings settings = DetectorSettings.getInstance();
-        var detectors = allDetectors.stream()
-                .filter(f -> settings.isDetectorEnabled(f.getClass().getName()))
-                .filter(f -> f.isApplicable(psiFile))
-                .toList();
-        if (detectors.isEmpty())
-            return null;
+    DetectorSettings settings = DetectorSettings.getInstance();
+    var detectors = allDetectors.stream()
+       .filter(f -> settings.isDetectorEnabled(f.getClass().getName()))
+       .filter(f -> f.isApplicable(psiFile))
+       .toList();
+    if (detectors.isEmpty())
+      return null;
 
-        var session = new EditorSession(editor, project, detectors);
-        sessions.put(editor, session);
-        return session;
-    }
+    var session = new EditorSession(editor, project, detectors);
+    sessions.put(editor, session);
+    return session;
+  }
 }

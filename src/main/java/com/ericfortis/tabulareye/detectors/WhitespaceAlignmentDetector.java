@@ -18,94 +18,94 @@ import java.util.regex.Pattern;
  * columns; only the first run of whitespace is considered.
  */
 public class WhitespaceAlignmentDetector extends AlignmentDetector {
-    private static final Pattern WHITESPACE_RUN = Pattern.compile("[ \t]{2,}");
+  private static final Pattern WHITESPACE_RUN = Pattern.compile("[ \t]{2,}");
 
-    WhitespaceAlignmentDetector() {
-        super(C_LIKE_EXT);
-    }
+  WhitespaceAlignmentDetector() {
+    super(C_LIKE_EXT);
+  }
 
-    @Override
-    public String getDisplayName() {
-        return "Whitespace (for proportional fonts in already tabularized code)";
-    }
+  @Override
+  public String getDisplayName() {
+    return "Whitespace (for proportional fonts in already tabularized code)";
+  }
 
-    @Override
-    @NotNull
-    public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
-        List<AlignmentBlock> blocks = new ArrayList<>();
-        var current = new AlignmentBlock();
-        var lineCount = doc.getLineCount();
-        var text = doc.getText();
-        int blankLineCount = 0;
+  @Override
+  @NotNull
+  public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
+    List<AlignmentBlock> blocks = new ArrayList<>();
+    var current = new AlignmentBlock();
+    var lineCount = doc.getLineCount();
+    var text = doc.getText();
+    int blankLineCount = 0;
 
-        for (int i = 0; i < lineCount; i++) {
-            var start = doc.getLineStartOffset(i);
-            var end = doc.getLineEndOffset(i);
-            var line = text.substring(start, end);
+    for (int i = 0; i < lineCount; i++) {
+      var start = doc.getLineStartOffset(i);
+      var end = doc.getLineEndOffset(i);
+      var line = text.substring(start, end);
 
-            if (line.isBlank()) {
-                if (current.size() > 0) {
-                    blankLineCount++;
-                    if (blankLineCount >= 2) {
-                        if (current.isValid())
-                            blocks.add(current);
-                        current = new AlignmentBlock();
-                        blankLineCount = 0;
-                    }
-                }
-                continue;
-            }
-
-            var prop = describeLine(line, start);
-            if (prop == null) {
-                if (current.isValid())
-                    blocks.add(current);
-                current = new AlignmentBlock();
-                blankLineCount = 0;
-                continue;
-            }
-
-            current.add(prop);
+      if (line.isBlank()) {
+        if (current.size() > 0) {
+          blankLineCount++;
+          if (blankLineCount >= 2) {
+            if (current.isValid())
+              blocks.add(current);
+            current = new AlignmentBlock();
             blankLineCount = 0;
+          }
         }
+        continue;
+      }
 
+      var prop = describeLine(line, start);
+      if (prop == null) {
         if (current.isValid())
-            blocks.add(current);
+          blocks.add(current);
+        current = new AlignmentBlock();
+        blankLineCount = 0;
+        continue;
+      }
 
-        return blocks;
+      current.add(prop);
+      blankLineCount = 0;
     }
 
-    private PropInfo describeLine(String line, int lineStart) {
-        if (line.isBlank())
-            return null;
+    if (current.isValid())
+      blocks.add(current);
 
-        if (line.endsWith("\\"))
-            return null;
+    return blocks;
+  }
 
-        var matcher = WHITESPACE_RUN.matcher(line);
-        int matchStart = -1;
-        int matchEnd = -1;
-        while (matcher.find())
-            if (!line.substring(0, matcher.start()).isBlank()) {
-                matchStart = matcher.start();
-                matchEnd = matcher.end();
-                break;
-            }
+  private PropInfo describeLine(String line, int lineStart) {
+    if (line.isBlank())
+      return null;
 
-        if (matchStart == -1)
-            return null;
+    if (line.endsWith("\\"))
+      return null;
 
-        var keyRaw = line.substring(0, matchStart);
-        var trimmedKey = keyRaw.stripLeading();
-        if (trimmedKey.isEmpty())
-            return null;
+    var matcher = WHITESPACE_RUN.matcher(line);
+    int matchStart = -1;
+    int matchEnd = -1;
+    while (matcher.find())
+      if (!line.substring(0, matcher.start()).isBlank()) {
+        matchStart = matcher.start();
+        matchEnd = matcher.end();
+        break;
+      }
 
-        // The key includes the trailing whitespace run, so the spacer
-        // gets inserted right after it ends, not in the middle of it.
-        var key = line.substring(0, matchEnd).stripLeading();
-        var leadingWsLen = keyRaw.length() - trimmedKey.length();
-        var keyOffset = lineStart + leadingWsLen;
-        var separatorOffset = lineStart + matchEnd - 1;
-        return new PropInfo(key, keyOffset, separatorOffset);
-    }
+    if (matchStart == -1)
+      return null;
+
+    var keyRaw = line.substring(0, matchStart);
+    var trimmedKey = keyRaw.stripLeading();
+    if (trimmedKey.isEmpty())
+      return null;
+
+    // The key includes the trailing whitespace run, so the spacer
+    // gets inserted right after it ends, not in the middle of it.
+    var key = line.substring(0, matchEnd).stripLeading();
+    var leadingWsLen = keyRaw.length() - trimmedKey.length();
+    var keyOffset = lineStart + leadingWsLen;
+    var separatorOffset = lineStart + matchEnd - 1;
+    return new PropInfo(key, keyOffset, separatorOffset);
+  }
 }

@@ -15,46 +15,46 @@ import java.util.Map;
 
 public class SyntaxEyeColorSettingsPage implements ColorSettingsPage {
 
-    private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
-            new AttributesDescriptor("Faint text", SyntaxEyeColors.FAINT_TEXT),
-    };
+  private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
+     new AttributesDescriptor("Faint text", SyntaxEyeColors.FAINT_TEXT),
+  };
 
-    @Override
-    public @Nullable Icon getIcon() {
-        return null;
-    }
+  @Override
+  public @Nullable Icon getIcon() {
+    return null;
+  }
 
-    @Override
-    public @NotNull SyntaxHighlighter getHighlighter() {
-        return new PlainSyntaxHighlighter();
-    }
+  @Override
+  public @NotNull SyntaxHighlighter getHighlighter() {
+    return new PlainSyntaxHighlighter();
+  }
 
-    @Override
-    public @NotNull String getDemoText() {
-        return """
-                const <faint>FOO_</faint>BAR = 0
-                const <faint>FOO_</faint>BAZ = 0
-                function <faint>FOO_</faint>FUNC () {}
-                """;
-    }
+  @Override
+  public @NotNull String getDemoText() {
+    return """
+       const <faint>FOO_</faint>BAR = 0
+       const <faint>FOO_</faint>BAZ = 0
+       function <faint>FOO_</faint>FUNC () {}
+       """;
+  }
 
-    @Override
-    public @Nullable Map<String, TextAttributesKey> getAdditionalHighlightingTagToDescriptorMap() {
-        return Map.of("faint", SyntaxEyeColors.FAINT_TEXT);
-    }
+  @Override
+  public @Nullable Map<String, TextAttributesKey> getAdditionalHighlightingTagToDescriptorMap() {
+    return Map.of("faint", SyntaxEyeColors.FAINT_TEXT);
+  }
 
-    @Override
-    public @NotNull String getDisplayName() {
-        return "Syntax Eye";
-    }
+  @Override
+  public @NotNull String getDisplayName() {
+    return "Syntax Eye";
+  }
 
-    @Override
-    public @NotNull AttributesDescriptor @NonNull [] getAttributeDescriptors() {
-        return DESCRIPTORS;
-    }
+  @Override
+  public @NotNull AttributesDescriptor @NonNull [] getAttributeDescriptors() {
+    return DESCRIPTORS;
+  }
 
-    @Override
-    public @NotNull ColorDescriptor @NonNull [] getColorDescriptors() {
-        return ColorDescriptor.EMPTY_ARRAY;
-    }
+  @Override
+  public @NotNull ColorDescriptor @NonNull [] getColorDescriptors() {
+    return ColorDescriptor.EMPTY_ARRAY;
+  }
 }

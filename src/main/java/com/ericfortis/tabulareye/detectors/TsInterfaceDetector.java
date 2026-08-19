@@ -10,30 +10,30 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class TsInterfaceDetector extends AlignmentDetector {
-	TsInterfaceDetector() {
-		super(TS_EXT);
-	}
+  TsInterfaceDetector() {
+    super(TS_EXT);
+  }
 
-	@Override
-	public String getDisplayName() {
-		return "TS Interface";
-	}
+  @Override
+  public String getDisplayName() {
+    return "TS Interface";
+  }
 
-	@Override
-	@NotNull
-	public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
-		return findBlocks(file, doc, TypeScriptObjectTypeImpl.class, this::buildBlock);
-	}
+  @Override
+  @NotNull
+  public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
+    return findBlocks(file, doc, TypeScriptObjectTypeImpl.class, this::buildBlock);
+  }
 
-	private AlignmentBlock buildBlock(TypeScriptObjectType tsInterface) {
-		var block = new AlignmentBlock();
-		for (var prop : tsInterface.getTypeMembers()) {
-			if (prop instanceof TypeScriptPropertySignature) {
-				var kv = describeKV((TypeScriptPropertySignature) prop, TypeScriptPropertySignature::getIdentifyingElement);
-				if (kv != null)
-					block.add(kv);
-			}
-		}
-		return block;
-	}
+  private AlignmentBlock buildBlock(TypeScriptObjectType tsInterface) {
+    var block = new AlignmentBlock();
+    for (var prop : tsInterface.getTypeMembers()) {
+      if (prop instanceof TypeScriptPropertySignature) {
+        var kv = describeKV((TypeScriptPropertySignature) prop, TypeScriptPropertySignature::getIdentifyingElement);
+        if (kv != null)
+          block.add(kv);
+      }
+    }
+    return block;
+  }
 }

@@ -11,68 +11,68 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.*;
+import static java.util.Arrays.stream;
 
 @State(name = "SyntaxEyeSettings", storages = @Storage("SyntaxEye.xml"))
 public class SyntaxEyeSettings implements PersistentStateComponent<SyntaxEyeSettings.State> {
 
-    public static class State {
-        public boolean enabled = false;
-        public String wordsText = "";
-    }
+  public static class State {
+    public boolean enabled = false;
+    public String wordsText = "";
+  }
 
-    private State myState = new State();
-    private final List<Runnable> myListeners = new ArrayList<>();
+  private State myState = new State();
+  private final List<Runnable> myListeners = new ArrayList<>();
 
-    public static SyntaxEyeSettings getInstance() {
-        return ApplicationManager.getApplication().getService(SyntaxEyeSettings.class);
-    }
+  public static SyntaxEyeSettings getInstance() {
+    return ApplicationManager.getApplication().getService(SyntaxEyeSettings.class);
+  }
 
-    @Override
-    public @NotNull State getState() {
-        return myState;
-    }
+  @Override
+  public @NotNull State getState() {
+    return myState;
+  }
 
-    @Override
-    public void loadState(@NotNull State state) {
-        myState = state;
-    }
+  @Override
+  public void loadState(@NotNull State state) {
+    myState = state;
+  }
 
-    public boolean isEnabled() {
-        return myState.enabled;
-    }
+  public boolean isEnabled() {
+    return myState.enabled;
+  }
 
-    public void setEnabled(boolean enabled) {
-        myState.enabled = enabled;
-    }
+  public void setEnabled(boolean enabled) {
+    myState.enabled = enabled;
+  }
 
-    public String getWordsText() {
-        return myState.wordsText;
-    }
+  public String getWordsText() {
+    return myState.wordsText;
+  }
 
-    public void setWordsText(String text) {
-        myState.wordsText = text;
-    }
+  public void setWordsText(String text) {
+    myState.wordsText = text;
+  }
 
-    public Set<String> getWordSet() {
-        return parseWords(myState.wordsText);
-    }
+  public Set<String> getWordSet() {
+    return parseWords(myState.wordsText);
+  }
 
-    public static Set<String> parseWords(String text) {
-        if (text == null || text.isBlank())
-            return Set.of();
-        return stream(text.split("\\R"))
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .collect(Collectors.toUnmodifiableSet());
-    }
+  public static Set<String> parseWords(String text) {
+    if (text == null || text.isBlank())
+      return Set.of();
+    return stream(text.split("\\R"))
+       .map(String::trim)
+       .filter(s -> !s.isEmpty())
+       .collect(Collectors.toUnmodifiableSet());
+  }
 
-    public void addListener(Runnable listener) {
-        myListeners.add(listener);
-    }
+  public void addListener(Runnable listener) {
+    myListeners.add(listener);
+  }
 
-    public void notifyListeners() {
-        for (Runnable listener : myListeners)
-            listener.run();
-    }
+  public void notifyListeners() {
+    for (Runnable listener : myListeners)
+      listener.run();
+  }
 }

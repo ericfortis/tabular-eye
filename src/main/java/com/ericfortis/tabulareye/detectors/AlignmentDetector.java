@@ -8,173 +8,173 @@ import com.intellij.psi.xml.XmlTag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Function;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Visitor for finding the column spacing needed for tabularizing.
  */
 public abstract class AlignmentDetector {
-	final List<String> extensions;
+  final List<String> extensions;
 
-	AlignmentDetector(List<String> extensions) {
-		this.extensions = extensions;
-	}
+  AlignmentDetector(List<String> extensions) {
+    this.extensions = extensions;
+  }
 
-	public abstract String getDisplayName();
+  public abstract String getDisplayName();
 
-	public List<String> getExtensions() {
-		return extensions;
-	}
+  public List<String> getExtensions() {
+    return extensions;
+  }
 
-	static final List<String> JS_EXT = List.of("js", "jsx", "ts", "tsx", "html");
-	static final List<String> TS_EXT = List.of("ts", "tsx");
-	static final List<String> PY_EXT = List.of("py");
-	static final List<String> CSS_EXT = List.of("css", "html");
-	static final List<String> YML_EXT = List.of("yml", "yaml");
-	static final List<String> JSON_EXT = List.of("json");
-	static final List<String> SQL_EXT = List.of("sql");
-	static final List<String> C_LIKE_EXT = List.of("c", "h", "cpp", "cc", "cxx", "hpp", "hh", "hxx", "go");
+  static final List<String> JS_EXT = List.of("js", "jsx", "ts", "tsx", "html");
+  static final List<String> TS_EXT = List.of("ts", "tsx");
+  static final List<String> PY_EXT = List.of("py");
+  static final List<String> CSS_EXT = List.of("css", "html");
+  static final List<String> YML_EXT = List.of("yml", "yaml");
+  static final List<String> JSON_EXT = List.of("json");
+  static final List<String> SQL_EXT = List.of("sql");
+  static final List<String> C_LIKE_EXT = List.of("c", "h", "cpp", "cc", "cxx", "hpp", "hh", "hxx", "go");
 
-	public boolean isApplicable(@NotNull PsiFile file) {
-		var vFile = file.getVirtualFile();
-		if (vFile == null) return false;
-		var ext = vFile.getExtension();
-		return ext != null && extensions.contains(ext);
-	}
+  public boolean isApplicable(@NotNull PsiFile file) {
+    var vFile = file.getVirtualFile();
+    if (vFile == null) return false;
+    var ext = vFile.getExtension();
+    return ext != null && extensions.contains(ext);
+  }
 
-	static boolean isMultiline(PsiElement elem, Document doc) {
-		int startLine = doc.getLineNumber(elem.getTextRange().getStartOffset());
-		int endLine = doc.getLineNumber(elem.getTextRange().getEndOffset());
-		return endLine > startLine;
-	}
+  static boolean isMultiline(PsiElement elem, Document doc) {
+    int startLine = doc.getLineNumber(elem.getTextRange().getStartOffset());
+    int endLine = doc.getLineNumber(elem.getTextRange().getEndOffset());
+    return endLine > startLine;
+  }
 
-	static int findSeparatorOffset(PsiElement elem, String separator) {
-		var child = elem.getFirstChild();
-		while (child != null) {
-			if (separator.equals(child.getText()))
-				return child.getTextRange().getStartOffset();
-			child = child.getNextSibling();
-		}
-		return -1;
-	}
+  static int findSeparatorOffset(PsiElement elem, String separator) {
+    var child = elem.getFirstChild();
+    while (child != null) {
+      if (separator.equals(child.getText()))
+        return child.getTextRange().getStartOffset();
+      child = child.getNextSibling();
+    }
+    return -1;
+  }
 
-	static boolean isInHtmlTag(PsiElement elem, String tagName) {
-		var tag = PsiTreeUtil.getParentOfType(elem, XmlTag.class);
-		return tag != null && tagName.equalsIgnoreCase(tag.getName());
-	}
+  static boolean isInHtmlTag(PsiElement elem, String tagName) {
+    var tag = PsiTreeUtil.getParentOfType(elem, XmlTag.class);
+    return tag != null && tagName.equalsIgnoreCase(tag.getName());
+  }
 
-	static boolean isInStyleTag(PsiElement elem) {
-		return isInHtmlTag(elem, "style");
-	}
+  static boolean isInStyleTag(PsiElement elem) {
+    return isInHtmlTag(elem, "style");
+  }
 
-	static boolean isInScriptTag(PsiElement elem) {
-		return isInHtmlTag(elem, "script");
-	}
+  static boolean isInScriptTag(PsiElement elem) {
+    return isInHtmlTag(elem, "script");
+  }
 
-	protected static boolean isHtmlFile(PsiFile file) {
-		var vFile = file.getVirtualFile();
-		return vFile != null && "html".equals(vFile.getExtension());
-	}
+  protected static boolean isHtmlFile(PsiFile file) {
+    var vFile = file.getVirtualFile();
+    return vFile != null && "html".equals(vFile.getExtension());
+  }
 
-	@Nullable
-	static <T> PropInfo describeKV(T prop, Function<T, PsiElement> keyExtractor) {
-		var keyElem = keyExtractor.apply(prop);
-		if (keyElem == null)
-			return null;
+  @Nullable
+  static <T> PropInfo describeKV(T prop, Function<T, PsiElement> keyExtractor) {
+    var keyElem = keyExtractor.apply(prop);
+    if (keyElem == null)
+      return null;
 
-		PsiElement colonElem = null;
-		var child = keyElem.getNextSibling();
-		while (child != null) {
-			if (":".equals(child.getText())) {
-				colonElem = child;
-				break;
-			}
-			child = child.getNextSibling();
-		}
+    PsiElement colonElem = null;
+    var child = keyElem.getNextSibling();
+    while (child != null) {
+      if (":".equals(child.getText())) {
+        colonElem = child;
+        break;
+      }
+      child = child.getNextSibling();
+    }
 
-		if (colonElem == null)
-			return null;
+    if (colonElem == null)
+      return null;
 
-		return new PropInfo(
-				keyElem.getText(),
-				keyElem.getTextRange().getStartOffset(),
-				colonElem.getTextRange().getStartOffset()
-		);
-	}
-
-
-	@NotNull
-	public abstract List<AlignmentBlock> findBlocks(
-		 @NotNull PsiFile file,
-		 @NotNull Document document
-	);
-
-	@NotNull
-	protected <T extends PsiElement> List<AlignmentBlock> findBlocks(
-		 @NotNull PsiFile file,
-		 @NotNull Document doc,
-		 @NotNull Class<T> clazz,
-		 @NotNull Function<T, AlignmentBlock> builder
-	) {
-		List<AlignmentBlock> blocks = new ArrayList<>();
-		for (var el : PsiTreeUtil.collectElementsOfType(file, clazz))
-			if (isMultiline(el, doc)) {
-				var block = builder.apply(el);
-				if (block != null && block.isValid())
-					blocks.add(block);
-			}
-		return blocks;
-	}
+    return new PropInfo(
+       keyElem.getText(),
+       keyElem.getTextRange().getStartOffset(),
+       colonElem.getTextRange().getStartOffset()
+    );
+  }
 
 
-	public static class AlignmentBlock {
-		private final List<PropInfo> props = new ArrayList<>();
+  @NotNull
+  public abstract List<AlignmentBlock> findBlocks(
+     @NotNull PsiFile file,
+     @NotNull Document document
+  );
 
-		public PropInfo get(int index) {
-			return props.get(index);
-		}
+  @NotNull
+  protected <T extends PsiElement> List<AlignmentBlock> findBlocks(
+     @NotNull PsiFile file,
+     @NotNull Document doc,
+     @NotNull Class<T> clazz,
+     @NotNull Function<T, AlignmentBlock> builder
+  ) {
+    List<AlignmentBlock> blocks = new ArrayList<>();
+    for (var el : PsiTreeUtil.collectElementsOfType(file, clazz))
+      if (isMultiline(el, doc)) {
+        var block = builder.apply(el);
+        if (block != null && block.isValid())
+          blocks.add(block);
+      }
+    return blocks;
+  }
 
-		public int size() {
-			return props.size();
-		}
 
-		public void add(PropInfo p) {
-			props.add(p);
-		}
+  public static class AlignmentBlock {
+    private final List<PropInfo> props = new ArrayList<>();
 
-		public boolean isValid() {
-			return props.size() > 1;
-		}
+    public PropInfo get(int index) {
+      return props.get(index);
+    }
 
-		public List<PropInfo> props() {
-			return Collections.unmodifiableList(props);
-		}
-	}
+    public int size() {
+      return props.size();
+    }
 
-	public static class PropInfo {
-		private final String key;
-		private final int keyOffset;
-		private final int separatorOffset;
+    public void add(PropInfo p) {
+      props.add(p);
+    }
 
-		public PropInfo(String key, int keyOffset, int separatorOffset) {
-			this.key = key;
-			this.keyOffset = keyOffset;
-			this.separatorOffset = separatorOffset;
-		}
+    public boolean isValid() {
+      return props.size() > 1;
+    }
 
-		public String key() {
-			return key;
-		}
+    public List<PropInfo> props() {
+      return Collections.unmodifiableList(props);
+    }
+  }
 
-		public int keyOffset() {
-			return keyOffset;
-		}
+  public static class PropInfo {
+    private final String key;
+    private final int keyOffset;
+    private final int separatorOffset;
 
-		public int separatorOffset() {
-			return separatorOffset;
-		}
-	}
+    public PropInfo(String key, int keyOffset, int separatorOffset) {
+      this.key = key;
+      this.keyOffset = keyOffset;
+      this.separatorOffset = separatorOffset;
+    }
+
+    public String key() {
+      return key;
+    }
+
+    public int keyOffset() {
+      return keyOffset;
+    }
+
+    public int separatorOffset() {
+      return separatorOffset;
+    }
+  }
 }

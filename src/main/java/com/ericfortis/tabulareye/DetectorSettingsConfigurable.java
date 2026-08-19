@@ -14,76 +14,76 @@ import java.util.stream.Collectors;
 
 public class DetectorSettingsConfigurable implements Configurable {
 
-    private static final ExtensionPointName<AlignmentDetector> EPN =
-            ExtensionPointName.create("com.ericfortis.tabulareye.alignmentDetector");
+  private static final ExtensionPointName<AlignmentDetector> EPN =
+     ExtensionPointName.create("com.ericfortis.tabulareye.alignmentDetector");
 
-    private final List<DetectorCheckbox> myCheckboxes = new ArrayList<>();
+  private final List<DetectorCheckbox> myCheckboxes = new ArrayList<>();
 
-    @Override
-    public String getDisplayName() {
-        return "Tabular Eye";
+  @Override
+  public String getDisplayName() {
+    return "Tabular Eye";
+  }
+
+  @Override
+  public @Nullable JComponent createComponent() {
+    var myPanel = new JPanel();
+    myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.Y_AXIS));
+
+    var detectors = EPN.getExtensionList().stream()
+       .sorted(Comparator.comparing(AlignmentDetector::getDisplayName))
+       .toList();
+
+    var settings = DetectorSettings.getInstance();
+
+    myCheckboxes.clear();
+    for (var detector : detectors) {
+      var className = detector.getClass().getName();
+      var label = buildLabel(detector);
+      var checkbox = new JCheckBox(label);
+      checkbox.setSelected(settings.isDetectorEnabled(className));
+      myCheckboxes.add(new DetectorCheckbox(className, checkbox));
+      myPanel.add(checkbox);
     }
 
-    @Override
-    public @Nullable JComponent createComponent() {
-        var myPanel = new JPanel();
-        myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.Y_AXIS));
+    myPanel.add(Box.createVerticalGlue());
 
-        var detectors = EPN.getExtensionList().stream()
-                .sorted(Comparator.comparing(AlignmentDetector::getDisplayName))
-                .toList();
+    var wrapper = new JPanel(new BorderLayout());
+    wrapper.add(myPanel, BorderLayout.NORTH);
+    return wrapper;
+  }
 
-        var settings = DetectorSettings.getInstance();
+  @Override
+  public boolean isModified() {
+    var settings = DetectorSettings.getInstance();
+    for (var dc : myCheckboxes)
+      if (settings.isDetectorEnabled(dc.className) != dc.checkbox.isSelected())
+        return true;
+    return false;
+  }
 
-        myCheckboxes.clear();
-        for (var detector : detectors) {
-            var className = detector.getClass().getName();
-            var label = buildLabel(detector);
-            var checkbox = new JCheckBox(label);
-            checkbox.setSelected(settings.isDetectorEnabled(className));
-            myCheckboxes.add(new DetectorCheckbox(className, checkbox));
-            myPanel.add(checkbox);
-        }
+  @Override
+  public void apply() {
+    var settings = DetectorSettings.getInstance();
+    for (var dc : myCheckboxes)
+      settings.setDetectorEnabled(dc.className, dc.checkbox.isSelected());
+    settings.notifyListeners();
+  }
 
-        myPanel.add(Box.createVerticalGlue());
+  @Override
+  public void reset() {
+    var settings = DetectorSettings.getInstance();
+    for (var dc : myCheckboxes)
+      dc.checkbox.setSelected(settings.isDetectorEnabled(dc.className));
+  }
 
-        var wrapper = new JPanel(new BorderLayout());
-        wrapper.add(myPanel, BorderLayout.NORTH);
-        return wrapper;
-    }
+  private static String buildLabel(AlignmentDetector detector) {
+    var exts = detector.getExtensions();
+    if (exts.isEmpty())
+      return detector.getDisplayName();
+    var extList = exts.stream().collect(Collectors.joining(", "));
+    return detector.getDisplayName() + " (" + extList + ")";
+  }
 
-    @Override
-    public boolean isModified() {
-        var settings = DetectorSettings.getInstance();
-        for (var dc : myCheckboxes)
-            if (settings.isDetectorEnabled(dc.className) != dc.checkbox.isSelected())
-                return true;
-        return false;
-    }
-
-    @Override
-    public void apply() {
-        var settings = DetectorSettings.getInstance();
-        for (var dc : myCheckboxes)
-            settings.setDetectorEnabled(dc.className, dc.checkbox.isSelected());
-        settings.notifyListeners();
-    }
-
-    @Override
-    public void reset() {
-        var settings = DetectorSettings.getInstance();
-        for (var dc : myCheckboxes)
-            dc.checkbox.setSelected(settings.isDetectorEnabled(dc.className));
-    }
-
-    private static String buildLabel(AlignmentDetector detector) {
-        var exts = detector.getExtensions();
-        if (exts.isEmpty())
-            return detector.getDisplayName();
-        var extList = exts.stream().collect(Collectors.joining(", "));
-        return detector.getDisplayName() + " (" + extList + ")";
-    }
-
-    private record DetectorCheckbox(String className, JCheckBox checkbox) {
-    }
+  private record DetectorCheckbox(String className, JCheckBox checkbox) {
+  }
 }
