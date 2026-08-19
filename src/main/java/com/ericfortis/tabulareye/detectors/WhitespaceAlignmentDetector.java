@@ -16,6 +16,18 @@ import java.util.regex.Pattern;
  * <p>
  * Note: this ignores that a line could already have multiple aligned
  * columns; only the first run of whitespace is considered.
+ * <p>
+ * The caveat is that in Camelana, a font with a very wide whitespace glyph,
+ * these columns look to apart from each other. Here are some TODO ideas
+ * for working around that:
+ *   1) Creating a ligature that substitutes two spaces by one. The problem
+ *     is that makes indentation too small, and AFAIK ligatures can not be
+ *     made conditional on a start-of-line. On the other hand, in projects
+ *     with TABs, the IDE could be configured to twice the amount you like.
+ *   2) Another idea, is folding these inner whitespace runs. I tried that
+ *     and looks nice, but folds get in the way when editing. Also, it interferes
+ *     with normal fold usage, e.g. if you want to expand them all.
+ *   3) … (waiting for inspiration)
  */
 public class WhitespaceAlignmentDetector extends AlignmentDetector {
   private static final Pattern WHITESPACE_RUN = Pattern.compile("[ \t]{2,}");
