@@ -98,4 +98,32 @@ public class JsObjectLiteralDetectorTest extends BasePlatformTestCase {
     assertEquals("foo", b.get(0).key());
     assertEquals("baz", b.get(1).key());
   }
+
+  public void testComputedPropInNestedObjectDoesNotLeakToOuterBlock() {
+    var blocks = getBlocks("""
+       const FOO = 2
+       const mixed = {
+       	TopLevel1: {
+       		barbaz0: 'barbaz',
+       		[FOO]: 'foo',
+       		barbaz1: 'barbaz'
+       	},
+       	TopLevel2MuchLongerNames: {
+       		barbaz: 'barbaz'
+       	}
+       }
+       """);
+    assertEquals(2, blocks.size());
+
+    var outer = blocks.get(0);
+    assertEquals(2, outer.size());
+    assertEquals("TopLevel1", outer.get(0).key());
+    assertEquals("TopLevel2MuchLongerNames", outer.get(1).key());
+
+    var inner = blocks.get(1);
+    assertEquals(3, inner.size());
+    assertEquals("barbaz0", inner.get(0).key());
+    assertEquals("[FOO]", inner.get(1).key());
+    assertEquals("barbaz1", inner.get(2).key());
+  }
 }
