@@ -39,10 +39,10 @@ public class JsObjectLiteralDetector extends AlignmentDetector {
     for (var prop : obj.getProperties())
       if (prop != null && !prop.isShorthanded()) {
         var kv = describeKV(prop, p -> {
-          for (var child = p.getFirstChild(); child != null; child = child.getNextSibling())
-            if (child instanceof ES6ComputedName computed)
-              return computed;
-          return p.getIdentifyingElement();
+          var k = p.getIdentifyingElement();
+          return k != null
+             ? k
+             : PsiTreeUtil.findChildOfType(p, ES6ComputedName.class);
         });
         if (kv != null)
           block.add(kv);
