@@ -9,9 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO Proportional Fonts. When at the left of the spacer (ie. import {foo}…) there are 
-//  mixed bold and normal font-weights the alignment is not perfect (it's close enough to be good for now)
-
 public class JsImportDetector extends AlignmentDetector {
   JsImportDetector() {
     super(JS_EXT);

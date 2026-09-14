@@ -70,6 +70,22 @@ public class Js2DArrayDetectorTest extends BasePlatformTestCase {
     assertTrue(blocks.isEmpty());
   }
 
+  public void testIgnoresInnerArraySharingLineWithPreviousRow() {
+    var blocks = getBlocks("""
+       const data = [
+        ['Bob', 0],
+        ['Tim', 1], ['TomShouldBeIgnoredBecauseItIsSharingLine', 2]
+       ];
+       """);
+    assertEquals(1, blocks.size());
+
+    var block = blocks.getFirst();
+    assertEquals(2, block.size());
+
+    assertEquals("'Bob'", block.get(0).key());
+    assertEquals("'Tim'", block.get(1).key());
+  }
+
   public void testIgnores1DArray() {
     var blocks = getBlocks("""
        const data = [

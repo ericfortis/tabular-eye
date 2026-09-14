@@ -29,7 +29,7 @@ public class Js2DArrayDetector extends AlignmentDetector {
     boolean isHtml = isHtmlFile(file);
     for (var el : PsiTreeUtil.collectElementsOfType(file, JSArrayLiteralExpression.class))
       if (isMultiline(el, doc) && (!isHtml || isInScriptTag(el)) && is2dArray(el)) {
-        var g = buildBlock(el);
+        var g = buildBlock(el, doc);
         if (g.isValid())
           blocks.add(g);
       }
@@ -44,12 +44,17 @@ public class Js2DArrayDetector extends AlignmentDetector {
     return false;
   }
 
-  private static AlignmentBlock buildBlock(JSArrayLiteralExpression arr) {
+  private static AlignmentBlock buildBlock(JSArrayLiteralExpression arr, Document doc) {
     var block = new AlignmentBlock();
+    int prevLine = -1;
     for (var el : arr.getExpressions())
       if (el instanceof JSArrayLiteralExpression inner) {
         var innerElements = inner.getExpressions();
         if (innerElements.length >= 2) {
+          int line = doc.getLineNumber(inner.getTextRange().getStartOffset());
+          if (line == prevLine)
+            continue;
+          prevLine = line;
           var first = innerElements[0];
           int commaOffset = findSeparatorOffset(inner, ",");
           if (commaOffset > 0)

@@ -24,6 +24,8 @@ Renders certain code blocks in two columns without adding whitespace and support
 Syntax Eye:
 There's another settings panel, which lets you add a configurable
 syntax highlight style (Faint Text) to a list of a words you can specify.
+For example, in the nginx code base, there are a lot of `NGX_` prefixes,
+so I make them faint so I can scan the code faster.
 <!-- Plugin description end -->
 
 ## Demo
@@ -36,15 +38,10 @@ syntax highlight style (Faint Text) to a list of a words you can specify.
 
 
 ## Credits
+The idea for this plugin came from these projects:
 - https://nick-gravgaard.com/elastic-tabstops/
-- JetBrains MPS decision tables
+- [JetBrains MPS decision tables](https://youtu.be/XolJx4GfMmg?t=68)
 - JetBrains CSV tabular rendering
-
-Plugin based on the [IntelliJ Platform Plugin Template][template].
-
-[template]: https://github.com/JetBrains/intellij-platform-plugin-template
-
-[docs:plugin-description]: https://plugins.jetbrains.com/docs/intellij/plugin-user-experience.html#plugin-description-and-presentation
 
 ---
 
@@ -59,3 +56,11 @@ Plugin based on the [IntelliJ Platform Plugin Template][template].
 ```
 The resulting ZIP:
 `build/distributions/tabular-eye-1.0-SNAPSHOT.zip`
+
+--- 
+Plugin based on the [IntelliJ Platform Plugin Template][template].
+
+[template]: https://github.com/JetBrains/intellij-platform-plugin-template
+
+[docs:plugin-description]: https://plugins.jetbrains.com/docs/intellij/plugin-user-experience.html#plugin-description-and-presentation
+
