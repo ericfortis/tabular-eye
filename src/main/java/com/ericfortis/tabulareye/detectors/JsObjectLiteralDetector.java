@@ -27,15 +27,16 @@ public class JsObjectLiteralDetector extends AlignmentDetector {
     boolean isHtml = isHtmlFile(file);
     for (var el : PsiTreeUtil.collectElementsOfType(file, JSObjectLiteralExpression.class))
       if (isMultiline(el, doc) && (!isHtml || isInScriptTag(el))) {
-        var block = buildBlock(el);
+        var block = buildBlock(el, doc);
         if (block.isValid())
           blocks.add(block);
       }
     return blocks;
   }
 
-  private AlignmentBlock buildBlock(JSObjectLiteralExpression obj) {
+  private AlignmentBlock buildBlock(JSObjectLiteralExpression obj, Document doc) {
     var block = new AlignmentBlock();
+    int prevLine = -1;
     for (var prop : obj.getProperties())
       if (prop != null && !prop.isShorthanded()) {
         var kv = describeKV(prop, p -> {
@@ -44,8 +45,13 @@ public class JsObjectLiteralDetector extends AlignmentDetector {
              ? k
              : PsiTreeUtil.findChildOfType(p, ES6ComputedName.class);
         });
-        if (kv != null)
+        if (kv != null) {
+          int line = doc.getLineNumber(prop.getTextRange().getStartOffset());
+          if (line == prevLine)
+            continue;
+          prevLine = line;
           block.add(kv);
+        }
       }
     return block;
   }

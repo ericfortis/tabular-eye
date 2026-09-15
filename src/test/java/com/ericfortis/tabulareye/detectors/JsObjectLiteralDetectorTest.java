@@ -77,6 +77,24 @@ public class JsObjectLiteralDetectorTest extends BasePlatformTestCase {
     assertEquals("qux", b.get(1).key());
   }
 
+  public void testIgnoresSubsequentKVsSharingLine() {
+    var blocks = getBlocks("""
+       const obj = {
+        a: 1,
+        b: 2, c: 3, d: 4,
+        e: 5
+       };
+       """);
+    assertEquals(1, blocks.size());
+
+    var b = blocks.getFirst();
+    assertEquals(3, b.size());
+
+    assertEquals("a", b.get(0).key());
+    assertEquals("b", b.get(1).key());
+    assertEquals("e", b.get(2).key());
+  }
+
   public void testIgnoresInlineObjects() {
     var blocks = getBlocks("""
        const first = { foo: "bar", baz: 123 };
