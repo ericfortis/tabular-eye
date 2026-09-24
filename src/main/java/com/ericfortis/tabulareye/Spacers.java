@@ -80,15 +80,25 @@ public class Spacers {
   private void render(AlignmentBlock block) {
     var props = block.props();
 
+    var doc = editor.getDocument();
+    int maxValidOffset = doc.getTextLength() - 1;
+
     int maxSepX = 0;
     int[] sepXs = new int[props.size()];
+    boolean[] valid = new boolean[props.size()];
     for (int i = 0; i < props.size(); i++) {
-      sepXs[i] = editor.offsetToXY(props.get(i).separatorOffset()).x;
+      int sepOffset = props.get(i).separatorOffset();
+      if (sepOffset < 0 || sepOffset > maxValidOffset)
+        continue;
+      valid[i] = true;
+      sepXs[i] = editor.offsetToXY(sepOffset).x;
       maxSepX = Math.max(maxSepX, sepXs[i]);
     }
 
     var model = editor.getInlayModel();
     for (int i = 0; i < props.size(); i++) {
+      if (!valid[i])
+        continue;
       int spacerWidth = maxSepX - sepXs[i];
       if (spacerWidth > 0) {
         var inlay = model.addInlineElement(props.get(i).separatorOffset() + 1, true, new Spacer(spacerWidth));

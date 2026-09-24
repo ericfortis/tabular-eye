@@ -46,8 +46,16 @@ public abstract class AlignmentDetector {
   }
 
   static boolean isMultiline(PsiElement elem, Document doc) {
-    int startLine = doc.getLineNumber(elem.getTextRange().getStartOffset());
-    int endLine = doc.getLineNumber(elem.getTextRange().getEndOffset());
+    var range = elem.getTextRange();
+    int textLength = doc.getTextLength();
+    if (range == null || textLength == 0)
+      return false;
+    int start = range.getStartOffset();
+    int end = range.getEndOffset();
+    if (start < 0 || start >= textLength || end < start || end > textLength)
+      return false;
+    int startLine = doc.getLineNumber(start);
+    int endLine = doc.getLineNumber(Math.min(end, textLength - 1));
     return endLine > startLine;
   }
 
