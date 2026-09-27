@@ -29,7 +29,7 @@ public abstract class AlignmentDetector {
     return extensions;
   }
 
-  static final List<String> JS_EXT = List.of("js", "jsx", "ts", "tsx", "html");
+  static final List<String> JS_EXT = List.of("js", "jsx", "ts", "tsx", "html", "mjs", "cjs");
   static final List<String> TS_EXT = List.of("ts", "tsx");
   static final List<String> PY_EXT = List.of("py");
   static final List<String> CSS_EXT = List.of("css", "html");
