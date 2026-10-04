@@ -19,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import static com.intellij.util.concurrency.AppExecutorUtil.getAppExecutorService;
 
@@ -105,18 +104,15 @@ public class SyntaxEyeHighlighter implements EditorFactoryListener {
       if (!settings.isEnabled())
         return;
 
-      var words = settings.getWordSet();
-      if (words.isEmpty())
+      var patterns = settings.getWordPatterns();
+      if (patterns.isEmpty())
         return;
 
       var text = myEditor.getDocument().getText();
       var highlighters = new ArrayList<RangeHighlighter>();
       var attrs = SyntaxEyeColors.getFaintTextAttributes();
 
-      for (var word : words) {
-        if (word.length() < 2)
-          continue;
-        var pattern = Pattern.compile(Pattern.quote(word));
+      for (var pattern : patterns) {
         var matcher = pattern.matcher(text);
         while (matcher.find()) {
           var h = myEditor.getMarkupModel().addRangeHighlighter(

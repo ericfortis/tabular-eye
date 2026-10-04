@@ -8,7 +8,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
@@ -21,8 +23,12 @@ public class SyntaxEyeSettings implements PersistentStateComponent<SyntaxEyeSett
     public String wordsText = "";
   }
 
+  private record Parsed(String source, Set<String> words, List<Pattern> patterns) {
+  }
+
   private State myState = new State();
   private final List<Runnable> myListeners = new ArrayList<>();
+  private volatile Parsed myParsed = new Parsed("", Set.of(), List.of());
 
   public static SyntaxEyeSettings getInstance() {
     return ApplicationManager.getApplication().getService(SyntaxEyeSettings.class);
@@ -55,7 +61,27 @@ public class SyntaxEyeSettings implements PersistentStateComponent<SyntaxEyeSett
   }
 
   public Set<String> getWordSet() {
-    return parseWords(myState.wordsText);
+    return parsed().words();
+  }
+
+  public List<Pattern> getWordPatterns() {
+    return parsed().patterns();
+  }
+
+  private Parsed parsed() {
+    var cached = myParsed;
+    if (!Objects.equals(cached.source(), myState.wordsText)) {
+      cached = new Parsed(myState.wordsText, parseWords(myState.wordsText), parsePatterns(myState.wordsText));
+      myParsed = cached;
+    }
+    return cached;
+  }
+
+  private static List<Pattern> parsePatterns(String text) {
+    return parseWords(text).stream()
+       .filter(word -> word.length() >= 2)
+       .map(word -> Pattern.compile(Pattern.quote(word)))
+       .toList();
   }
 
   public static Set<String> parseWords(String text) {
