@@ -39,9 +39,12 @@ public class Spacers {
         */
   }
 
+  private record Wanted(int offset, int widthPx) {
+  }
+
   private boolean isRefreshing = false;
   private final Editor editor;
-  private final List<Inlay<Spacer>> activeInlays = new ArrayList<>();
+  private final List<Inlay<Spacer>> slotInlays = new ArrayList<>();
 
 
   public Spacers(Editor editor) {
@@ -53,19 +56,20 @@ public class Spacers {
       return;
     isRefreshing = true;
     try {
-      clearAll();
+      var wanted = new ArrayList<Wanted>();
       for (var b : blocks)
-        render(b);
+        measure(b, wanted);
+      reconcile(wanted);
     } finally {
       isRefreshing = false;
     }
   }
 
   public void clearAll() {
-    for (var inlay : activeInlays)
-      if (inlay.isValid())
+    for (var inlay : slotInlays)
+      if (inlay != null && inlay.isValid())
         Disposer.dispose(inlay);
-    activeInlays.clear();
+    slotInlays.clear();
   }
 
   public List<AlignmentBlock> calcAlignments(List<AlignmentDetector> detectors, PsiFile psiFile, Document doc) {
@@ -79,7 +83,7 @@ public class Spacers {
     return allBlocks;
   }
 
-  private void render(AlignmentBlock block) {
+  private void measure(AlignmentBlock block, List<Wanted> out) {
     var props = block.props();
 
     var doc = editor.getDocument();
@@ -97,16 +101,37 @@ public class Spacers {
       maxSepX = Math.max(maxSepX, sepXs[i]);
     }
 
+    for (int i = 0; i < props.size(); i++)
+      if (valid[i] && maxSepX > sepXs[i])
+        out.add(new Wanted(props.get(i).separatorOffset() + 1, maxSepX - sepXs[i]));
+  }
+
+  private void reconcile(List<Wanted> wanted) {
     var model = editor.getInlayModel();
-    for (int i = 0; i < props.size(); i++) {
-      if (!valid[i])
+
+    for (int i = 0; i < wanted.size(); i++) {
+      var want = wanted.get(i);
+      Inlay<Spacer> inlay = i < slotInlays.size() ? slotInlays.get(i) : null;
+
+      if (inlay != null && inlay.isValid()
+         && inlay.getOffset() == want.offset()
+         && inlay.getWidthInPixels() == want.widthPx())
         continue;
-      int spacerWidth = maxSepX - sepXs[i];
-      if (spacerWidth > 0) {
-        var inlay = model.addInlineElement(props.get(i).separatorOffset() + 1, true, new Spacer(spacerWidth));
-        if (inlay != null)
-          activeInlays.add(inlay);
-      }
+
+      if (inlay != null && inlay.isValid())
+        Disposer.dispose(inlay);
+
+      var added = model.addInlineElement(want.offset(), true, new Spacer(want.widthPx()));
+      if (i < slotInlays.size())
+        slotInlays.set(i, added);
+      else
+        slotInlays.add(added);
+    }
+
+    while (slotInlays.size() > wanted.size()) {
+      var stale = slotInlays.remove(slotInlays.size() - 1);
+      if (stale != null && stale.isValid())
+        Disposer.dispose(stale);
     }
   }
 }
