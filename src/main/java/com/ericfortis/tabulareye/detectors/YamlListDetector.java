@@ -1,6 +1,7 @@
 package com.ericfortis.tabulareye.detectors;
 
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -48,6 +49,7 @@ public class YamlListDetector extends AlignmentDetector {
     var chars = doc.getCharsSequence();
 
     for (var el : PsiTreeUtil.collectElementsOfType(file, YAMLSequence.class)) {
+      ProgressManager.checkCanceled();
       var block = new AlignmentBlock();
       for (var item : el.getItems()) {
         int hyphenStart = findHyphenOffset(item);

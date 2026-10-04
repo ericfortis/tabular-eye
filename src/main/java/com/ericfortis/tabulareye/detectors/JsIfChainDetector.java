@@ -1,6 +1,7 @@
 package com.ericfortis.tabulareye.detectors;
 
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
@@ -32,6 +33,7 @@ public class JsIfChainDetector extends AlignmentDetector {
     List<LineInfo> chain = new ArrayList<>();
 
     for (int i = 0; i < lineCount; i++) {
+      ProgressManager.checkCanceled();
       int lineStart = doc.getLineStartOffset(i);
       int lineEnd = doc.getLineEndOffset(i);
       String text = doc.getText(new TextRange(lineStart, lineEnd));

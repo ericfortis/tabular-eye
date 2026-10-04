@@ -1,6 +1,7 @@
 package com.ericfortis.tabulareye.detectors;
 
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,11 +31,14 @@ public class NginxDetector extends AlignmentDetector {
     List<AlignmentBlock> blocks = new ArrayList<>();
     var current = new AlignmentBlock();
     var lineCount = doc.getLineCount();
+    var text = doc.getText();
 
     for (int i = 0; i < lineCount; i++) {
+      ProgressManager.checkCanceled();
       var start = doc.getLineStartOffset(i);
       var end = doc.getLineEndOffset(i);
-      var line = doc.getText().substring(start, end).trim();
+      var originalLine = text.substring(start, end);
+      var line = originalLine.trim();
 
       if (line.isEmpty() || line.startsWith("#") || line.contains("{") || line.contains("}")) {
         if (current.isValid())
@@ -46,8 +50,7 @@ public class NginxDetector extends AlignmentDetector {
       var spaceIdx = line.indexOf(' ');
       if (spaceIdx > 0) { // Find the actual offset of the first space in the original (non-trimmed) line
         var key = line.substring(0, spaceIdx);
-        var originalLine = doc.getText().substring(start, end);
-        var leadingSpaces = originalLine.indexOf(originalLine.trim());
+        var leadingSpaces = originalLine.indexOf(line);
         var keyOffset = start + leadingSpaces;
         var separatorOffset = keyOffset + spaceIdx;
         current.add(new PropInfo(key, keyOffset, separatorOffset));

@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorCustomElementRenderer;
 import com.intellij.openapi.editor.Inlay;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
@@ -70,6 +71,7 @@ public class Spacers {
   public List<AlignmentBlock> calcAlignments(List<AlignmentDetector> detectors, PsiFile psiFile, Document doc) {
     List<AlignmentBlock> allBlocks = new ArrayList<>();
     for (var d : detectors) {
+      ProgressManager.checkCanceled();
       var blocks = d.findBlocks(psiFile, doc);
       if (!blocks.isEmpty())
         allBlocks.addAll(blocks);

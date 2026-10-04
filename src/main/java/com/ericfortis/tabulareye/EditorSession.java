@@ -78,9 +78,12 @@ class EditorSession implements Disposable {
     alarm.addRequest(() -> doRefresh(p), delay);
   }
 
-  private void doRefresh(Project p) {
+private void doRefresh(Project p) {
     if (p.isDisposed() || editor.isDisposed())
       return;
+
+    var doc = editor.getDocument();
+    var stamp = doc.getModificationStamp();
 
     ApplicationManager.getApplication().invokeLater(() -> {
       if (p.isDisposed() || editor.isDisposed())
@@ -88,13 +91,14 @@ class EditorSession implements Disposable {
       PsiDocumentManager.getInstance(p).performWhenAllCommitted(() -> ReadAction.nonBlocking(() -> {
            if (p.isDisposed() || editor.isDisposed())
              return null;
-           var doc = editor.getDocument();
            var psiFile = PsiDocumentManager.getInstance(p).getPsiFile(doc);
            if (psiFile == null)
              return null;
            return spacers.calcAlignments(detectors, psiFile, doc);
          })
          .expireWhen(editor::isDisposed)
+         .expireWhen(() -> doc.getModificationStamp() != stamp)
+         .coalesceBy(this)
          .finishOnUiThread(ModalityState.defaultModalityState(), allBlocks -> {
            if (allBlocks != null && !editor.isDisposed())
              spacers.refresh(allBlocks);

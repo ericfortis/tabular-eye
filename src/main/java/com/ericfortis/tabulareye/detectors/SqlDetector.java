@@ -1,6 +1,7 @@
 package com.ericfortis.tabulareye.detectors;
 
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.sql.psi.SqlColumnDefinition;
@@ -28,6 +29,7 @@ public class SqlDetector extends AlignmentDetector {
   private AlignmentBlock buildBlock(SqlTableDefinition tableDef) {
     var block = new AlignmentBlock();
     for (var col : PsiTreeUtil.findChildrenOfType(tableDef, SqlColumnDefinition.class)) {
+      ProgressManager.checkCanceled();
       var nameIdent = col.getNameIdentifier();
       if (nameIdent == null)
         continue;

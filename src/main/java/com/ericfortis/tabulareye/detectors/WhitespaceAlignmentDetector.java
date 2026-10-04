@@ -1,6 +1,7 @@
 package com.ericfortis.tabulareye.detectors;
 
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 
@@ -51,6 +52,7 @@ public class WhitespaceAlignmentDetector extends AlignmentDetector {
     int blankLineCount = 0;
 
     for (int i = 0; i < lineCount; i++) {
+      ProgressManager.checkCanceled();
       var start = doc.getLineStartOffset(i);
       var end = doc.getLineEndOffset(i);
       var line = text.substring(start, end);

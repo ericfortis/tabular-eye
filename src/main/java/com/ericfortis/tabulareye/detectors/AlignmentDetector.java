@@ -1,6 +1,7 @@
 package com.ericfortis.tabulareye.detectors;
 
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -128,12 +129,14 @@ public abstract class AlignmentDetector {
      @NotNull Function<T, AlignmentBlock> builder
   ) {
     List<AlignmentBlock> blocks = new ArrayList<>();
-    for (var el : PsiTreeUtil.collectElementsOfType(file, clazz))
+    for (var el : PsiTreeUtil.collectElementsOfType(file, clazz)) {
+      ProgressManager.checkCanceled();
       if (isMultiline(el, doc)) {
         var block = builder.apply(el);
         if (block != null && block.isValid())
           blocks.add(block);
       }
+    }
     return blocks;
   }
 

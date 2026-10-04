@@ -1,6 +1,7 @@
 package com.ericfortis.tabulareye.detectors;
 
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.python.psi.PyClass;
@@ -23,9 +24,11 @@ public class PyDataClassFieldDetector extends AlignmentDetector {
   @NotNull
   public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
     List<AlignmentBlock> blocks = new ArrayList<>();
-    for (var pyClass : PsiTreeUtil.collectElementsOfType(file, PyClass.class))
+    for (var pyClass : PsiTreeUtil.collectElementsOfType(file, PyClass.class)) {
+      ProgressManager.checkCanceled();
       if (isDataClass(pyClass) && isMultiline(pyClass.getStatementList(), doc))
         blocks.add(buildBlock(pyClass));
+    }
     return blocks;
   }
 

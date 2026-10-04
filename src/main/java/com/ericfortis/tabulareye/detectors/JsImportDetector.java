@@ -2,6 +2,7 @@ package com.ericfortis.tabulareye.detectors;
 
 import com.intellij.lang.ecmascript6.psi.ES6ImportDeclaration;
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
@@ -34,6 +35,7 @@ public class JsImportDetector extends AlignmentDetector {
     int prevEndLine = -2;
 
     for (var imp : imports) {
+      ProgressManager.checkCanceled();
       if (isHtml && !isInScriptTag(imp))
         continue;
       if (isMultiline(imp, doc))

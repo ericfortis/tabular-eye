@@ -4,6 +4,7 @@ import com.intellij.lang.javascript.psi.JSLoopStatement;
 import com.intellij.lang.javascript.psi.JSVarStatement;
 import com.intellij.lang.javascript.psi.JSVariable;
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
@@ -39,6 +40,7 @@ public class JsVarsDetector extends AlignmentDetector {
   private static List<JSVarStatement> findCandidates(Collection<JSVarStatement> statements, Document doc, boolean isHtml) {
     List<JSVarStatement> candidates = new ArrayList<>();
     for (var stmt : statements) {
+      ProgressManager.checkCanceled();
       if (isHtml && !isInScriptTag(stmt))
         continue;
       if (isMultiline(stmt, doc))

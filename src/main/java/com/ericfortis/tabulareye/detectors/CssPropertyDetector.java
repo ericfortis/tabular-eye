@@ -1,6 +1,7 @@
 package com.ericfortis.tabulareye.detectors;
 
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.css.CssBlock;
@@ -27,7 +28,8 @@ public class CssPropertyDetector extends AlignmentDetector {
     List<AlignmentBlock> groups = new ArrayList<>();
     boolean isHtml = isHtmlFile(file);
 
-    for (var el : PsiTreeUtil.findChildrenOfType(file, CssBlock.class))
+    for (var el : PsiTreeUtil.findChildrenOfType(file, CssBlock.class)) {
+      ProgressManager.checkCanceled();
       if (isMultiline(el, doc) && (!isHtml || isInStyleTag(el))) {
         var block = new AlignmentBlock();
         for (var child = el.getFirstChild(); child != null; child = child.getNextSibling())
@@ -43,6 +45,7 @@ public class CssPropertyDetector extends AlignmentDetector {
         if (block.isValid())
           groups.add(block);
       }
+    }
 
     return groups;
   }

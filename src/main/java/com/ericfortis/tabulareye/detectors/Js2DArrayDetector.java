@@ -2,6 +2,7 @@ package com.ericfortis.tabulareye.detectors;
 
 import com.intellij.lang.javascript.psi.JSArrayLiteralExpression;
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
@@ -27,12 +28,14 @@ public class Js2DArrayDetector extends AlignmentDetector {
   public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
     List<AlignmentBlock> blocks = new ArrayList<>();
     boolean isHtml = isHtmlFile(file);
-    for (var el : PsiTreeUtil.collectElementsOfType(file, JSArrayLiteralExpression.class))
+    for (var el : PsiTreeUtil.collectElementsOfType(file, JSArrayLiteralExpression.class)) {
+      ProgressManager.checkCanceled();
       if (isMultiline(el, doc) && (!isHtml || isInScriptTag(el)) && is2dArray(el)) {
         var g = buildBlock(el, doc);
         if (g.isValid())
           blocks.add(g);
       }
+    }
     return blocks;
   }
 
