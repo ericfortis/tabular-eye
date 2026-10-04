@@ -1,5 +1,6 @@
 package com.ericfortis.syntaxeye;
 
+import com.intellij.ide.lightEdit.LightEdit;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.editor.Editor;
@@ -48,7 +49,7 @@ public class SyntaxEyeHighlighter implements EditorFactoryListener {
     if (editor.getEditorKind() != EditorKind.MAIN_EDITOR)
       return;
     var p = editor.getProject();
-    if (p == null || p.isDisposed())
+    if (p == null || p.isDisposed() || LightEdit.owns(p))
       return;
     sessions.put(editor, new EditorHighlightSession(editor, p));
   }

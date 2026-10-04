@@ -1,6 +1,7 @@
 package com.ericfortis.tabulareye;
 
 import com.ericfortis.tabulareye.detectors.AlignmentDetector;
+import com.intellij.ide.lightEdit.LightEdit;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
@@ -44,7 +45,7 @@ public class TabularEye implements EditorFactoryListener {
       if (editor.getEditorKind() != EditorKind.MAIN_EDITOR)
         continue;
       var p = editor.getProject();
-      if (p != null && !p.isDisposed() && !editor.isDisposed())
+      if (p != null && !p.isDisposed() && !editor.isDisposed() && !LightEdit.owns(p))
         ReadAction.nonBlocking(() -> openSession(editor, p))
            .expireWhen(() -> p.isDisposed() || editor.isDisposed())
            .submit(AppExecutorUtil.getAppExecutorService());
@@ -59,7 +60,7 @@ public class TabularEye implements EditorFactoryListener {
       return;
 
     var p = editor.getProject();
-    if (p != null)
+    if (p != null && !LightEdit.owns(p))
       PsiDocumentManager.getInstance(p).performForCommittedDocument(editor.getDocument(), () ->
          ReadAction.nonBlocking(() -> openSession(editor, p))
             .expireWhen(() -> p.isDisposed() || editor.isDisposed())
