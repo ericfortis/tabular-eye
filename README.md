@@ -20,12 +20,6 @@ Renders certain code blocks in two columns without adding whitespace and support
 - SQL tables
 - C and Go (for non-monospace fonts on already whitespace tabularized code)
 
-
-Syntax Eye:
-There's another settings panel, which lets you add a configurable
-syntax highlight style (Faint Text) to a list of a words you can specify.
-For example, in the nginx code base, there are a lot of `NGX_` prefixes,
-so I make them faint so I can scan the code faster.
 <!-- Plugin description end -->
 
 ## Demo
