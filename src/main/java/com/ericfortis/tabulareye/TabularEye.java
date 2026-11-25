@@ -31,8 +31,7 @@ public class TabularEye implements EditorFactoryListener {
   private final Map<Editor, EditorSession> sessions = new HashMap<>();
 
   public TabularEye() {
-    Runnable mySettingsListener = this::disposeAllSessions;
-    DetectorSettings.getInstance().addListener(mySettingsListener);
+    DetectorSettings.getInstance().addListener(this::disposeAllSessions);
   }
 
   private void disposeAllSessions() {
@@ -86,7 +85,7 @@ public class TabularEye implements EditorFactoryListener {
     if (allDetectors == null)
       allDetectors = EPN.getExtensionList();
 
-    DetectorSettings settings = DetectorSettings.getInstance();
+    var settings = DetectorSettings.getInstance();
     var detectors = allDetectors.stream()
        .filter(f -> settings.isDetectorEnabled(f.getClass().getName()))
        .filter(f -> f.isApplicable(psiFile))

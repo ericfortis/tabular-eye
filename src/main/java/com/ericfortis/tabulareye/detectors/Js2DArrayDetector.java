@@ -27,7 +27,7 @@ public class Js2DArrayDetector extends AlignmentDetector {
   @NotNull
   public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
     List<AlignmentBlock> blocks = new ArrayList<>();
-    boolean isHtml = isHtmlFile(file);
+    var isHtml = isHtmlFile(file);
     for (var el : PsiTreeUtil.collectElementsOfType(file, JSArrayLiteralExpression.class)) {
       ProgressManager.checkCanceled();
       if (isMultiline(el, doc) && (!isHtml || isInScriptTag(el)) && is2dArray(el)) {

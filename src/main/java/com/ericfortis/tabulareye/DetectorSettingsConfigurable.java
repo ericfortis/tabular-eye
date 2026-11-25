@@ -78,10 +78,9 @@ public class DetectorSettingsConfigurable implements Configurable {
 
   private static String buildLabel(AlignmentDetector detector) {
     var exts = detector.getExtensions();
-    if (exts.isEmpty())
-      return detector.getDisplayName();
-    var extList = exts.stream().collect(Collectors.joining(", "));
-    return detector.getDisplayName() + " (" + extList + ")";
+    return exts.isEmpty()
+       ? detector.getDisplayName()
+       : detector.getDisplayName() + " (" + String.join(", ", exts) + ")";
   }
 
   private record DetectorCheckbox(String className, JCheckBox checkbox) {

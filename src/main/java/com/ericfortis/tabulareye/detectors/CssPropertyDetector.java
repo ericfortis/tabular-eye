@@ -26,7 +26,7 @@ public class CssPropertyDetector extends AlignmentDetector {
   @NotNull
   public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
     List<AlignmentBlock> groups = new ArrayList<>();
-    boolean isHtml = isHtmlFile(file);
+    var isHtml = isHtmlFile(file);
 
     for (var el : PsiTreeUtil.findChildrenOfType(file, CssBlock.class)) {
       ProgressManager.checkCanceled();

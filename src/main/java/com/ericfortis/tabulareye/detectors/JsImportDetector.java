@@ -24,7 +24,7 @@ public class JsImportDetector extends AlignmentDetector {
   @NotNull
   public List<AlignmentBlock> findBlocks(@NotNull PsiFile file, @NotNull Document doc) {
     List<AlignmentBlock> blocks = new ArrayList<>();
-    boolean isHtml = isHtmlFile(file);
+    var isHtml = isHtmlFile(file);
 
     var imports = PsiTreeUtil.collectElementsOfType(file, ES6ImportDeclaration.class);
     if (imports.isEmpty())
@@ -71,13 +71,13 @@ public class JsImportDetector extends AlignmentDetector {
 
   private PropInfo buildProp(ES6ImportDeclaration imp) {
     int keyStart = imp.getTextRange().getStartOffset();
-    String text = imp.getText();
+    var text = imp.getText();
     int fromIdx = text.lastIndexOf(" from ");
     if (fromIdx < 0)
       return null;
 
     int separatorOffset = keyStart + fromIdx;
-    String key = text.substring(0, fromIdx);
+    var key = text.substring(0, fromIdx);
 
     return new PropInfo(key, keyStart, separatorOffset);
   }

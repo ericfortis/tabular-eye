@@ -165,27 +165,6 @@ public abstract class AlignmentDetector {
     }
   }
 
-  public static class PropInfo {
-    private final String key;
-    private final int keyOffset;
-    private final int separatorOffset;
-
-    public PropInfo(String key, int keyOffset, int separatorOffset) {
-      this.key = key;
-      this.keyOffset = keyOffset;
-      this.separatorOffset = separatorOffset;
-    }
-
-    public String key() {
-      return key;
-    }
-
-    public int keyOffset() {
-      return keyOffset;
-    }
-
-    public int separatorOffset() {
-      return separatorOffset;
-    }
+  public record PropInfo(String key, int keyOffset, int separatorOffset) {
   }
 }

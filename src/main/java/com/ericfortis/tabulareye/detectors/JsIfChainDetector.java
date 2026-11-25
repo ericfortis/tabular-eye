@@ -36,7 +36,7 @@ public class JsIfChainDetector extends AlignmentDetector {
       ProgressManager.checkCanceled();
       int lineStart = doc.getLineStartOffset(i);
       int lineEnd = doc.getLineEndOffset(i);
-      String text = doc.getText(new TextRange(lineStart, lineEnd));
+      var text = doc.getText(new TextRange(lineStart, lineEnd));
       while (!text.isEmpty() && (text.charAt(text.length() - 1) == '\n'
          || text.charAt(text.length() - 1) == '\r'))
         text = text.substring(0, text.length() - 1);
@@ -60,8 +60,8 @@ public class JsIfChainDetector extends AlignmentDetector {
       // skip whitespace after keyword
       while (pos < text.length() && text.charAt(pos) == ' ') pos++;
 
-      // check for condition — a '(' that may contain nested parens and strings
-      boolean hasCondition = false;
+      // a '(' that may contain nested parens and strings
+      var hasCondition = false;
       if (pos < text.length() && text.charAt(pos) == '(') {
         int depth = 1;
         pos++;
@@ -84,7 +84,8 @@ public class JsIfChainDetector extends AlignmentDetector {
       }
 
       // skip whitespace after condition
-      while (pos < text.length() && text.charAt(pos) == ' ') pos++;
+      while (pos < text.length() && text.charAt(pos) == ' ')
+        pos++;
 
       if (pos >= text.length()) {
         flushChain(chain, blocks);
@@ -99,10 +100,7 @@ public class JsIfChainDetector extends AlignmentDetector {
         continue;
       }
 
-      chain.add(new LineInfo(
-         lineStart, bodyStart, prefix,
-         keyword, keywordStart, keywordEnd, hasCondition
-      ));
+      chain.add(new LineInfo(lineStart, bodyStart, prefix, keyword, keywordStart, keywordEnd, hasCondition));
     }
     flushChain(chain, blocks);
 
@@ -117,7 +115,8 @@ public class JsIfChainDetector extends AlignmentDetector {
         pos += 2;
         continue;
       }
-      if (c == quote) return pos;
+      if (c == quote)
+        return pos;
       pos++;
     }
     return pos;
@@ -129,7 +128,7 @@ public class JsIfChainDetector extends AlignmentDetector {
       var bodyBlock = new AlignmentBlock();
 
       for (var info : chain) {
-        String bodyKey = info.prefix;
+        var bodyKey = info.prefix;
         if (info.hasCondition && "if".equals(info.keyword))
           bodyKey = "else " + bodyKey;
         bodyBlock.add(new PropInfo(bodyKey, info.lineStart, info.bodyStart - 1));
